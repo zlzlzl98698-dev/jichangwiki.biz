@@ -76,3 +76,20 @@
   - [x] 优化网络实验室暗色服务可用性矩阵（`ServiceAvailabilityMatrix`）在全尺寸下的网格边距与徽章不换行
   - [x] 全站流水线回归重构成功：99 个页面与 Pagefind 索引完成重新校验
   - [x] 本地预览服务保持运行于 `http://localhost:4321/`（可在浏览器中即时访问）
+
+- [x] **阶段 H：全站二级 SEO 专题深度升级与内容矩阵建设 (Secondary Topic Hub Expansion)**
+  - [x] 落地全站 20 个重点二级专题 Hub，正文累计超过 102,000 汉字（每篇 5,000–8,000 字）
+  - [x] 规划全站 120 篇三级衍生深度文章 Backlog 清单与 P0/P1/P2 排期
+  - [x] 全量二级 Hub 注入 Schema.org TechArticle、FAQPage 与 BreadcrumbList 结构化数据
+  - [x] 全站 Header 下拉、Footer 专栏与 HTML 网站地图全面更新对齐
+  - [x] 生成 7 份权威二级专题交付与审计报告归档于 `reports/`：
+    - `reports/secondary-topic-audit.md`
+    - `reports/secondary-keyword-map.md`
+    - `reports/secondary-topic-clusters.md`
+    - `reports/secondary-article-backlog.md`
+    - `reports/secondary-internal-links.md`
+    - `reports/secondary-content-quality.md`
+    - `reports/secondary-final-report.md`
+  - [x] 通过 `astro check` (0 errors, 0 warnings) 与完整静态构建 `npm run build`
+  - [x] Pagefind 多语言全文索引完成（111 页面全部收录）
+  - [x] 运行并通过 `scripts/qa-check.mjs` 全自动质量验收（111 页面零死链、外链合规）
