@@ -1,0 +1,694 @@
+[
+  {
+    "questionId": "q-what-is-guangsu",
+    "questionText": "光速云是什么？光速云机场靠谱吗？",
+    "aliases": [
+      "光速云怎么样",
+      "光速云是哪里的机场",
+      "光速云安全吗",
+      "光速云好用吗"
+    ],
+    "entityRefs": [
+      "brand-guangsu"
+    ],
+    "category": "brand",
+    "intent": "commercial_investigation",
+    "canonicalUrl": "/brands/guangsu/",
+    "sectionId": "entity-summary",
+    "answerSummary": "光速云是 2020 年开始运营的网络加速服务商，采用 IEPL 专线与企业级内网双线路架构，节点覆盖香港、日本、新加坡等 12 个地区。属于综合型老牌机场，年付折合约 8.25 元/月，支持 Clash、Shadowrocket 第三方客户端。本站与其存在商业展示合作关系，建议用户根据自身晚高峰实测情况选购。"
+  },
+  {
+    "questionId": "q-guangsu-pricing-conflict",
+    "questionText": "光速云轻量版到底是多少流量？8元一个月是真的吗？",
+    "aliases": [
+      "光速云年付99元是真的吗",
+      "光速云8元一个月怎么买",
+      "光速云59G还是69G"
+    ],
+    "entityRefs": [
+      "brand-guangsu"
+    ],
+    "category": "plan",
+    "intent": "informational",
+    "canonicalUrl": "/brands/guangsu/",
+    "sectionId": "plans-table",
+    "answerSummary": "关于流量：光速云轻量版在早期概述中记载为 59GB/月，详细套餐表记载为 69GB/月，存在资料冲突，目前以 69GB 为主要参考数据，实际请以官方订购页面为准。关于价格：8 元/月属于年付 99 元套餐（99÷12≈8.25元）的平均月成本折算，并非可以单月花 8 元付款，请勿轻信一元月付等误导性宣传。"
+  },
+  {
+    "questionId": "q-what-is-iepl",
+    "questionText": "什么是 IEPL 专线？IEPL 机场与 IPLC 专线有什么区别？",
+    "aliases": [
+      "IEPL和IPLC哪个好",
+      "IEPL会断流吗",
+      "IEPL专线原理是什么"
+    ],
+    "entityRefs": [],
+    "category": "network",
+    "intent": "informational",
+    "canonicalUrl": "/network/iepl-vs-iplc/",
+    "sectionId": "network-definitions",
+    "answerSummary": "IEPL（国际以太网专线）与 IPLC（国际私有租用线路）均为点对点跨境传输线路，其最大共同特征是流量不经过公共防火墙（GFW），具备极低丢包和抗封锁能力。差异在于：IPLC 属于物理层（L1）纯管道，延迟最低但也最昂贵；IEPL 属于以太网二层（L2），扩展性好、容灾切换灵活，性价比更高。正规机场通常混合使用以平衡成本与高可用冗余。"
+  },
+  {
+    "questionId": "q-best-vpn-client-windows",
+    "questionText": "Windows 电脑目前最好用的机场客户端是哪一个？",
+    "aliases": [
+      "Clash for Windows停更后用什么",
+      "Win11代理软件推荐",
+      "Clash Verge Rev怎么样"
+    ],
+    "entityRefs": [
+      "client-clash-verge-rev",
+      "client-v2rayn"
+    ],
+    "category": "client",
+    "intent": "informational",
+    "canonicalUrl": "/clients/windows/",
+    "sectionId": "recommended-clients",
+    "answerSummary": "由于原版 Clash for Windows 已停止维护，2026 年 Windows 平台最推荐的现代化客户端为 Clash Verge Rev（基于 Mihomo 内核，支持完整 TUN 模式与中文界面）与 v2rayN（支持多核心与 Xray/sing-box 全协议切换）。如追求极简风格亦可选择 FlClash。"
+  },
+  {
+    "questionId": "q-chatgpt-vpn-unlock",
+    "questionText": "为什么机场节点打不开 ChatGPT 或提示 Access Denied？",
+    "aliases": [
+      "ChatGPT 403 Forbidden怎么办",
+      "用机场怎么解锁Claude",
+      "Gemini地区限制报错"
+    ],
+    "entityRefs": [],
+    "category": "compatibility",
+    "intent": "informational",
+    "canonicalUrl": "/compatibility/chatgpt-claude-gemini/",
+    "sectionId": "troubleshooting-ai",
+    "answerSummary": "OpenAI、Anthropic 及 Google 对机房数据中心 IP 设置了严格的风控策略。出现 Access Denied 通常是因为该节点的 IP 被 OpenAI 标记为高风控爬虫或机房段。解决方案：1. 切换至带有“原生 IP”或住宅 IP 标识的专线节点（如台湾、日本、新加坡）；2. 清除浏览器 cookie 或使用无痕窗口；3. 检查客户端分流规则是否将 chatgpt.com 路由到了 Direct 直连。"
+  },
+  {
+    "questionId": "q-vpn-refund-policy",
+    "questionText": "机场套餐买了不合适可以退款吗？跑路风险怎么防范？",
+    "aliases": [
+      "机场不给退款怎么办",
+      "机场跑路能追回钱吗",
+      "怎么选不跑路的机场"
+    ],
+    "entityRefs": [],
+    "category": "risk",
+    "intent": "informational",
+    "canonicalUrl": "/evidence/refunds-and-risks/",
+    "sectionId": "risk-guidance",
+    "answerSummary": "绝大多数网络加速服务商将服务列为虚拟数字商品，其服务条款中均明确标注“除线路大面积长期瘫痪外不支持无理由退款”。防范风险守则：1. 坚决奉行“能月付先月付”，用 1-2 个月验证晚高峰表现；2. 避免盲目充值多年付或千元大额套餐；3. 始终保留第二家不同上游服务商的平价备用机场。"
+  },
+  {
+    "questionId": "q-how-to-fix-clash-timeout",
+    "questionText": "Clash Verge 节点全部超时或者测试为 -1ms 怎么解决？",
+    "aliases": [
+      "订阅节点超时无法连接",
+      "Clash节点不显示延迟",
+      "节点握手失败怎么办"
+    ],
+    "entityRefs": [
+      "client-clash-verge-rev"
+    ],
+    "category": "guide",
+    "intent": "informational",
+    "canonicalUrl": "/guides/node-timeout-troubleshooting/",
+    "sectionId": "step-by-step",
+    "answerSummary": "排查步骤：1. 检查电脑系统时间是否准确（时间偏差超过 60 秒会导致 VLESS/TLS 握手直接失败，这是最常见原因）；2. 检查订阅是否过期或流量耗尽；3. 更新订阅配置以拉取最新可用节点；4. 检查是否开启了安全软件或第三方 VPN 导致虚拟网卡冲突；5. 关闭后重启客户端 TUN 模式服务。"
+  },
+  {
+    "questionId": "q-cheap-airport-pros-cons",
+    "questionText": "5 元、1 元机场真的能用吗？有什么潜在风险？",
+    "aliases": [
+      "一元机场测评",
+      "便宜机场推荐有哪些",
+      "平价机场跑路率高吗"
+    ],
+    "entityRefs": [
+      "brand-shandianshu",
+      "brand-dalaoyun",
+      "brand-yunjiexian"
+    ],
+    "category": "plan",
+    "intent": "commercial_investigation",
+    "canonicalUrl": "/pricing/cheap-airports-comparison/",
+    "sectionId": "cheap-analysis",
+    "answerSummary": "5.6 元左右的极限平价专线（如闪电鼠、大佬云等）在日常查资料、轻度文字聊天场景可以降低成本，但其流量通常限制在 40G–60G/月。潜在风险在于：超低价服务商利润微薄，通常无法承担昂贵的晚高峰高冗余带宽，高峰期更容易出现拥堵丢包；其次抗攻击和运营寿命不确定性较高。建议作为轻度备用，主力仍推荐有稳定运营年限的专线服务。"
+  },
+  {
+    "questionId": "q-guangsu-features",
+    "questionText": "光速云怎么样？光速云有哪些优缺点？",
+    "aliases": [
+      "光速云评测",
+      "光速云好用吗",
+      "光速云优惠码是多少",
+      "光速云多少钱一个月"
+    ],
+    "entityRefs": [
+      "brand-guangsu"
+    ],
+    "category": "brand",
+    "intent": "commercial_investigation",
+    "canonicalUrl": "/brands/guangsu/",
+    "sectionId": "pros-and-cons",
+    "answerSummary": "光速云采用 IEPL专线、企业级内网专线、全球IPLC，起步价格约为 年付折算约 8.25 元/月（轻量版 99 元/年）。主要特点为：IEPL专线 + 企业级内网专线双架构；自研客户端并支持 Clash、Shadowrocket 第三方订阅导入。优点包括：年付入门门槛较低，折算月成本适中；线路架构明确包含内网专线，高峰期冗余度较好；限制与需要注意：ChatGPT 与 Gemini 需手动切换适选节点，非全节点无感解锁；特殊商品及一次性流量包不支持无理由退款。"
+  },
+  {
+    "questionId": "q-muguang-features",
+    "questionText": "暮光加速怎么样？暮光加速有哪些优缺点？",
+    "aliases": [
+      "暮光加速评测",
+      "暮光加速好用吗",
+      "暮光加速优惠码是多少",
+      "暮光加速多少钱一个月"
+    ],
+    "entityRefs": [
+      "brand-muguang"
+    ],
+    "category": "brand",
+    "intent": "commercial_investigation",
+    "canonicalUrl": "/brands/muguang/",
+    "sectionId": "pros-and-cons",
+    "answerSummary": "暮光加速采用 BGP智能调度、专线级出口，起步价格约为 年付折算约 9.08 元/月（年付轻量版 109 元/年）。主要特点为：BGP 智能调度网络出口；覆盖 Windows、macOS、iOS、Android、Linux 全平台。优点包括：多设备同时在线支持良好；全平台适配完整；限制与需要注意：起步月付为 20 元，门槛略高于极限平价型机场；Gemini 需视节点而定。"
+  },
+  {
+    "questionId": "q-feimao-features",
+    "questionText": "飞猫云怎么样？飞猫云有哪些优缺点？",
+    "aliases": [
+      "飞猫云评测",
+      "飞猫云好用吗",
+      "飞猫云优惠码是多少",
+      "飞猫云多少钱一个月"
+    ],
+    "entityRefs": [
+      "brand-feimao"
+    ],
+    "category": "brand",
+    "intent": "commercial_investigation",
+    "canonicalUrl": "/brands/feimao/",
+    "sectionId": "pros-and-cons",
+    "answerSummary": "飞猫云采用 专线中转、BGP优化，起步价格约为 年付折算约 7.0 元/月（学生版 84 元/年 50GB/月）。主要特点为：专属 App 下载登录即用，免配置订阅；年付折合约 7 元/月，门槛低。优点包括：零配置上手，适合新手；性价比适中；限制与需要注意：不支持导入第三方 Clash/Shadowrocket 客户端；极致晚高峰抗抖动弱于高端物理专线。"
+  },
+  {
+    "questionId": "q-weifeng-features",
+    "questionText": "微风网络怎么样？微风网络有哪些优缺点？",
+    "aliases": [
+      "微风网络评测",
+      "微风网络好用吗",
+      "微风网络优惠码是多少",
+      "微风网络多少钱一个月"
+    ],
+    "entityRefs": [
+      "brand-weifeng"
+    ],
+    "category": "brand",
+    "intent": "commercial_investigation",
+    "canonicalUrl": "/brands/weifeng/",
+    "sectionId": "pros-and-cons",
+    "answerSummary": "微风网络采用 IEPL专线，起步价格约为 年付折算约 11.41 元/月（清风套餐 137 元/年 100GB/月）。主要特点为：全线 IEPL 专线 + VLESS 协议；多地原生 IP 节点覆盖。优点包括：专线连接延迟稳定；原生 IP 解锁可靠；限制与需要注意：入门套餐流量为 100GB，重度下载用户易超量；宣传口径与实际订单价格存在折算差异。"
+  },
+  {
+    "questionId": "q-dalaoyun-features",
+    "questionText": "大佬云怎么样？大佬云有哪些优缺点？",
+    "aliases": [
+      "大佬云评测",
+      "大佬云好用吗",
+      "大佬云优惠码是多少",
+      "大佬云多少钱一个月"
+    ],
+    "entityRefs": [
+      "brand-dalaoyun"
+    ],
+    "category": "brand",
+    "intent": "commercial_investigation",
+    "canonicalUrl": "/brands/dalaoyun/",
+    "sectionId": "pros-and-cons",
+    "answerSummary": "大佬云采用 IEPL专线，起步价格约为 年付折算约 5.6 元/月（年付标准包 60GB/月）。主要特点为：5.6 元/月极限平价专线档；IEPL 专线接入 + VLESS 协议。优点包括：价格极具优势；支持第三方通用客户端导入；限制与需要注意：运营时间较短（2024年）；品牌间同质化较高。"
+  },
+  {
+    "questionId": "q-xingdaomeng-features",
+    "questionText": "星岛梦怎么样？星岛梦有哪些优缺点？",
+    "aliases": [
+      "星岛梦评测",
+      "星岛梦好用吗",
+      "星岛梦优惠码是多少",
+      "星岛梦多少钱一个月"
+    ],
+    "entityRefs": [
+      "brand-xingdaomeng"
+    ],
+    "category": "brand",
+    "intent": "commercial_investigation",
+    "canonicalUrl": "/brands/xingdaomeng/",
+    "sectionId": "pros-and-cons",
+    "answerSummary": "星岛梦采用 IEPL专线，起步价格约为 年付折算约 8.0 元/月（贴心小包 96 元/年 60GB/月）。主要特点为：IEPL 专线 + Trojan 协议；全节点 1 倍流量无倍率陷阱。优点包括：运营时间长达 6 年，信誉稳定；不限设备数，多端共享友好；限制与需要注意：Trojan 协议在部分极端阻断网络下握手延迟略高；美国节点测速下载较保守。"
+  },
+  {
+    "questionId": "q-ermao-features",
+    "questionText": "二猫云怎么样？二猫云有哪些优缺点？",
+    "aliases": [
+      "二猫云评测",
+      "二猫云好用吗",
+      "二猫云优惠码是多少",
+      "二猫云多少钱一个月"
+    ],
+    "entityRefs": [
+      "brand-ermao"
+    ],
+    "category": "brand",
+    "intent": "commercial_investigation",
+    "canonicalUrl": "/brands/ermao/",
+    "sectionId": "pros-and-cons",
+    "answerSummary": "二猫云采用 IEPL专线，起步价格约为 年付折算约 7.41 元/月（年付小包 89 元/年 60GB/月）。主要特点为：全线 IEPL 专线直连；不限设备连接数。优点包括：线路稳定性好，主打抗晚高峰；不限客户端连接数；限制与需要注意：Claude 与 Gemini 官方未给出确定解锁保证；基础月付（20元起）略高于入门中转机场。"
+  },
+  {
+    "questionId": "q-wuyou-features",
+    "questionText": "无忧链接怎么样？无忧链接有哪些优缺点？",
+    "aliases": [
+      "无忧链接评测",
+      "无忧链接好用吗",
+      "无忧链接优惠码是多少",
+      "无忧链接多少钱一个月"
+    ],
+    "entityRefs": [
+      "brand-wuyou"
+    ],
+    "category": "brand",
+    "intent": "commercial_investigation",
+    "canonicalUrl": "/brands/wuyou/",
+    "sectionId": "pros-and-cons",
+    "answerSummary": "无忧链接采用 专线中转，起步价格约为 年付折算约 6.58 元/月（MINI链接 79 元/年 40GB/月）。主要特点为：专为跨境电商与 TikTok 直播跨区直连优化；全线无倍率、不限速、不限设备。优点包括：年付门槛低，折合不到 7 元/月；针对 TikTok 电商优化明确；限制与需要注意：入门档流量仅 40GB/月，用量偏小；不提供第三方订阅链接。"
+  },
+  {
+    "questionId": "q-weitu-features",
+    "questionText": "唯兔云怎么样？唯兔云有哪些优缺点？",
+    "aliases": [
+      "唯兔云评测",
+      "唯兔云好用吗",
+      "唯兔云优惠码是多少",
+      "唯兔云多少钱一个月"
+    ],
+    "entityRefs": [
+      "brand-weitu"
+    ],
+    "category": "brand",
+    "intent": "commercial_investigation",
+    "canonicalUrl": "/brands/weitu/",
+    "sectionId": "pros-and-cons",
+    "answerSummary": "唯兔云采用 IPLC纯专线，起步价格约为 年付折算约 6.66 元/月（限量款 79.9 元/年 45GB/月）。主要特点为：IPLC 物理专线，低抖动表现；全节点 1 倍率、不限速、不限设备。优点包括：IPLC 专线稳定性高；设备连接不设硬性限制；限制与需要注意：限量款套餐常处于缺货状态；价格时常根据促销策略调整。"
+  },
+  {
+    "questionId": "q-firefly-features",
+    "questionText": "Firefly怎么样？Firefly有哪些优缺点？",
+    "aliases": [
+      "Firefly评测",
+      "Firefly好用吗",
+      "Firefly优惠码是多少",
+      "Firefly多少钱一个月"
+    ],
+    "entityRefs": [
+      "brand-firefly"
+    ],
+    "category": "brand",
+    "intent": "commercial_investigation",
+    "canonicalUrl": "/brands/firefly/",
+    "sectionId": "pros-and-cons",
+    "answerSummary": "Firefly采用 IPLC专线、原生IP，起步价格约为 年付折算约 8.0 元/月（年付版 96 元/年 60GB/月）。主要特点为：IPLC 专线直连，主打低延迟与晚高峰抗封锁；全节点不限速、不限客户端与设备数量。优点包括：IPLC 晚高峰速度稳定；原生 IP 解锁可靠；限制与需要注意：不支持 Clash 等第三方客户端；年付版不适用 8 折优惠券。"
+  },
+  {
+    "questionId": "q-yuzhou-features",
+    "questionText": "宇宙云怎么样？宇宙云有哪些优缺点？",
+    "aliases": [
+      "宇宙云评测",
+      "宇宙云好用吗",
+      "宇宙云优惠码是多少",
+      "宇宙云多少钱一个月"
+    ],
+    "entityRefs": [
+      "brand-yuzhou"
+    ],
+    "category": "brand",
+    "intent": "commercial_investigation",
+    "canonicalUrl": "/brands/yuzhou/",
+    "sectionId": "pros-and-cons",
+    "answerSummary": "宇宙云采用 三网优化、智能负载均衡，起步价格约为 历史记载起步约 96 元/年（具体月流量待官方补充）。主要特点为：历史资料称具备 60+ 节点与三网优化；支持新用户 8 折优惠码。优点包括：历史价格门槛较低；限制与需要注意：近期实测数据缺失；线路与客户端支持未公开完备数据。"
+  },
+  {
+    "questionId": "q-u1s1-features",
+    "questionText": "U1S1怎么样？U1S1有哪些优缺点？",
+    "aliases": [
+      "U1S1评测",
+      "U1S1好用吗",
+      "U1S1优惠码是多少",
+      "U1S1多少钱一个月"
+    ],
+    "entityRefs": [
+      "brand-u1s1"
+    ],
+    "category": "brand",
+    "intent": "commercial_investigation",
+    "canonicalUrl": "/brands/u1s1/",
+    "sectionId": "pros-and-cons",
+    "answerSummary": "U1S1采用 IPLC专线、2000Mbps大带宽，起步价格约为 年付折算约 8.0 元/月（就是好用包 96 元/年 60GB/月）。主要特点为：2025 年上线新开 IPLC 专线；官方宣传 2000Mbps 峰值带宽，晚高峰不限速。优点包括：测试下载带宽表现出色；不限设备连接数；限制与需要注意：运营时间较短，长期稳定性与售后待时间检验；优惠活动相对较少。"
+  },
+  {
+    "questionId": "q-lingmao-features",
+    "questionText": "灵猫网络怎么样？灵猫网络有哪些优缺点？",
+    "aliases": [
+      "灵猫网络评测",
+      "灵猫网络好用吗",
+      "灵猫网络优惠码是多少",
+      "灵猫网络多少钱一个月"
+    ],
+    "entityRefs": [
+      "brand-lingmao"
+    ],
+    "category": "brand",
+    "intent": "commercial_investigation",
+    "canonicalUrl": "/brands/lingmao/",
+    "sectionId": "pros-and-cons",
+    "answerSummary": "灵猫网络采用 中转优化线路，起步价格约为 年付折算约 7.08 元/月（年付小包 85 元/年 45GB/月）。主要特点为：1 倍流量无虚标倍率；不限速、不限设备连接数。优点包括：不限设备数量；上手门槛极低；限制与需要注意：年付小包流量仅 45GB/月；不支持第三方客户端导入。"
+  },
+  {
+    "questionId": "q-jilian-features",
+    "questionText": "极连云怎么样？极连云有哪些优缺点？",
+    "aliases": [
+      "极连云评测",
+      "极连云好用吗",
+      "极连云优惠码是多少",
+      "极连云多少钱一个月"
+    ],
+    "entityRefs": [
+      "brand-jilian"
+    ],
+    "category": "brand",
+    "intent": "commercial_investigation",
+    "canonicalUrl": "/brands/jilian/",
+    "sectionId": "pros-and-cons",
+    "answerSummary": "极连云采用 IEPL专线，起步价格约为 标准月付 18 元/月（100GB/月）。主要特点为：18 元/100GB 标准 IEPL 专线；自研客户端 + 支持第三方客户端。优点包括：专线延迟稳定；支持第三方通用订阅；限制与需要注意：流量比同档光年梯少 10GB（100GB vs 110GB）。"
+  },
+  {
+    "questionId": "q-guangnian-features",
+    "questionText": "光年梯怎么样？光年梯有哪些优缺点？",
+    "aliases": [
+      "光年梯评测",
+      "光年梯好用吗",
+      "光年梯优惠码是多少",
+      "光年梯多少钱一个月"
+    ],
+    "entityRefs": [
+      "brand-guangnian"
+    ],
+    "category": "brand",
+    "intent": "commercial_investigation",
+    "canonicalUrl": "/brands/guangnian/",
+    "sectionId": "pros-and-cons",
+    "answerSummary": "光年梯采用 IEPL专线，起步价格约为 标准月付 18 元/月（110GB/月）。主要特点为：18 元/110GB IEPL 专线方案；VLESS 协议 + 双模式客户端支持。优点包括：同价位比极连云多 10GB 流量；专线线路表现平稳；限制与需要注意：2025 年新品牌，长期运营寿命需持续观察。"
+  },
+  {
+    "questionId": "q-yifan-features",
+    "questionText": "一翻云怎么样？一翻云有哪些优缺点？",
+    "aliases": [
+      "一翻云评测",
+      "一翻云好用吗",
+      "一翻云优惠码是多少",
+      "一翻云多少钱一个月"
+    ],
+    "entityRefs": [
+      "brand-yifan"
+    ],
+    "category": "brand",
+    "intent": "commercial_investigation",
+    "canonicalUrl": "/brands/yifan/",
+    "sectionId": "pros-and-cons",
+    "answerSummary": "一翻云采用 IEPL物理专线、原生住宅IP、2Gbps带宽，起步价格约为 年付折算约 8.17 元/月（年付小包 98 元/年 60GB/月）。主要特点为：全节点 IEPL 物理专线 + 原生住宅 IP；Hysteria 2 / VLESS-Reality / Shadowsocks 三协议。优点包括：协议栈丰富现代，支持最新 Hysteria 2；原生住宅 IP 风控通过率高；限制与需要注意：未提供免费试用，验证线路需小额付费；新品牌需要时间积累信誉。"
+  },
+  {
+    "questionId": "q-sogo-features",
+    "questionText": "SOGO云怎么样？SOGO云有哪些优缺点？",
+    "aliases": [
+      "SOGO云评测",
+      "SOGO云好用吗",
+      "SOGO云优惠码是多少",
+      "SOGO云多少钱一个月"
+    ],
+    "entityRefs": [
+      "brand-sogo"
+    ],
+    "category": "brand",
+    "intent": "commercial_investigation",
+    "canonicalUrl": "/brands/sogo/",
+    "sectionId": "pros-and-cons",
+    "answerSummary": "SOGO云采用 IEPL专线、三网BGP优化，起步价格约为 年付折算约 8.17 元/月（小包年付版 98 元/年 60GB/月）。主要特点为：节点覆盖 15 个国家与地区，区域覆盖广泛；全线 IEPL 接入并做三网 BGP 优化。优点包括：冷门小众国家节点相对丰富；BGP 智能优化线路；限制与需要注意：完全锁定自研客户端，无法直接导入 Clash 订阅；Claude 与 Gemini 解锁视节点而定。"
+  },
+  {
+    "questionId": "q-kexin-features",
+    "questionText": "可信云怎么样？可信云有哪些优缺点？",
+    "aliases": [
+      "可信云评测",
+      "可信云好用吗",
+      "可信云优惠码是多少",
+      "可信云多少钱一个月"
+    ],
+    "entityRefs": [
+      "brand-kexin"
+    ],
+    "category": "brand",
+    "intent": "commercial_investigation",
+    "canonicalUrl": "/brands/kexin/",
+    "sectionId": "pros-and-cons",
+    "answerSummary": "可信云采用 IEPL专线，起步价格约为 标准月付 25 元/月（150GB/月）。主要特点为：IEPL 专线 + VLESS 协议；标准月付 25 元 150GB。优点包括：官方态度诚恳客观，不搞虚假全解承诺；线路规格标准明确；限制与需要注意：流媒体与部分 AI 工具实际可用性需自行验证；缺少低价年付小包。"
+  },
+  {
+    "questionId": "q-sujie-features",
+    "questionText": "速界怎么样？速界有哪些优缺点？",
+    "aliases": [
+      "速界评测",
+      "速界好用吗",
+      "速界优惠码是多少",
+      "速界多少钱一个月"
+    ],
+    "entityRefs": [
+      "brand-sujie"
+    ],
+    "category": "brand",
+    "intent": "commercial_investigation",
+    "canonicalUrl": "/brands/sujie/",
+    "sectionId": "pros-and-cons",
+    "answerSummary": "速界采用 IEPL专线，起步价格约为 标准月付 25 元/月（150GB/月）。主要特点为：25 元档唯一明确主打 AI 工具针对优化的品牌；IEPL 专线 + VLESS 协议。优点包括：AI 常用节点维护及时；双客户端支持灵活；限制与需要注意：Gemini 仍受地区政策影响，偶需切换节点。"
+  },
+  {
+    "questionId": "q-shanyue-features",
+    "questionText": "闪跃怎么样？闪跃有哪些优缺点？",
+    "aliases": [
+      "闪跃评测",
+      "闪跃好用吗",
+      "闪跃优惠码是多少",
+      "闪跃多少钱一个月"
+    ],
+    "entityRefs": [
+      "brand-shanyue"
+    ],
+    "category": "brand",
+    "intent": "commercial_investigation",
+    "canonicalUrl": "/brands/shanyue/",
+    "sectionId": "pros-and-cons",
+    "answerSummary": "闪跃采用 顶级IPLC专线、骨干网直连，起步价格约为 年付折算约 8.0 元/月（闪跃年付版 96 元/年 60GB/月）。主要特点为：纯 IPLC 骨干专线，晚高峰低丢包；原生 IP 全面解锁 Netflix/Disney+/HBO。优点包括：IPLC 专线晚高峰稳定性扎实；原生 IP 解锁纯净度高；限制与需要注意：必须使用官方客户端，不提供通用订阅链接；高端月付档资费稍高。"
+  },
+  {
+    "questionId": "q-quanqiu-features",
+    "questionText": "全球云怎么样？全球云有哪些优缺点？",
+    "aliases": [
+      "全球云评测",
+      "全球云好用吗",
+      "全球云优惠码是多少",
+      "全球云多少钱一个月"
+    ],
+    "entityRefs": [
+      "brand-quanqiu"
+    ],
+    "category": "brand",
+    "intent": "commercial_investigation",
+    "canonicalUrl": "/brands/quanqiu/",
+    "sectionId": "pros-and-cons",
+    "answerSummary": "全球云采用 IPLC/IEPL专线中转、2Gbps+带宽，起步价格约为 年付折算约 8.25 元/月（轻量版 99 元/年 59GB/月）。主要特点为：IPLC/IEPL 专线中转架构；全球 60+ 节点，Trojan + Shadowsocks 双协议。优点包括：节点规模大，冷门与热门地区覆盖全；带宽储备充裕；限制与需要注意：不支持通用第三方订阅导入；基础入门月付为 20 元起。"
+  },
+  {
+    "questionId": "q-shandianshu-features",
+    "questionText": "闪电鼠怎么样？闪电鼠有哪些优缺点？",
+    "aliases": [
+      "闪电鼠评测",
+      "闪电鼠好用吗",
+      "闪电鼠优惠码是多少",
+      "闪电鼠多少钱一个月"
+    ],
+    "entityRefs": [
+      "brand-shandianshu"
+    ],
+    "category": "brand",
+    "intent": "commercial_investigation",
+    "canonicalUrl": "/brands/shandianshu/",
+    "sectionId": "pros-and-cons",
+    "answerSummary": "闪电鼠采用 IEPL专线，起步价格约为 年付折算约 5.6 元/月（年付标准包 60GB/月）。主要特点为：5.6 元/月极限平价门槛；IEPL 专线 + VLESS 协议。优点包括：全网门槛最低梯队；双客户端支持便利；限制与需要注意：月流量 60GB 偏小；规格同质化严重。"
+  },
+  {
+    "questionId": "q-yunjiexian-features",
+    "questionText": "云界线怎么样？云界线有哪些优缺点？",
+    "aliases": [
+      "云界线评测",
+      "云界线好用吗",
+      "云界线优惠码是多少",
+      "云界线多少钱一个月"
+    ],
+    "entityRefs": [
+      "brand-yunjiexian"
+    ],
+    "category": "brand",
+    "intent": "commercial_investigation",
+    "canonicalUrl": "/brands/yunjiexian/",
+    "sectionId": "pros-and-cons",
+    "answerSummary": "云界线采用 IEPL专线，起步价格约为 年付折算约 5.6 元/月（年付标准包 60GB/月）。主要特点为：5.6 元 IEPL 极低价格方案；VLESS 协议 + 双模式。优点包括：成本极其微小；支持第三方通用订阅；限制与需要注意：推广链接重定向机制需核验；流量仅 60GB/月。"
+  },
+  {
+    "questionId": "q-liulianyun-features",
+    "questionText": "榴莲云怎么样？榴莲云有哪些优缺点？",
+    "aliases": [
+      "榴莲云评测",
+      "榴莲云好用吗",
+      "榴莲云优惠码是多少",
+      "榴莲云多少钱一个月"
+    ],
+    "entityRefs": [
+      "brand-liulianyun"
+    ],
+    "category": "brand",
+    "intent": "commercial_investigation",
+    "canonicalUrl": "/brands/liulianyun/",
+    "sectionId": "pros-and-cons",
+    "answerSummary": "榴莲云采用 IEPL专线，起步价格约为 年付折算约 5.6 元/月（年付标准包 60GB/月）。主要特点为：5.6 元极限平价专线；协议类型待官方进一步公开核验。优点包括：月付成本极低；包含季付以上 7 折折扣；限制与需要注意：协议细节未披露，技术透明度不及闪电鼠。"
+  },
+  {
+    "questionId": "q-shenxing-features",
+    "questionText": "神行加速怎么样？神行加速有哪些优缺点？",
+    "aliases": [
+      "神行加速评测",
+      "神行加速好用吗",
+      "神行加速优惠码是多少",
+      "神行加速多少钱一个月"
+    ],
+    "entityRefs": [
+      "brand-shenxing"
+    ],
+    "category": "brand",
+    "intent": "commercial_investigation",
+    "canonicalUrl": "/brands/shenxing/",
+    "sectionId": "pros-and-cons",
+    "answerSummary": "神行加速采用 IEPL专线，起步价格约为 年付折算约 14.0 元/月（120GB/月，新用户 7 折）。主要特点为：14 元档位，比平价档多一档、比 20 元档更便宜；提供 120GB 流量，容量是 5.6 元档的两倍。优点包括：流量与价格平衡较好；新用户 7 折后实际成本更低；限制与需要注意：知名度相对中等；仅提供常规主流地区节点。"
+  },
+  {
+    "questionId": "q-huanqiuti-features",
+    "questionText": "环球梯怎么样？环球梯有哪些优缺点？",
+    "aliases": [
+      "环球梯评测",
+      "环球梯好用吗",
+      "环球梯优惠码是多少",
+      "环球梯多少钱一个月"
+    ],
+    "entityRefs": [
+      "brand-huanqiuti"
+    ],
+    "category": "brand",
+    "intent": "commercial_investigation",
+    "canonicalUrl": "/brands/huanqiuti/",
+    "sectionId": "pros-and-cons",
+    "answerSummary": "环球梯采用 IEPL专线，起步价格约为 年付折算约 5.6 元/月（年付标准包 60GB/月）。主要特点为：5.6 元/月极限平价方案；IEPL 专线 + VLESS 协议。优点包括：入门门槛极低；多端兼容；限制与需要注意：同质化严重；非常规链接格式需注意。"
+  },
+  {
+    "questionId": "q-yinxingren-features",
+    "questionText": "隐形人怎么样？隐形人有哪些优缺点？",
+    "aliases": [
+      "隐形人评测",
+      "隐形人好用吗",
+      "隐形人优惠码是多少",
+      "隐形人多少钱一个月"
+    ],
+    "entityRefs": [
+      "brand-yinxingren"
+    ],
+    "category": "brand",
+    "intent": "commercial_investigation",
+    "canonicalUrl": "/brands/yinxingren/",
+    "sectionId": "pros-and-cons",
+    "answerSummary": "隐形人采用 企业级IPLC专线、直连骨干网，起步价格约为 年付折算约 9.08 元/月（星耀风暴 109 元/年 80GB/月）。主要特点为：企业级 IPLC 专线直连；自研客户端全平台一键配置。优点包括：IPLC 线路带宽较充裕；客户端UI设计精美、免配置；限制与需要注意：不开放第三方订阅链接；基础月付（24元起）偏高。"
+  },
+  {
+    "questionId": "q-tiziyun-features",
+    "questionText": "梯子云怎么样？梯子云有哪些优缺点？",
+    "aliases": [
+      "梯子云评测",
+      "梯子云好用吗",
+      "梯子云优惠码是多少",
+      "梯子云多少钱一个月"
+    ],
+    "entityRefs": [
+      "brand-tiziyun"
+    ],
+    "category": "brand",
+    "intent": "commercial_investigation",
+    "canonicalUrl": "/brands/tiziyun/",
+    "sectionId": "pros-and-cons",
+    "answerSummary": "梯子云采用 IEPL专线、2Gbps+独立带宽、500Mbps高峰冗余，起步价格约为 年付折算约 7.4 元/月（年付小包约 88.8 元/年 60GB/月）。主要特点为：自研全平台客户端 + 通用订阅双模式；小白用户一键登录连接，零门槛上手。优点包括：兼具专属 App 的易用性与第三方订阅的灵活性；带宽冗余设计扎实；限制与需要注意：2025 年新晋品牌，长期口碑在建立中。"
+  },
+  {
+    "questionId": "q-lingdong-features",
+    "questionText": "灵动云怎么样？灵动云有哪些优缺点？",
+    "aliases": [
+      "灵动云评测",
+      "灵动云好用吗",
+      "灵动云优惠码是多少",
+      "灵动云多少钱一个月"
+    ],
+    "entityRefs": [
+      "brand-lingdong"
+    ],
+    "category": "brand",
+    "intent": "commercial_investigation",
+    "canonicalUrl": "/brands/lingdong/",
+    "sectionId": "pros-and-cons",
+    "answerSummary": "灵动云采用 IEPL专线，起步价格约为 年付折算约 8.25 元/月（穿云年付 99 元/年 70GB/月）。主要特点为：IEPL / VLESS 专线架构；大流量周期档与不限时流量包齐全。优点包括：OpenAI 解锁成功率高；不限时流量包选择多样；限制与需要注意：HTTPS 延迟略偏高；TikTok 解锁成功率较低，台湾部分节点送中或识别为欧洲。"
+  },
+  {
+    "questionId": "q-langwang-features",
+    "questionText": "浪网怎么样？浪网有哪些优缺点？",
+    "aliases": [
+      "浪网评测",
+      "浪网好用吗",
+      "浪网优惠码是多少",
+      "浪网多少钱一个月"
+    ],
+    "entityRefs": [
+      "brand-langwang"
+    ],
+    "category": "brand",
+    "intent": "commercial_investigation",
+    "canonicalUrl": "/brands/langwang/",
+    "sectionId": "pros-and-cons",
+    "answerSummary": "浪网采用 IEPL专线，起步价格约为 年付折算约 9.91 元/月（年付标准 119 元/年 80GB/月）。主要特点为：IEPL 专线定位；入门到商业多层级价格档位。优点包括：流量档位跨度大，最高可达 2000GB/月商业包；限制与需要注意：缺少公开可比实测数据，关键字段部分遮挡。"
+  },
+  {
+    "questionId": "q-edgenova-features",
+    "questionText": "边缘节点 EdgeNova怎么样？边缘节点 EdgeNova有哪些优缺点？",
+    "aliases": [
+      "边缘节点 EdgeNova评测",
+      "边缘节点 EdgeNova好用吗",
+      "边缘节点 EdgeNova优惠码是多少",
+      "边缘节点 EdgeNova多少钱一个月"
+    ],
+    "entityRefs": [
+      "brand-edgenova"
+    ],
+    "category": "brand",
+    "intent": "commercial_investigation",
+    "canonicalUrl": "/brands/edgenova/",
+    "sectionId": "pros-and-cons",
+    "answerSummary": "边缘节点 EdgeNova采用 高速直连、IPLC专线、多线路自动分配，起步价格约为 限时年付折算约 9.0 元/月（限时年付 108 元/年 45GB/月）。主要特点为：高速直连 + IPLC 专线自动路由分配；支持 8 折优惠码 TH888。优点包括：支持新用户 8 折优惠；支付渠道齐全（含微信与 USDT）；限制与需要注意：缺乏公开独立测速记录；解锁状态未有完整第三方验证。"
+  }
+]

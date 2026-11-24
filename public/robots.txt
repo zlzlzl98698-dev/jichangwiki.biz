@@ -1,0 +1,30 @@
+# Robots.txt for https://jichangwiki.biz/
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /search/
+Disallow: /draft/
+
+# Search engine AI bots (Allow search indexing)
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+# Training bots (Controlled access)
+User-agent: GPTBot
+Disallow: /admin/
+Disallow: /search/
+
+User-agent: CCBot
+Disallow: /admin/
+Disallow: /search/
+
+Sitemap: https://jichangwiki.biz/sitemap-index.xml

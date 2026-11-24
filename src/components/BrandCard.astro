@@ -1,0 +1,110 @@
+---
+export interface Props {
+  brand: any;
+}
+
+const { brand } = Astro.props;
+---
+
+<article
+  class="brand-card bg-white rounded-xl border border-brand-border hover:border-blue-400 p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between"
+  data-name={brand.name}
+  data-slug={brand.slug}
+  data-line={brand.networkRefs.join(',')}
+  data-mode={brand.clientMode}
+  data-price={brand.startingMonthlyCny}
+  data-year={brand.foundedYear || 2024}
+>
+  <div>
+    <!-- Top Row: Name, Year, Badge -->
+    <div class="flex items-start justify-between gap-2 mb-2">
+      <div>
+        <div class="flex items-center gap-2">
+          <h3 class="text-lg font-bold text-brand-dark group-hover:text-brand-link">
+            <a href={`/brands/${brand.slug}/`} class="hover:text-brand-link transition-colors">
+              {brand.name}
+            </a>
+          </h3>
+          {brand.isFeaturedPartner && (
+            <span class="px-1.5 py-0.5 text-[10px] font-semibold bg-amber-50 text-amber-700 border border-amber-200 rounded">
+              合作推荐
+            </span>
+          )}
+        </div>
+        <p class="text-xs text-brand-muted mt-0.5">
+          {brand.foundedYear ? `${brand.foundedYear} 年开业运营` : '开业年份待官方复核'} · {brand.clientMode === 'custom_app_only' ? '专属客户端' : '自研与第三方双支持'}
+        </p>
+      </div>
+
+      <!-- Price Tag -->
+      <div class="text-right">
+        <div class="text-xs text-slate-400">起步折算</div>
+        <div class="text-base font-extrabold text-blue-600 data-num">
+          ¥{brand.startingMonthlyCny.toFixed(2)}<span class="text-xs font-normal text-slate-500">/月</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Description -->
+    <p class="text-xs text-slate-600 line-clamp-2 leading-relaxed mb-3">
+      {brand.description}
+    </p>
+
+    <!-- Tags & Protocols -->
+    <div class="flex flex-wrap gap-1.5 mb-3 text-[11px]">
+      {brand.networkRefs.map((net: string) => (
+        <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-medium">
+          {net}
+        </span>
+      ))}
+      {brand.protocolRefs.map((p: string) => (
+        <span class="px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-100 font-mono">
+          {p}
+        </span>
+      ))}
+    </div>
+
+    <!-- Unlocking status badges -->
+    <div class="grid grid-cols-3 gap-1.5 py-2 border-t border-slate-100 text-[11px] mb-3">
+      <div class="flex items-center justify-between px-2 py-1 bg-slate-50 rounded">
+        <span class="text-slate-500">ChatGPT</span>
+        <span class={brand.unlocking.chatgpt === 'supported' ? 'text-emerald-600 font-semibold' : 'text-amber-600 font-semibold'}>
+          {brand.unlocking.chatgpt === 'supported' ? '全解' : '部分'}
+        </span>
+      </div>
+      <div class="flex items-center justify-between px-2 py-1 bg-slate-50 rounded">
+        <span class="text-slate-500">Netflix</span>
+        <span class={brand.unlocking.netflix === 'supported' ? 'text-emerald-600 font-semibold' : 'text-amber-600 font-semibold'}>
+          {brand.unlocking.netflix === 'supported' ? '全解' : '视节点'}
+        </span>
+      </div>
+      <div class="flex items-center justify-between px-2 py-1 bg-slate-50 rounded">
+        <span class="text-slate-500">Claude</span>
+        <span class={brand.unlocking.claude === 'supported' ? 'text-emerald-600 font-semibold' : 'text-slate-400 font-semibold'}>
+          {brand.unlocking.claude === 'supported' ? '支持' : '未测'}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom CTA Row -->
+  <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+    <div class="text-[11px] text-slate-400">
+      {brand.dataStatus === 'historical_record' ? '含历史测试数据' : '商家数据核验中'}
+    </div>
+    <div class="flex items-center gap-2">
+      <a
+        href={`/reviews/${brand.slug}/`}
+        class="px-2.5 py-1 text-slate-600 hover:text-brand-link hover:bg-slate-100 rounded transition-colors"
+      >
+        评测报告
+      </a>
+      <a
+        href={`/brands/${brand.slug}/`}
+        class="px-3 py-1 bg-slate-900 hover:bg-brand-link text-white rounded font-medium transition-colors"
+      >
+        百科档案 →
+      </a>
+    </div>
+  </div>
+</article>

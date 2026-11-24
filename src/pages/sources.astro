@@ -1,0 +1,73 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const breadcrumbs = [
+  { name: '数据来源', href: '/sources/' },
+];
+
+const sources = [
+  {
+    id: 'SRC-001',
+    title: '32 家机场品牌清单与特征汇总表',
+    date: '2026-11-23',
+    type: '服务商公开资料与推广文档汇总',
+    coverage: '28 家主体服务商 + 3 家新增实体，包含起步价格、优惠码、套餐表与历史测速日志。',
+    checksum: 'verified_internal'
+  },
+  {
+    id: 'SRC-002',
+    title: '第三方代理客户端项目大全与下载规范',
+    date: '2026-11-23',
+    type: '开源软件官方 Releases 与文档',
+    coverage: 'Windows、macOS、Android、iOS、Linux、OpenWrt 官方项目仓库与 App Store 正版上架信息。',
+    checksum: 'verified_internal'
+  },
+  {
+    id: 'SRC-003',
+    title: '光速云品牌官方技术档案与套餐明细',
+    date: '2026-11-23',
+    type: '服务商官方套餐表与技术白皮书',
+    coverage: '涵盖轻量版、极速版、定制版、致敬斯诺克永久套餐参数与 IPLC/IEPL 拓扑声明。',
+    checksum: 'verified_internal'
+  },
+  {
+    id: 'SRC-004',
+    title: '网络实验室观测台图表设计规范与指标体系',
+    date: '2026-11-23',
+    type: '网络性能可观测性视觉标准',
+    coverage: '规范测速报告、服务矩阵与拓扑架构的设计逻辑与状态枚举。',
+    checksum: 'verified_internal'
+  }
+];
+---
+
+<BaseLayout
+  title="数据来源与审计索引 - 机场 Wiki"
+  description="机场 Wiki 所有收录品牌、测试记录与技术参数的原始数据来源归档、版本校验与可溯源清单。"
+  breadcrumbs={breadcrumbs}
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <header class="pb-6 border-b border-brand-border">
+      <h1 class="text-3xl font-extrabold text-brand-dark">数据来源与归档清单</h1>
+      <p class="text-xs text-brand-muted mt-1">坚持事实可核验 · 保留原始输入版本</p>
+    </header>
+
+    <div class="space-y-4">
+      {sources.map((s) => (
+        <div class="p-5 rounded-xl border border-slate-200 bg-white shadow-2xs space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="font-mono text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
+              {s.id}
+            </span>
+            <span class="text-xs text-slate-400 font-mono">{s.date}</span>
+          </div>
+          <h2 class="text-base font-bold text-brand-dark">{s.title}</h2>
+          <div class="text-xs text-slate-500">类型：{s.type}</div>
+          <p class="text-xs text-slate-700 leading-relaxed bg-slate-50 p-3 rounded-lg border border-slate-100">
+            {s.coverage}
+          </p>
+        </div>
+      ))}
+    </div>
+  </div>
+</BaseLayout>

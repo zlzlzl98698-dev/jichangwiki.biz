@@ -1,0 +1,155 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BrandCard from '../../components/BrandCard.astro';
+import brands from '../../data/published-brands.json';
+
+const breadcrumbs = [
+  { name: '推荐与比较', href: '/recommend/' },
+];
+
+const comparisons = [
+  {
+    slug: 'guangsu-vs-muguang',
+    brandA: '光速云',
+    brandB: '暮光加速',
+    desc: '2020年老牌双线路架构 VS 2023年BGP智能调度团队多设备方案',
+    url: '/compare/guangsu-vs-muguang/',
+  },
+  {
+    slug: 'feimao-vs-weifeng',
+    brandA: '飞猫云',
+    brandB: '微风网络',
+    desc: '7元档免配置专属客户端 VS 入门级IEPL专线原生IP方案',
+    url: '/compare/feimao-vs-weifeng/',
+  },
+  {
+    slug: 'shandianshu-vs-dalaoyun',
+    brandA: '闪电鼠',
+    brandB: '大佬云',
+    desc: '5.6元/月极限平价专线档两大主流方案横向对照',
+    url: '/compare/shandianshu-vs-dalaoyun/',
+  },
+  {
+    slug: 'firefly-vs-weitu',
+    brandA: 'Firefly',
+    brandB: '唯兔云',
+    desc: 'IPLC 纯物理专线与原生 IP 解锁能力的细致对比',
+    url: '/compare/firefly-vs-weitu/',
+  },
+  {
+    slug: 'yifan-vs-u1s1',
+    brandA: '一翻云',
+    brandB: 'U1S1',
+    desc: '2025年新晋 2Gbps 大带宽专线与住宅原生 IP 特性比对',
+    url: '/compare/yifan-vs-u1s1/',
+  },
+  {
+    slug: 'sogo-vs-yinxingren',
+    brandA: 'SOGO云',
+    brandB: '隐形人',
+    desc: '15国冷门地区覆盖 VS 企业级IPLC晚高峰零卡顿宣传比对',
+    url: '/compare/sogo-vs-yinxingren/',
+  },
+];
+
+// Curated selections based on objective traits
+const stableBrands = brands.filter((b) => b.networkRefs.some((n) => n.includes('专线') || n.includes('IPLC'))).slice(0, 6);
+---
+
+<BaseLayout
+  title="机场推荐与横向比较 (2026) - 靠谱稳定专线、按用途筛选与品牌对照"
+  description="客观中立的机场推荐与两两对比指南：涵盖老牌专线、多设备家庭、高性价比学生档及跨境电商用途，拒绝无依据的绝对化排行宣称。"
+  breadcrumbs={breadcrumbs}
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+    <!-- Header -->
+    <div class="border-b border-brand-border pb-6">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="px-2.5 py-0.5 text-xs font-semibold rounded bg-blue-100 text-blue-800">
+          决策指南 · 拒绝伪科学排名
+        </span>
+        <span class="text-xs text-brand-muted">更新日期：2026-11-24</span>
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-brand-dark tracking-tight">
+        网络加速服务客观推荐与规范横向比较
+      </h1>
+      <p class="text-sm text-brand-muted mt-2 max-w-3xl leading-relaxed">
+        市场上不存在绝对“最稳定、最快”的万能机场。不同服务商在专线冗余、协议选择、客户端易用性及资费梯度上各有权衡。本专题依据经过审计的客观数据，按使用场景分类并提供规范化的两两唯一对比档案。
+      </p>
+    </div>
+
+    <!-- Comparative Section: 1 vs 1 Battles -->
+    <section class="space-y-6">
+      <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+        <div>
+          <h2 class="text-xl font-bold text-brand-dark">核心品牌两两深度对比 (规范唯一 URL)</h2>
+          <p class="text-xs text-brand-muted mt-0.5">只有真实技术与资费差异才能成文，不生成同义换词薄页</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {comparisons.map((c) => (
+          <div class="p-5 rounded-xl border border-brand-border bg-white shadow-xs hover:border-brand-link hover:shadow-md transition-all flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
+                  双雄横向对照
+                </span>
+                <span class="text-[11px] text-slate-400 font-mono">VS</span>
+              </div>
+              <h3 class="text-base font-bold text-brand-dark mb-1.5">
+                <a href={c.url} class="hover:text-brand-link">
+                  {c.brandA} vs {c.brandB}
+                </a>
+              </h3>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                {c.desc}
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100">
+              <a
+                href={c.url}
+                class="text-xs font-semibold text-brand-link hover:underline flex items-center justify-between"
+              >
+                <span>查阅详细对比分析</span>
+                <span>→</span>
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Category 1: High Reliability IEPL / IPLC Dedicated Lines -->
+    <section class="space-y-6">
+      <div class="pb-2 border-b border-slate-200">
+        <h2 class="text-xl font-bold text-brand-dark">综合稳定性优先：老牌 IEPL / IPLC 专线精选</h2>
+        <p class="text-xs text-brand-muted mt-0.5">适合跨境办公、跨国远程协作与主力生产力场景</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {stableBrands.map((b) => (
+          <BrandCard brand={b} />
+        ))}
+      </div>
+    </section>
+
+    <!-- Decision Checklist -->
+    <section class="p-6 rounded-xl border border-blue-200 bg-blue-50/40 text-xs sm:text-sm text-slate-700 leading-relaxed space-y-3">
+      <h3 class="text-base font-bold text-brand-dark">如何根据个人实际场景选择？</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
+        <div class="p-3 bg-white rounded-lg border border-blue-100">
+          <strong class="text-brand-dark block mb-1">小白用户 / 不想折腾：</strong>
+          优先选择支持<strong>官方专属客户端</strong>（如飞猫云、无忧链接、梯子云）的品牌，下载 App 登录即可联网，免除寻找订阅链接和配置规则的烦恼。
+        </div>
+        <div class="p-3 bg-white rounded-lg border border-blue-100">
+          <strong class="text-brand-dark block mb-1">极客 / 软路由 / 多端分流：</strong>
+          必须挑选支持 <strong>Clash / Shadowrocket 第三方通用订阅</strong>（如光速云、微风网络、一翻云）的服务商，以便自定义规则集与 TUN 模式。
+        </div>
+        <div class="p-3 bg-white rounded-lg border border-blue-100">
+          <strong class="text-brand-dark block mb-1">轻度备用 / 预算敏感：</strong>
+          选择 <strong>5.6 元档年付或永久不限时流量包</strong>（如闪电鼠、大佬云），平时不作为主力，在主力线路维护时保障基础通讯。
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

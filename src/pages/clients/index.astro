@@ -1,0 +1,183 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import clients from '../../data/published-clients.json';
+
+const breadcrumbs = [
+  { name: '客户端', href: '/clients/' },
+];
+
+const osCategories = [
+  { id: 'windows', name: 'Windows 电脑', icon: '🪟', count: clients.filter((c) => c.osCategory === 'windows').length },
+  { id: 'android', name: 'Android 安卓', icon: '🤖', count: clients.filter((c) => c.osCategory === 'android').length },
+  { id: 'ios', name: 'iPhone / iPad', icon: '🍎', count: clients.filter((c) => c.osCategory === 'ios').length },
+  { id: 'macos', name: 'macOS 苹果电脑', icon: '💻', count: clients.filter((c) => c.osCategory === 'macos').length },
+  { id: 'linux', name: 'Linux 桌面/服务器', icon: '🐧', count: clients.filter((c) => c.osCategory === 'linux').length },
+  { id: 'router', name: 'OpenWrt / 软路由', icon: '📡', count: clients.filter((c) => c.osCategory === 'router').length },
+];
+---
+
+<BaseLayout
+  title="2026 机场代理客户端大全 - 全平台官方下载地址、内核解析与配置教程"
+  description="收录 Windows、macOS、Android、iOS、Linux、OpenWrt 全平台主流代理客户端：包含 Clash Verge Rev、v2rayN、Shadowrocket、sing-box 等开源与官方正版获取指引。"
+  breadcrumbs={breadcrumbs}
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+    <header class="pb-6 border-b border-brand-border">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="px-2.5 py-0.5 text-xs font-semibold rounded bg-purple-100 text-purple-800">
+          客户端软件档案库
+        </span>
+        <span class="text-xs text-brand-muted">更新日期：2026-11-24</span>
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-brand-dark tracking-tight">
+        2026 机场代理客户端大全与系统选型指南
+      </h1>
+      <p class="text-sm text-brand-muted mt-2 max-w-3xl leading-relaxed">
+        代理客户端是连接网络加速节点与用户本地应用的核心桥梁。主要分为两种模式：<strong>第三方通用客户端</strong>（支持导入 Clash/Shadowrocket 订阅）与<strong>服务商专属客户端</strong>（账号一键登录免配置）。
+      </p>
+    </header>
+
+    <!-- OS Navigation Grid -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+      {osCategories.map((os) => (
+        <a
+          href={`#${os.id}`}
+          class="p-3.5 rounded-xl border border-slate-200 bg-white hover:border-brand-link hover:shadow-xs transition-all text-center block"
+        >
+          <div class="text-2xl mb-1">{os.icon}</div>
+          <div class="font-bold text-xs text-brand-dark">{os.name}</div>
+          <div class="text-[10px] text-slate-400 mt-0.5">{os.count} 款推荐软件</div>
+        </a>
+      ))}
+    </div>
+
+    <!-- Notice on security -->
+    <div class="p-4 rounded-xl border border-rose-200 bg-rose-50/60 text-xs text-rose-900 leading-relaxed">
+      <strong class="font-bold block mb-1">🚨 安全下载原则：</strong>
+      本站所有第三方开源客户端仅提供官方 GitHub Releases 或应用商店正版链接。严禁从不知名第三方网盘下载来路不明的二次打包安装包（部分被恶意植入挖矿或远控木马）。
+    </div>
+
+    <!-- Clients List by OS -->
+    <section class="space-y-12">
+      <!-- Windows Section -->
+      <div id="windows" class="space-y-4">
+        <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+          <h2 class="text-xl font-bold text-brand-dark flex items-center gap-2">
+            <span>🪟</span> Windows 电脑客户端推荐
+          </h2>
+          <a href="/clients/windows/" class="text-xs text-brand-link font-medium hover:underline">
+            进入 Windows 专栏与配置教程 →
+          </a>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {clients.filter((c) => c.osCategory === 'windows').map((client) => (
+            <div class="p-5 rounded-xl border border-slate-200 bg-white shadow-2xs space-y-3 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <h3 class="font-bold text-base text-brand-dark">{client.name}</h3>
+                  <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-100">
+                    {client.coreEngine}
+                  </span>
+                </div>
+                <p class="text-xs text-slate-600 leading-relaxed mb-3">
+                  {client.suitableFor}
+                </p>
+                <div class="space-y-1 text-xs text-slate-500">
+                  {client.features.slice(0, 3).map((f) => (
+                    <div class="flex items-center gap-1.5">
+                      <span class="w-1 h-1 rounded-full bg-slate-400"></span>
+                      <span>{f}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div class="pt-3 border-t border-slate-100 text-xs">
+                {client.repoUrl && (
+                  <a
+                    href={client.repoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-brand-link font-medium hover:underline inline-flex items-center gap-1"
+                  >
+                    <span>官方 GitHub 项目主页</span>
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </a>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- iOS Section -->
+      <div id="ios" class="space-y-4">
+        <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+          <h2 class="text-xl font-bold text-brand-dark flex items-center gap-2">
+            <span>🍎</span> iPhone / iPad 苹果客户端推荐
+          </h2>
+          <a href="/clients/ios/" class="text-xs text-brand-link font-medium hover:underline">
+            进入 iOS 小火箭与 Stash 专栏 →
+          </a>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {clients.filter((c) => c.osCategory === 'ios').map((client) => (
+            <div class="p-5 rounded-xl border border-slate-200 bg-white shadow-2xs space-y-3 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <h3 class="font-bold text-base text-brand-dark">{client.name}</h3>
+                  <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-purple-50 text-purple-700 border border-purple-100">
+                    App Store 付费应用
+                  </span>
+                </div>
+                <p class="text-xs text-slate-600 leading-relaxed mb-3">
+                  {client.suitableFor}
+                </p>
+                <div class="text-xs text-slate-500 space-y-1">
+                  <div><strong>获取方式：</strong>{client.downloadGuide}</div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Android & Router Section -->
+      <div id="android" class="space-y-4">
+        <h2 class="text-xl font-bold text-brand-dark flex items-center gap-2 pb-2 border-b border-slate-200">
+          <span>🤖</span> Android 安卓 & 软路由精选客户端
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {clients.filter((c) => c.osCategory === 'android' || c.osCategory === 'router').map((client) => (
+            <div class="p-5 rounded-xl border border-slate-200 bg-white shadow-2xs space-y-3 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <h3 class="font-bold text-base text-brand-dark">{client.name}</h3>
+                  <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-green-50 text-green-700 border border-green-100">
+                    {client.osCategory === 'router' ? '软路由 / OpenWrt' : 'Android'}
+                  </span>
+                </div>
+                <p class="text-xs text-slate-600 leading-relaxed mb-3">
+                  {client.suitableFor}
+                </p>
+              </div>
+              <div class="pt-3 border-t border-slate-100 text-xs">
+                {client.repoUrl && (
+                  <a
+                    href={client.repoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-brand-link font-medium hover:underline inline-flex items-center gap-1"
+                  >
+                    <span>项目开源地址 →</span>
+                  </a>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

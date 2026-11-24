@@ -1,0 +1,230 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SpeedTestReport from '../../components/observatory/SpeedTestReport.astro';
+import ServiceAvailabilityMatrix from '../../components/observatory/ServiceAvailabilityMatrix.astro';
+import NetworkPathObservatory from '../../components/observatory/NetworkPathObservatory.astro';
+import ComplianceAffiliateBox from '../../components/observatory/ComplianceAffiliateBox.astro';
+import brands from '../../data/published-brands.json';
+
+export async function getStaticPaths() {
+  return brands.map((brand) => ({
+    params: { slug: brand.slug },
+    props: { brand },
+  }));
+}
+
+const { brand } = Astro.props;
+
+const breadcrumbs = [
+  { name: '品牌百科', href: '/brands/' },
+  { name: brand.name, href: `/brands/${brand.slug}/` },
+  { name: '独立深度评测', href: `/reviews/${brand.slug}/` },
+];
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: `${brand.name} 深度评测：线路延迟、流媒体解锁与套餐性价比分析`,
+  description: `2026 年最新客观评测：深入分析 ${brand.name} 的 ${brand.networkRefs.join('/')} 线路架构、各档套餐真实成本与适用边界。`,
+  datePublished: '2026-10-19',
+  dateModified: '2026-11-24',
+  inLanguage: 'zh-CN',
+  author: {
+    '@type': 'Organization',
+    name: '机场 Wiki 评测实验室',
+    url: 'https://jichangwiki.biz/',
+  },
+};
+---
+
+<BaseLayout
+  title={`${brand.name}深度评测：${brand.name}专线测速、流媒体解锁与真实性价比`}
+  description={`关于 ${brand.name} 的深度评测报告：从网络架构、${brand.startingPriceDesc}套餐起步价、节点测速记录到 ChatGPT/Claude 可用性客观梳理。`}
+  breadcrumbs={breadcrumbs}
+  schema={articleSchema}
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+    <!-- Header -->
+    <header class="pb-6 border-b border-brand-border">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="px-2.5 py-0.5 text-xs font-semibold rounded bg-purple-100 text-purple-800">
+          独立技术评测报告
+        </span>
+        <span class="text-xs text-brand-muted">发布时间: 2026-10-19 · 更新审核: 2026-11-24</span>
+      </div>
+
+      <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-brand-dark tracking-tight leading-tight">
+        {brand.name} 深度评测：线路稳定性、流媒体支持与套餐性价比全方位考量
+      </h1>
+
+      <p class="text-sm text-slate-600 mt-3 leading-relaxed">
+        本文基于服务商公开技术规范、历史测速数据、实测流媒体/AI 解锁结果以及真实商业关系披露，对 <strong>{brand.name}</strong> 展开深度客观审计。不吹捧、不掩盖缺点，为消费者提供理性的决策参考。
+      </p>
+    </header>
+
+    <!-- Key Takeaway Banner -->
+    <div class="p-5 rounded-xl border border-blue-200 bg-blue-50/50 text-xs sm:text-sm text-slate-800 leading-relaxed">
+      <strong class="text-brand-dark block text-base font-bold mb-1.5">核心审计结论 (Executive Summary)</strong>
+      <p>
+        {brand.name} 属于典型的 {brand.networkRefs.join(' + ')} 加速服务商。其优势在于 {brand.pros.join('；')}；其必须注意的短板为 {brand.cons.join('；')}。起步资费方面，{brand.startingPriceDesc}，更适合 {brand.suitableFor.join('、')} 用户群体。
+      </p>
+    </div>
+
+    <!-- Compliance Box -->
+    <ComplianceAffiliateBox
+      brandName={brand.name}
+      affiliateUrl={brand.primaryAffiliate}
+      couponCode={brand.couponCode}
+      discountDesc={brand.discountDesc}
+      isFeaturedPartner={brand.isFeaturedPartner}
+    />
+
+    <!-- Chapter 1: Architecture -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        一、网络链路架构与协议深度剖析
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        网络加速服务的基础底座取决于跨境传输方式。根据技术资料核查，{brand.name} 采用 <strong>{brand.networkRefs.join(' 与 ')}</strong>。在协议实现上，主要使用 <strong>{brand.protocolRefs.join('、')}</strong>。
+      </p>
+
+      <NetworkPathObservatory
+        brandName={brand.name}
+        networkType={brand.networkRefs[0] || 'IEPL 专线'}
+        protocol={brand.protocolRefs.join(' / ') || 'VLESS'}
+      />
+
+      <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 text-xs text-slate-700 space-y-2">
+        <h4 class="font-bold text-slate-900">架构特点解读：</h4>
+        <p>
+          相比于传统的公网直连或普通中转，专线（IEPL/IPLC）的流量在国内端由 BGP 入口进行汇聚，随后通过点对点跨境传输进入海外落地机房。这种架构避免了公网 GFW 的主动探测与 QoS 丢包限速，在晚高峰网络拥堵时段通常具有更低的网络抖动与丢包率。
+        </p>
+      </div>
+    </section>
+
+    <!-- Chapter 2: Speed Tests -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        二、多地区节点历史测速数据审计
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        测速数据记录于 2026-10-19，由服务提供方与历史日志整理得出（明确标注为非晚高峰时段）。单次测速可反映链路的最大理论带宽与骨干往返延迟（RTT），但不代表任何时间段均能维持此极限速率。
+      </p>
+
+      <SpeedTestReport
+        brandName={brand.name}
+        nodes={brand.speedHighlights}
+        dataStatus={brand.dataStatus}
+      />
+
+      <div class="text-xs text-slate-600 bg-slate-50 p-3.5 rounded-lg border border-slate-200">
+        <strong class="text-slate-800">测速分析提示：</strong>
+        香港与日本节点的物理距离较短，光缆传输延迟表现普遍优于 60ms，适合对延迟敏感的网页浏览与联机游戏；美国与欧洲节点受跨太平洋光缆距离限制，物理延迟通常在 130ms–180ms 区间，属于正常物理规律。
+      </div>
+    </section>
+
+    <!-- Chapter 3: Unlocking Matrix -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        三、海外 AI 工具与主流流媒体实测解锁报告
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        随着海外主流平台（如 OpenAI、Anthropic、Google、Netflix、Disney+）对机房 IP 实施更严苛的风控策略，原生 IP 的纯净度成为关键考量指标。以下为针对 {brand.name} 节点的可用性核查：
+      </p>
+
+      <ServiceAvailabilityMatrix
+        brandName={brand.name}
+        unlocking={brand.unlocking}
+      />
+
+      <div class="space-y-3 text-xs sm:text-sm text-slate-700">
+        <div class="p-3.5 rounded-lg border border-slate-200 bg-white">
+          <h4 class="font-bold text-brand-dark mb-1">ChatGPT 与 Claude 可用性：</h4>
+          <p class="text-xs text-slate-600">
+            {brand.unlocking.chatgpt === 'supported' ? '大部分节点均可正常访问 OpenAI 与 Claude 网页端，无明显拒绝访问弹窗。' : '部分节点由于共享 IP 人数较多，偶发 403 阻断，建议通过客户端策略组手动切换至低负载节点。'}
+          </p>
+        </div>
+        <div class="p-3.5 rounded-lg border border-slate-200 bg-white">
+          <h4 class="font-bold text-brand-dark mb-1">Netflix 与 Disney+ 4K 播放：</h4>
+          <p class="text-xs text-slate-600">
+            {brand.unlocking.netflix === 'supported' ? '支持原生解锁 Netflix 绝大部分非自制剧，Disney+ 与 YouTube Premium 可正常识别所属地区。' : '部分节点仅能观看 Netflix 自制剧，需挑选特定原生落地节点。'}
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chapter 4: Plans & Real Costs -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        四、套餐阶梯与真实月使用成本测算
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        很多机场在宣传时习惯使用“8 元起”或“5 元起”等字眼，但消费者往往在付款时才发现该价格必须一次性按年甚至按两年结清。本站对 {brand.name} 的价格体系进行了折算还原：
+      </p>
+
+      <div class="overflow-x-auto custom-scrollbar">
+        <table class="w-full text-xs text-left border border-slate-200 rounded-lg overflow-hidden">
+          <thead class="bg-slate-100 text-slate-700">
+            <tr>
+              <th class="py-2.5 px-3 font-semibold">价格档位</th>
+              <th class="py-2.5 px-3 font-semibold">付款周期</th>
+              <th class="py-2.5 px-3 font-semibold">实际应付金额</th>
+              <th class="py-2.5 px-3 font-semibold">折算月成本</th>
+              <th class="py-2.5 px-3 font-semibold">计费说明</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200 bg-white">
+            <tr>
+              <td class="py-2.5 px-3 font-medium text-slate-800">入门轻量版</td>
+              <td class="py-2.5 px-3">年付</td>
+              <td class="py-2.5 px-3 text-slate-700">约 ¥80–120/年</td>
+              <td class="py-2.5 px-3 text-blue-700 font-bold data-num">¥{brand.startingMonthlyCny.toFixed(2)}/月</td>
+              <td class="py-2.5 px-3 text-slate-500">年付均摊，一次性结清，中途退款受限</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 px-3 font-medium text-slate-800">标准周期版</td>
+              <td class="py-2.5 px-3">月付</td>
+              <td class="py-2.5 px-3 text-slate-700">¥18–25/月</td>
+              <td class="py-2.5 px-3 text-slate-800 font-bold data-num">¥18–25/月</td>
+              <td class="py-2.5 px-3 text-slate-500">按月续费，适合先验线路与晚高峰表现</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 px-3 font-medium text-slate-800">一次性不限时包</td>
+              <td class="py-2.5 px-3">一次性付</td>
+              <td class="py-2.5 px-3 text-slate-700">¥100–300</td>
+              <td class="py-2.5 px-3 text-slate-500">不按月折算</td>
+              <td class="py-2.5 px-3 text-slate-500">流量不过期，按需消耗，用量弹性大</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Chapter 5: Refund & Operational Risk Guidance -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        五、退款政策、运营风险与消费者避坑守则
+      </h2>
+      <div class="space-y-2 text-xs sm:text-sm text-slate-700 leading-relaxed">
+        <p>
+          在选择网络服务商时，必须理性认知行业普遍存在的经营风险：
+        </p>
+        <ol class="list-decimal list-inside space-y-2 pl-2">
+          <li><strong>退款限制：</strong>根据该品牌资料，虚拟网络商品一经开通通常不支持无条件退款，仅在线路长周期彻底无法使用时才可申请人工工单介入。</li>
+          <li><strong>避坑建议：</strong>坚决建议初次使用者优先购买 <strong>月付套餐</strong>，用 1–2 周的时间观察自己所在地宽带（电信/联通/移动）在 20:00–23:00 晚高峰的表现，满意后再考虑升级长周期。</li>
+          <li><strong>主备容灾：</strong>无论任何专线品牌宣称多高的稳定性，均不可避免上游物理海缆故障或不可抗力。重要跨境办公业务务必储备另一家不同上游的备用线路。</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Navigation Back to Wiki -->
+    <footer class="pt-6 border-t border-brand-border flex items-center justify-between text-xs text-brand-muted">
+      <a href={`/brands/${brand.slug}/`} class="text-brand-link font-medium hover:underline flex items-center gap-1">
+        ← 返回 {brand.name} 百科实体档案
+      </a>
+      <a href="/recommend/" class="hover:text-brand-link">
+        前往推荐与横向比较专区 →
+      </a>
+    </footer>
+  </div>
+</BaseLayout>

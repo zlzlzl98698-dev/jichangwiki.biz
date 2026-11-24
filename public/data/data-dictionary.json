@@ -1,0 +1,18 @@
+{
+  "version": "1.0.0",
+  "updatedAt": "2026-11-24",
+  "fields": {
+    "id": "持久化实体唯一标识符 (Persistent Entity ID)",
+    "name": "服务商品牌名称 (Brand Display Name)",
+    "slug": "标准 URL 路由标识 (Normalized URL Slug)",
+    "foundedYear": "成立与开业年份（经资料审计）",
+    "clientMode": "客户端支持模式：dual (双支持) / custom_app_only (仅专属App)",
+    "networkRefs": "核心传输线路类型（如 IEPL专线、IPLC专线、BGP优化）",
+    "protocolRefs": "支持的底层协议（如 VLESS, Trojan, Shadowsocks, Hysteria 2）",
+    "startingMonthlyCny": "经审计换算的标准每月起步人民币折算费用",
+    "startingPriceDesc": "起步计费方式原文描述（明确区分年付均摊与标准月付）",
+    "speedHighlights": "核心枢纽地区（港/台/日/新/美）单次测速记录",
+    "unlocking": "ChatGPT、Claude、Netflix 等主流服务可用性状态",
+    "dataStatus": "数据可靠性状态：vendor_claim (商家自称) / historical_record (历史日志) / independently_verified (独立验证)"
+  }
+}

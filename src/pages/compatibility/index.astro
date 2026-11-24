@@ -1,0 +1,134 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ServiceAvailabilityMatrix from '../../components/observatory/ServiceAvailabilityMatrix.astro';
+import brands from '../../data/published-brands.json';
+
+const breadcrumbs = [
+  { name: 'AI 与流媒体', href: '/compatibility/' },
+];
+
+const featuredBrand = brands.find((b) => b.isFeaturedPartner) || brands[0];
+---
+
+<BaseLayout
+  title="AI 与海外流媒体兼容性矩阵 (2026) - ChatGPT、Claude、Gemini、Netflix 可用性核查"
+  description="客观呈现各大网络加速品牌对 ChatGPT、Claude、Gemini、Netflix、Disney+、YouTube 的实际解锁状态、节点地区选择与平台风控应对策略。"
+  breadcrumbs={breadcrumbs}
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+    <header class="pb-6 border-b border-brand-border">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="px-2.5 py-0.5 text-xs font-semibold rounded bg-indigo-100 text-indigo-800">
+          服务可用性矩阵
+        </span>
+        <span class="text-xs text-brand-muted">更新日期：2026-11-24</span>
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-brand-dark tracking-tight">
+        AI 与流媒体服务可用性测试矩阵与合规诊断
+      </h1>
+      <p class="text-sm text-brand-muted mt-2 max-w-3xl leading-relaxed">
+        海外 AI 平台与流媒体服务对数据中心机房 IP 实施了持续更新的风控策略。本专题强调服务商官方支持地区、账号真实状态与网络环境适配，不承诺任何违反平台服务条款的突破限制行为。
+      </p>
+    </header>
+
+    <!-- Subpage Callout -->
+    <div class="p-5 rounded-xl border border-blue-200 bg-blue-50/50 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div>
+        <h3 class="font-bold text-base text-brand-dark">专题指南：ChatGPT / Claude / Gemini 报错诊断</h3>
+        <p class="text-xs text-slate-600 mt-1">遇到 Access Denied、403 Forbidden 或“Not available in your country”时的系统排查与规则分流方案。</p>
+      </div>
+      <a
+        href="/compatibility/chatgpt-claude-gemini/"
+        class="px-4 py-2 rounded-lg bg-brand-link hover:bg-blue-700 text-white font-medium text-xs transition-colors shrink-0"
+      >
+        阅读排查专题 →
+      </a>
+    </div>
+
+    <!-- Live Matrix Observatory -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        代表性服务商实测矩阵示例 (Dark Network Observatory)
+      </h2>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <ServiceAvailabilityMatrix
+          brandName={`${featuredBrand.name} (主档案实测)`}
+          unlocking={featuredBrand.unlocking}
+        />
+        <ServiceAvailabilityMatrix
+          brandName="飞猫云 (专属客户端模式)"
+          unlocking={brands.find((b) => b.slug === 'feimao')?.unlocking || featuredBrand.unlocking}
+        />
+      </div>
+    </section>
+
+    <!-- 31 Brands Comparison Table for AI & Media -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        全站 31 家服务商 AI 与流媒体支持状态总表
+      </h2>
+      <div class="overflow-x-auto custom-scrollbar">
+        <table class="w-full text-xs text-left border border-slate-200 rounded-xl overflow-hidden shadow-2xs">
+          <thead class="bg-slate-100 text-slate-800">
+            <tr>
+              <th class="py-3 px-3 font-semibold">品牌</th>
+              <th class="py-3 px-3 font-semibold">ChatGPT</th>
+              <th class="py-3 px-3 font-semibold">Claude</th>
+              <th class="py-3 px-3 font-semibold">Gemini</th>
+              <th class="py-3 px-3 font-semibold">Netflix</th>
+              <th class="py-3 px-3 font-semibold">Disney+</th>
+              <th class="py-3 px-3 font-semibold">YouTube 4K</th>
+              <th class="py-3 px-3 font-semibold">TikTok</th>
+              <th class="py-3 px-3 font-semibold text-right">档案</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200 bg-white">
+            {brands.map((b) => (
+              <tr class="hover:bg-slate-50 transition-colors">
+                <td class="py-3 px-3 font-bold text-brand-dark">{b.name}</td>
+                <td class="py-3 px-3 font-medium">
+                  <span class={b.unlocking.chatgpt === 'supported' ? 'text-emerald-600' : b.unlocking.chatgpt === 'partial' ? 'text-amber-600' : 'text-slate-400'}>
+                    {b.unlocking.chatgpt === 'supported' ? '支持' : b.unlocking.chatgpt === 'partial' ? '视节点' : '未测'}
+                  </span>
+                </td>
+                <td class="py-3 px-3 font-medium">
+                  <span class={b.unlocking.claude === 'supported' ? 'text-emerald-600' : b.unlocking.claude === 'partial' ? 'text-amber-600' : 'text-slate-400'}>
+                    {b.unlocking.claude === 'supported' ? '支持' : b.unlocking.claude === 'partial' ? '视节点' : '未测'}
+                  </span>
+                </td>
+                <td class="py-3 px-3 font-medium">
+                  <span class={b.unlocking.gemini === 'supported' ? 'text-emerald-600' : b.unlocking.gemini === 'partial' ? 'text-amber-600' : 'text-slate-400'}>
+                    {b.unlocking.gemini === 'supported' ? '支持' : b.unlocking.gemini === 'partial' ? '视节点' : '未测'}
+                  </span>
+                </td>
+                <td class="py-3 px-3 font-medium">
+                  <span class={b.unlocking.netflix === 'supported' ? 'text-emerald-600' : b.unlocking.netflix === 'partial' ? 'text-amber-600' : 'text-slate-400'}>
+                    {b.unlocking.netflix === 'supported' ? '原生全解' : b.unlocking.netflix === 'partial' ? '部分' : '未测'}
+                  </span>
+                </td>
+                <td class="py-3 px-3 font-medium">
+                  <span class={b.unlocking.disney === 'supported' ? 'text-emerald-600' : b.unlocking.disney === 'partial' ? 'text-amber-600' : 'text-slate-400'}>
+                    {b.unlocking.disney === 'supported' ? '支持' : b.unlocking.disney === 'partial' ? '部分' : '未测'}
+                  </span>
+                </td>
+                <td class="py-3 px-3 font-medium text-emerald-600">
+                  {b.unlocking.youtube === 'supported' ? '4K 稳定' : '基本'}
+                </td>
+                <td class="py-3 px-3 font-medium">
+                  <span class={b.unlocking.tiktok === 'supported' ? 'text-emerald-600' : b.unlocking.tiktok === 'partial' ? 'text-amber-600' : 'text-slate-400'}>
+                    {b.unlocking.tiktok === 'supported' ? '支持' : b.unlocking.tiktok === 'partial' ? '视节点' : '未测'}
+                  </span>
+                </td>
+                <td class="py-3 px-3 text-right">
+                  <a href={`/brands/${b.slug}/`} class="text-brand-link hover:underline">
+                    详情 →
+                  </a>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

@@ -1,0 +1,145 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import questions from '../../../data/questions.json';
+
+const breadcrumbs = [
+  { name: 'GEO 问答', href: '/questions/' },
+];
+
+const categories = [
+  { id: 'all', name: '全部问答' },
+  { id: 'brand', name: '品牌与实体' },
+  { id: 'plan', name: '套餐与价格' },
+  { id: 'network', name: '网络技术' },
+  { id: 'client', name: '客户端软件' },
+  { id: 'compatibility', name: 'AI与流媒体' },
+  { id: 'risk', name: '风险与退款' },
+  { id: 'guide', name: '排障与教程' },
+];
+
+// FAQPage schema for core questions
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: questions.slice(0, 15).map((q) => ({
+    '@type': 'Question',
+    name: q.questionText,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: q.answerSummary,
+    },
+  })),
+};
+---
+
+<BaseLayout
+  title="GEO 问答知识库 (2026) - 网络加速长尾问题意图聚合与可溯源答案"
+  description="收录网络加速、IEPL 专线、客户端配置、ChatGPT 访问排障等高频长尾问题，提供意图聚合答案与准确章节溯源，杜绝批量换词薄页。"
+  breadcrumbs={breadcrumbs}
+  schema={faqSchema}
+>
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+    <header class="pb-6 border-b border-brand-border">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="px-2.5 py-0.5 text-xs font-semibold rounded bg-blue-100 text-blue-800">
+          GEO 意图聚合系统
+        </span>
+        <span class="text-xs text-brand-muted">共聚合 {questions.length} 个标准化问答</span>
+      </div>
+
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-brand-dark tracking-tight leading-tight">
+        GEO 问答知识库：高频搜索意图与权威解答索引
+      </h1>
+
+      <p class="text-xs sm:text-sm text-slate-600 mt-3 leading-relaxed">
+        面对 Google、Bing 与生成式 AI 搜索的语义理解要求，本知识库采用“一个搜索意图一个规范主 URL”的设计原则。将用户的同义、近义长尾提问聚合并直接关联至对应的技术正文锚点。
+      </p>
+    </header>
+
+    <!-- Category Pills -->
+    <div class="flex flex-wrap gap-2 pb-2">
+      {categories.map((c) => (
+        <button
+          type="button"
+          class:list={[
+            'q-category-btn px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors',
+            c.id === 'all'
+              ? 'bg-brand-dark text-white border-brand-dark'
+              : 'bg-white text-slate-700 border-slate-200 hover:border-slate-400',
+          ]}
+          data-category={c.id}
+        >
+          {c.name}
+        </button>
+      ))}
+    </div>
+
+    <!-- Questions Accordion / List -->
+    <div class="space-y-4" id="questions-list">
+      {questions.map((q) => (
+        <article
+          class="question-item p-5 rounded-xl border border-slate-200 bg-white shadow-2xs space-y-2 hover:border-blue-300 transition-colors"
+          data-category={q.category}
+        >
+          <div class="flex items-start justify-between gap-3">
+            <h2 class="text-base font-bold text-brand-dark">
+              {q.questionText}
+            </h2>
+            <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-slate-100 text-slate-500 shrink-0">
+              {q.category}
+            </span>
+          </div>
+
+          <p class="text-xs sm:text-sm text-slate-700 leading-relaxed bg-slate-50 p-3.5 rounded-lg border border-slate-100">
+            {q.answerSummary}
+          </p>
+
+          <div class="flex flex-wrap items-center justify-between text-xs text-slate-400 pt-2 border-t border-slate-100">
+            <div class="text-[11px]">
+              {q.aliases && q.aliases.length > 0 && (
+                <span>同义问法：{q.aliases.join(' / ')}</span>
+              )}
+            </div>
+            {q.canonicalUrl && (
+              <a
+                href={q.canonicalUrl}
+                class="text-brand-link font-medium hover:underline inline-flex items-center gap-1"
+              >
+                <span>查阅规范正文章节</span>
+                <span>→</span>
+              </a>
+            )}
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  const buttons = document.querySelectorAll('.q-category-btn');
+  const items = document.querySelectorAll('.question-item');
+
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const cat = btn.getAttribute('data-category');
+
+      buttons.forEach((b) => {
+        b.classList.remove('bg-brand-dark', 'text-white', 'border-brand-dark');
+        b.classList.add('bg-white', 'text-slate-700', 'border-slate-200');
+      });
+      btn.classList.remove('bg-white', 'text-slate-700', 'border-slate-200');
+      btn.classList.add('bg-brand-dark', 'text-white', 'border-brand-dark');
+
+      items.forEach((item) => {
+        const itemEl = item as HTMLElement;
+        const itemCat = itemEl.getAttribute('data-category');
+        if (cat === 'all' || itemCat === cat) {
+          itemEl.style.display = 'block';
+        } else {
+          itemEl.style.display = 'none';
+        }
+      });
+    });
+  });
+</script>

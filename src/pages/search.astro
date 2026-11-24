@@ -1,0 +1,126 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import brands from '../data/published-brands.json';
+import questions from '../../data/questions.json';
+
+const breadcrumbs = [
+  { name: '站内检索', href: '/search/' },
+];
+---
+
+<BaseLayout
+  title="站内全文检索 - 机场 Wiki"
+  description="快速搜索 31 家品牌实体、网络技术专题、客户端教程与 GEO 长尾问答。"
+  breadcrumbs={breadcrumbs}
+  noindex={true}
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <header class="pb-6 border-b border-brand-border">
+      <h1 class="text-3xl font-extrabold text-brand-dark">百科全文检索</h1>
+      <p class="text-xs text-brand-muted mt-1">支持中文分词、品牌别名、英文协议与长尾意图查询</p>
+    </header>
+
+    <!-- Fallback Search Input -->
+    <div class="space-y-4">
+      <div class="relative">
+        <input
+          type="search"
+          id="pagefind-fallback-search"
+          placeholder="输入关键词进行实时检索 (例如: 光速云, IEPL, VLESS, ChatGPT, 节点超时)..."
+          class="w-full pl-10 pr-4 py-3 text-sm border-2 border-brand-dark/20 rounded-xl focus:outline-hidden focus:border-brand-link"
+        />
+        <svg class="w-5 h-5 text-slate-400 absolute left-3.5 top-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </div>
+
+      <!-- Live Search Results Container -->
+      <div id="search-results-area" class="space-y-3 pt-2">
+        <div id="search-placeholder" class="text-xs text-slate-400 text-center py-8">
+          输入关键词即可开始搜索，支持品牌中英文名、协议类型及排障问答。
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<script define:vars={{ brands, questions }}>
+  const input = document.getElementById('pagefind-fallback-search');
+  const resultsContainer = document.getElementById('search-results-area');
+  const placeholder = document.getElementById('search-placeholder');
+
+  // Check URL params for ?q=
+  const urlParams = new URLSearchParams(window.location.search);
+  const initialQuery = urlParams.get('q');
+  if (initialQuery && input) {
+    input.value = initialQuery;
+    performSearch(initialQuery);
+  }
+
+  input?.addEventListener('input', (e) => {
+    const q = e.target.value.trim().toLowerCase();
+    performSearch(q);
+  });
+
+  function performSearch(q) {
+    if (!q) {
+      if (resultsContainer && placeholder) {
+        resultsContainer.innerHTML = '';
+        resultsContainer.appendChild(placeholder);
+      }
+      return;
+    }
+
+    const matchedBrands = brands.filter(b => 
+      b.name.toLowerCase().includes(q) ||
+      b.slug.toLowerCase().includes(q) ||
+      b.description.toLowerCase().includes(q) ||
+      b.networkRefs.some(n => n.toLowerCase().includes(q)) ||
+      b.protocolRefs.some(p => p.toLowerCase().includes(q))
+    );
+
+    const matchedQuestions = questions.filter(item => 
+      item.questionText.toLowerCase().includes(q) ||
+      item.answerSummary.toLowerCase().includes(q) ||
+      (item.aliases && item.aliases.some(a => a.toLowerCase().includes(q)))
+    );
+
+    let html = '';
+
+    if (matchedBrands.length === 0 && matchedQuestions.length === 0) {
+      html = `<div class="p-6 text-center text-xs text-slate-500 bg-slate-50 rounded-xl border border-slate-200">
+        未找到与 "<strong>${q}</strong>" 相关的品牌或问答。建议尝试检索更简短的核心词（如 IEPL、VLESS、光速云）。
+      </div>`;
+    } else {
+      if (matchedBrands.length > 0) {
+        html += `<div class="mb-4"><h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">匹配品牌实体 (${matchedBrands.length})</h3><div class="space-y-2">`;
+        matchedBrands.forEach(b => {
+          html += `<div class="p-4 rounded-lg border border-slate-200 bg-white hover:border-brand-link transition-colors">
+            <div class="flex items-center justify-between">
+              <a href="/brands/${b.slug}/" class="font-bold text-sm text-brand-dark hover:text-brand-link">${b.name}</a>
+              <span class="text-xs text-blue-600 font-bold">¥${b.startingMonthlyCny.toFixed(1)}/月起</span>
+            </div>
+            <p class="text-xs text-slate-600 mt-1 line-clamp-1">${b.description}</p>
+          </div>`;
+        });
+        html += `</div></div>`;
+      }
+
+      if (matchedQuestions.length > 0) {
+        html += `<div><h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">匹配知识问答 (${matchedQuestions.length})</h3><div class="space-y-2">`;
+        matchedQuestions.forEach(item => {
+          html += `<div class="p-4 rounded-lg border border-slate-200 bg-white">
+            <h4 class="font-bold text-xs text-brand-dark mb-1">${item.questionText}</h4>
+            <p class="text-xs text-slate-600 line-clamp-2">${item.answerSummary}</p>
+            ${item.canonicalUrl ? `<a href="${item.canonicalUrl}" class="text-[11px] text-brand-link hover:underline mt-1 inline-block">查阅正文章节 →</a>` : ''}
+          </div>`;
+        });
+        html += `</div></div>`;
+      }
+    }
+
+    if (resultsContainer) {
+      resultsContainer.innerHTML = html;
+    }
+  }
+</script>

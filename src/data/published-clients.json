@@ -1,0 +1,193 @@
+[
+  {
+    "clientId": "client-clash-verge-rev",
+    "name": "Clash Verge Rev",
+    "slug": "clash-verge-rev",
+    "osCategory": "windows",
+    "coreEngine": "Mihomo (Clash Meta)",
+    "isOpenSource": true,
+    "license": "GPL-3.0",
+    "repoUrl": "https://github.com/clash-verge-rev/clash-verge-rev",
+    "downloadGuide": "访问 GitHub Releases 页面，下载 x64 或 arm64 安装包（.exe / .msi）进行安装。首次运行建议开启 TUN 模式并在设置中开启系统代理。",
+    "features": [
+      "Mihomo 内核支持",
+      "订阅自动更新与合并",
+      "规则分流与策略组",
+      "一键 TUN 虚拟网卡代理",
+      "现代浅色/深色主题"
+    ],
+    "suitableFor": "Windows 平台目前最受推荐的现代化客户端，兼顾新手开箱即用与高级玩家规则定制需求。",
+    "maintenanceStatus": "active"
+  },
+  {
+    "clientId": "client-v2rayn",
+    "name": "v2rayN",
+    "slug": "v2rayn",
+    "osCategory": "windows",
+    "coreEngine": "Xray / sing-box / Mihomo",
+    "isOpenSource": true,
+    "license": "GPL-3.0",
+    "repoUrl": "https://github.com/2dust/v2rayN",
+    "downloadGuide": "下载 Releases 中带有 Core 的压缩包（如 v2rayN-With-Core.zip），解压后运行 v2rayN.exe。支持剪贴板批量导入节点或订阅链接。",
+    "features": [
+      "支持 Xray、sing-box、V2Ray 等多核心切换",
+      "批量测速与延迟测试",
+      "支持 VLESS、VMess、Trojan、Shadowsocks、Hysteria 2 全协议",
+      "路由高级分流规则"
+    ],
+    "suitableFor": "需要精细化测试大量节点速度、多协议切换管理的技术用户与网络折腾玩家。",
+    "maintenanceStatus": "active"
+  },
+  {
+    "clientId": "client-flclash-win",
+    "name": "FlClash (Windows)",
+    "slug": "flclash-windows",
+    "osCategory": "windows",
+    "coreEngine": "Mihomo",
+    "isOpenSource": true,
+    "license": "GPL-3.0",
+    "repoUrl": "https://github.com/chen08209/FlClash",
+    "downloadGuide": "从 GitHub Releases 下载 Windows 安装包或免安装压缩包。界面使用 Flutter 开发，多平台操作逻辑统一。",
+    "features": [
+      "基于 Flutter 现代简洁 UI",
+      "Mihomo 内核",
+      "多平台统一体验",
+      "规则管理与一键切换"
+    ],
+    "suitableFor": "喜欢极简审美、不希望界面有过多复杂技术参数的日常用户。",
+    "maintenanceStatus": "active"
+  },
+  {
+    "clientId": "client-v2rayng",
+    "name": "v2rayNG",
+    "slug": "v2rayng",
+    "osCategory": "android",
+    "coreEngine": "Xray",
+    "isOpenSource": true,
+    "license": "GPL-3.0",
+    "repoUrl": "https://github.com/2dust/v2rayNG",
+    "downloadGuide": "通过 GitHub Releases 下载对应 CPU 架构（通常为 arm64-v8a）的 APK 文件安装。避免从非官方第三方应用商店下载被篡改版本。",
+    "features": [
+      "Xray 核心支持",
+      "订阅导入与节点批量延迟测速",
+      "分应用代理（绕过大陆应用）",
+      "自建节点与机场订阅兼容良好"
+    ],
+    "suitableFor": "安卓系统最经典可靠的基础代理客户端，省电稳定，适合所有安卓用户。",
+    "maintenanceStatus": "active"
+  },
+  {
+    "clientId": "client-clash-meta-android",
+    "name": "Clash Meta for Android (CMFA)",
+    "slug": "clash-meta-android",
+    "osCategory": "android",
+    "coreEngine": "Mihomo",
+    "isOpenSource": true,
+    "license": "GPL-3.0",
+    "repoUrl": "https://github.com/MetaCubeX/ClashMetaForAndroid",
+    "downloadGuide": "从 MetaCubeX 项目 Releases 下载通用或 arm64 架构 APK 安装。支持导入标准 Clash YAML 订阅。",
+    "features": [
+      "完整支持 Mihomo 内核特性",
+      "策略组节点切换直观",
+      "支持高级分流规则",
+      "深色暗夜模式"
+    ],
+    "suitableFor": "习惯 Clash 策略组选择、需要在手机上精细控制流媒体与 AI 分流的进阶用户。",
+    "maintenanceStatus": "active"
+  },
+  {
+    "clientId": "client-shadowrocket",
+    "name": "Shadowrocket",
+    "slug": "shadowrocket",
+    "osCategory": "ios",
+    "coreEngine": "自研多协议引擎",
+    "isOpenSource": false,
+    "license": "Commercial",
+    "repoUrl": null,
+    "downloadGuide": "需要登录非中国大陆区 Apple ID（如美区、港区），在 App Store 搜索购买下载（官方售价约 2.99 美元）。认准开发者为 Shadow Launch Technology Limited。",
+    "features": [
+      "全协议兼容（Shadowsocks, VMess, VLESS, Trojan, Hysteria 2）",
+      "节点订阅与智能分流配置",
+      "场景切换与按网络自动化",
+      "请求抓包与网络测速工具"
+    ],
+    "suitableFor": "iOS 端首推的综合型代理神器，性价比极高，功能全面且长年积极维护。",
+    "maintenanceStatus": "active"
+  },
+  {
+    "clientId": "client-stash",
+    "name": "Stash",
+    "slug": "stash",
+    "osCategory": "ios",
+    "coreEngine": "Clash 核心引擎",
+    "isOpenSource": false,
+    "license": "Commercial",
+    "repoUrl": null,
+    "downloadGuide": "登录外区 App Store 搜索 Stash 购买下载（售价约 3.99 美元）。可无缝导入 Clash 订阅链接。",
+    "features": [
+      "iOS 平台最佳 Clash 规则体验",
+      "策略组覆盖与覆写配置",
+      "按需连接与按 SSID 规则",
+      "支持 JavaScript 脚本控制与覆写"
+    ],
+    "suitableFor": "在 PC 端熟悉 Clash 配置、希望在 iPhone 和 iPad 上延续相同分流策略的用户。",
+    "maintenanceStatus": "active"
+  },
+  {
+    "clientId": "client-clash-verge-rev-mac",
+    "name": "Clash Verge Rev (macOS)",
+    "slug": "clash-verge-rev-mac",
+    "osCategory": "macos",
+    "coreEngine": "Mihomo",
+    "isOpenSource": true,
+    "license": "GPL-3.0",
+    "repoUrl": "https://github.com/clash-verge-rev/clash-verge-rev",
+    "downloadGuide": "根据芯片架构下载：Apple Silicon 芯片（M1/M2/M3/M4）下载 aarch64.dmg，Intel 芯片下载 x64.dmg。首次启动若提示未签名，请在系统隐私与安全性中允许打开。",
+    "features": [
+      "原生支持 Apple Silicon",
+      "TUN 模式全局接管",
+      "支持系统级暗黑模式",
+      "支持 Mihomo 规则集配置"
+    ],
+    "suitableFor": "Mac 用户首选的现代化代理客户端，与系统生态融合度好，资源消耗低。",
+    "maintenanceStatus": "active"
+  },
+  {
+    "clientId": "client-v2raya",
+    "name": "v2rayA",
+    "slug": "v2raya",
+    "osCategory": "linux",
+    "coreEngine": "Xray / V2Ray",
+    "isOpenSource": true,
+    "license": "AGPL-3.0",
+    "repoUrl": "https://github.com/v2rayA/v2rayA",
+    "downloadGuide": "支持 apt、yum、pacman 包管理器或 Docker 部署。启动后通过本地 Web 浏览器（默认端口 2017）进行可视化配置与节点管理。",
+    "features": [
+      "Web 控制台界面，无桌面依赖",
+      "一键透明代理支持",
+      "多核心调度与自动优选",
+      "支持服务器与 NAS 环境"
+    ],
+    "suitableFor": "Linux 桌面、服务器、软路由及无头设备（Headless）的首选代理管理网关。",
+    "maintenanceStatus": "active"
+  },
+  {
+    "clientId": "client-openclash",
+    "name": "OpenClash",
+    "slug": "openclash",
+    "osCategory": "router",
+    "coreEngine": "Mihomo (Clash Meta)",
+    "isOpenSource": true,
+    "license": "GPL-3.0",
+    "repoUrl": "https://github.com/vernesong/OpenClash",
+    "downloadGuide": "在 OpenWrt 路由器后台上传 luci-app-openclash 及其依赖 ipk 包进行安装。运行前检查内核版本与防火墙（iptables/nftables）兼容性。",
+    "features": [
+      "路由器全屋透明代理",
+      "支持 Fake-IP 与 Redir-Host 模式",
+      "流媒体解锁与 AI 规则精准分流",
+      "家庭所有设备免安装客户端无感翻墙"
+    ],
+    "suitableFor": "软路由、智能家居与 Apple TV、游戏主机全家桶用户。",
+    "maintenanceStatus": "active"
+  }
+]

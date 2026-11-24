@@ -1,0 +1,143 @@
+---
+// Brand Filter Bar
+---
+
+<div class="bg-white rounded-xl border border-brand-border p-4 sm:p-5 shadow-xs mb-8">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-center">
+    <!-- Search Box -->
+    <div class="relative">
+      <input
+        type="text"
+        id="filter-search"
+        placeholder="搜索品牌、别名或协议 (如 光速云, VLESS)..."
+        class="w-full pl-9 pr-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-hidden focus:border-brand-link focus:ring-1 focus:ring-brand-link"
+      />
+      <svg class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+    </div>
+
+    <!-- Line Type Filter -->
+    <div>
+      <select id="filter-line" class="w-full py-2 px-3 text-xs border border-slate-200 rounded-lg bg-white text-slate-700 focus:outline-hidden focus:border-brand-link">
+        <option value="all">所有线路类型 (IEPL / IPLC / BGP)</option>
+        <option value="IEPL">仅看 IEPL 专线</option>
+        <option value="IPLC">仅看 IPLC 专线</option>
+        <option value="BGP">含 BGP 优化</option>
+      </select>
+    </div>
+
+    <!-- Client Mode Filter -->
+    <div>
+      <select id="filter-mode" class="w-full py-2 px-3 text-xs border border-slate-200 rounded-lg bg-white text-slate-700 focus:outline-hidden focus:border-brand-link">
+        <option value="all">所有客户端模式</option>
+        <option value="dual">支持第三方客户端 (Clash/Shadowrocket)</option>
+        <option value="custom_app_only">仅专属客户端 (小白免配置)</option>
+      </select>
+    </div>
+
+    <!-- Sort Selector -->
+    <div>
+      <select id="filter-sort" class="w-full py-2 px-3 text-xs border border-slate-200 rounded-lg bg-white text-slate-700 focus:outline-hidden focus:border-brand-link">
+        <option value="featured">默认排序 (合作与推荐)</option>
+        <option value="price-asc">价格由低到高 (起步折算)</option>
+        <option value="price-desc">价格由高到低</option>
+        <option value="year-asc">运营年份最久 (老牌优先)</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Counter & Clear -->
+  <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-brand-muted">
+    <div>
+      已显示 <strong id="filter-count" class="text-brand-dark">31</strong> 家品牌档案
+    </div>
+    <button id="filter-reset" class="text-brand-link hover:underline hidden">
+      重置筛选条件
+    </button>
+  </div>
+</div>
+
+<script>
+  function setupFilters() {
+    const searchInput = document.getElementById('filter-search') as HTMLInputElement | null;
+    const lineSelect = document.getElementById('filter-line') as HTMLSelectElement | null;
+    const modeSelect = document.getElementById('filter-mode') as HTMLSelectElement | null;
+    const sortSelect = document.getElementById('filter-sort') as HTMLSelectElement | null;
+    const countDisplay = document.getElementById('filter-count');
+    const resetBtn = document.getElementById('filter-reset');
+    const cards = Array.from(document.querySelectorAll('.brand-card')) as HTMLElement[];
+    const container = document.getElementById('brand-cards-container');
+
+    if (!searchInput || !lineSelect || !modeSelect || !sortSelect || !container) return;
+
+    function applyFilter() {
+      const query = searchInput?.value.trim().toLowerCase() || '';
+      const selectedLine = lineSelect?.value || 'all';
+      const selectedMode = modeSelect?.value || 'all';
+      const sortBy = sortSelect?.value || 'featured';
+
+      let visibleCount = 0;
+
+      // Filter
+      cards.forEach((card) => {
+        const name = (card.dataset.name || '').toLowerCase();
+        const slug = (card.dataset.slug || '').toLowerCase();
+        const line = card.dataset.line || '';
+        const mode = card.dataset.mode || '';
+
+        const matchSearch = !query || name.includes(query) || slug.includes(query) || line.toLowerCase().includes(query);
+        const matchLine = selectedLine === 'all' || line.includes(selectedLine);
+        const matchMode = selectedMode === 'all' || mode === selectedMode;
+
+        if (matchSearch && matchLine && matchMode) {
+          card.style.display = 'flex';
+          visibleCount++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      // Sort
+      const sortedCards = [...cards].sort((a, b) => {
+        const priceA = parseFloat(a.dataset.price || '0');
+        const priceB = parseFloat(b.dataset.price || '0');
+        const yearA = parseInt(a.dataset.year || '2024');
+        const yearB = parseInt(b.dataset.year || '2024');
+
+        if (sortBy === 'price-asc') return priceA - priceB;
+        if (sortBy === 'price-desc') return priceB - priceA;
+        if (sortBy === 'year-asc') return yearA - yearB;
+        return 0; // default featured order
+      });
+
+      if (container) {
+        sortedCards.forEach((c) => container.appendChild(c));
+      }
+
+      if (countDisplay) countDisplay.textContent = visibleCount.toString();
+      if (resetBtn) {
+        if (query || selectedLine !== 'all' || selectedMode !== 'all' || sortBy !== 'featured') {
+          resetBtn.classList.remove('hidden');
+        } else {
+          resetBtn.classList.add('hidden');
+        }
+      }
+    }
+
+    searchInput.addEventListener('input', applyFilter);
+    lineSelect.addEventListener('change', applyFilter);
+    modeSelect.addEventListener('change', applyFilter);
+    sortSelect.addEventListener('change', applyFilter);
+
+    resetBtn?.addEventListener('click', () => {
+      searchInput.value = '';
+      lineSelect.value = 'all';
+      modeSelect.value = 'all';
+      sortSelect.value = 'featured';
+      applyFilter();
+    });
+  }
+
+  setupFilters();
+</script>

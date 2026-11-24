@@ -1,0 +1,85 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import brands from '../data/published-brands.json';
+
+const breadcrumbs = [
+  { name: '网站地图', href: '/sitemap-html/' },
+];
+
+const mainRoutes = [
+  { name: '首页', href: '/' },
+  { name: '品牌百科库', href: '/brands/' },
+  { name: '推荐与比较', href: '/recommend/' },
+  { name: '套餐价格', href: '/pricing/' },
+  { name: '网络技术', href: '/network/' },
+  { name: '客户端大全', href: '/clients/' },
+  { name: 'AI与流媒体兼容', href: '/compatibility/' },
+  { name: 'VPN与加速器区别', href: '/vpn/' },
+  { name: '教程与排障中心', href: '/guides/' },
+  { name: '证据与风险中心', href: '/evidence/' },
+  { name: 'GEO问答系统', href: '/questions/' },
+  { name: '关于本站', href: '/about/' },
+  { name: '编辑方针', href: '/editorial-policy/' },
+  { name: '测试方法论', href: '/methodology/' },
+  { name: '商业披露', href: '/disclosure/' },
+  { name: '数据来源', href: '/sources/' },
+  { name: '事实更正日志', href: '/corrections/' },
+  { name: '公开数据下载', href: '/data/' },
+  { name: '联系编辑部', href: '/contact/' },
+];
+---
+
+<BaseLayout
+  title="HTML 网站地图 - 机场 Wiki 全站链接索引"
+  description="机场 Wiki 全站 HTML 网站地图：包含 10 大核心专题、31 家品牌实体档案、评测报告与技术排障指南。"
+  breadcrumbs={breadcrumbs}
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <header class="pb-6 border-b border-brand-border">
+      <h1 class="text-3xl font-extrabold text-brand-dark">HTML 网站地图</h1>
+      <p class="text-xs text-brand-muted mt-1">三级点击内可达全站所有公开静态页面</p>
+    </header>
+
+    <!-- Main Navigation Hubs -->
+    <section class="space-y-3">
+      <h2 class="text-lg font-bold text-brand-dark border-b border-slate-200 pb-2">主要专题页面</h2>
+      <ul class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+        {mainRoutes.map((r) => (
+          <li>
+            <a href={r.href} class="text-slate-700 hover:text-brand-link py-1 block">
+              • {r.name}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <!-- 31 Brands Profiles -->
+    <section class="space-y-3">
+      <h2 class="text-lg font-bold text-brand-dark border-b border-slate-200 pb-2">31 家品牌百科档案</h2>
+      <ul class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 text-xs">
+        {brands.map((b) => (
+          <li>
+            <a href={`/brands/${b.slug}/`} class="text-slate-700 hover:text-brand-link py-1 block">
+              • {b.name}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <!-- Reviews -->
+    <section class="space-y-3">
+      <h2 class="text-lg font-bold text-brand-dark border-b border-slate-200 pb-2">独立深度评测报告</h2>
+      <ul class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 text-xs">
+        {brands.map((b) => (
+          <li>
+            <a href={`/reviews/${b.slug}/`} class="text-slate-700 hover:text-brand-link py-1 block">
+              • {b.name} 深度评测
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  </div>
+</BaseLayout>

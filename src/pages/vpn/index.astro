@@ -1,0 +1,122 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const breadcrumbs = [
+  { name: 'VPN 与加速器', href: '/vpn/' },
+];
+
+const topics = [
+  {
+    title: '网络加速服务（机场）与传统 VPN 的本质区别',
+    desc: '从底层网络协议（SOCKS5/VLESS 规则分流 VS IPsec/OpenVPN 虚拟局域网）探讨传输效率与流量特征。',
+    badge: '技术概念'
+  },
+  {
+    title: '免费 VPN 的潜在安全与隐私风险深度警示',
+    desc: '为什么“完全免费的 VPN 往往最昂贵”？剖析流量劫持、数据贩售与恶意代码注入。',
+    href: '/vpn/free-vpn-risks/',
+    badge: '安全警示'
+  },
+  {
+    title: '游戏加速器与跨境办公专线的异同',
+    desc: '针对 Steam、PlayStation 游戏联机的专用加速通道与普通网页代理在 UDP 协议优化上的区别。',
+    badge: '应用场景'
+  },
+  {
+    title: '企业跨国远程办公合规访问指引',
+    desc: '企业级 SD-WAN、合规专线与消费级机场的界限与法律合规要点。',
+    badge: '合规指引'
+  }
+];
+---
+
+<BaseLayout
+  title="VPN 与加速器概念对比知识库 (2026) - 机场代理与商业 VPN 差异分析"
+  description="客观辨析网络代理（机场）、商业 VPN、游戏加速器与企业 SD-WAN 的技术本质、安全性、协议差异及免费 VPN 风险警示。"
+  breadcrumbs={breadcrumbs}
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+    <header class="pb-6 border-b border-brand-border">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="px-2.5 py-0.5 text-xs font-semibold rounded bg-amber-100 text-amber-800">
+          概念与安全合规
+        </span>
+        <span class="text-xs text-brand-muted">更新日期：2026-11-24</span>
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-brand-dark tracking-tight">
+        VPN、网络加速器与代理专线：概念辨析与安全边界
+      </h1>
+      <p class="text-sm text-brand-muted mt-2 max-w-3xl leading-relaxed">
+        很多初学者将所有翻墙工具笼统地称为“VPN”。但在计算机网络体系中，VPN（虚拟专用网络）与当前流行的应用层/传输层代理（如 VLESS、Shadowsocks、Trojan）在技术架构与设计目标上存在根本差异。
+      </p>
+    </header>
+
+    <!-- Comparison Table: VPN vs Airport Proxy -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        一、商业 VPN 与机场代理服务核心区别对照
+      </h2>
+      <div class="overflow-x-auto custom-scrollbar">
+        <table class="w-full text-xs text-left border border-slate-200 rounded-xl overflow-hidden shadow-2xs">
+          <thead class="bg-slate-100 text-slate-800">
+            <tr>
+              <th class="py-3 px-4 font-semibold w-1/4">对比维度</th>
+              <th class="py-3 px-4 font-semibold text-blue-700 w-3/8">网络加速服务 (俗称“机场”)</th>
+              <th class="py-3 px-4 font-semibold text-purple-700 w-3/8">传统商业 VPN (如 WireGuard/OpenVPN)</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200 bg-white">
+            <tr>
+              <th class="py-3 px-4 bg-slate-50 font-semibold text-slate-700">主要设计目标</th>
+              <td class="py-3 px-4">绕过防火墙封锁、访问海外网页、流媒体与 AI</td>
+              <td class="py-3 px-4">加密公网流量、接入企业内部私网、防止 Wi-Fi 窃听</td>
+            </tr>
+            <tr>
+              <th class="py-3 px-4 bg-slate-50 font-semibold text-slate-700">OSI 工作层级</th>
+              <td class="py-3 px-4">应用层 / 传输层（SOCKS5, HTTP, VLESS）</td>
+              <td class="py-3 px-4">网络层（Layer 3，接管所有 IP 数据包）</td>
+            </tr>
+            <tr>
+              <th class="py-3 px-4 bg-slate-50 font-semibold text-slate-700">分流能力 (Bypass)</th>
+              <td class="py-3 px-4 font-bold text-emerald-600">极强（国内直连、海外代理，免手动切换）</td>
+              <td class="py-3 px-4 text-slate-600">通常全局代理，访问国内网站延迟大增</td>
+            </tr>
+            <tr>
+              <th class="py-3 px-4 bg-slate-50 font-semibold text-slate-700">晚高峰抗抗封锁</th>
+              <td class="py-3 px-4 font-bold text-emerald-600">采用 IEPL/IPLC 内网专线，存活率极高</td>
+              <td class="py-3 px-4 text-rose-600">公网 OpenVPN 特征明显，极易被防火墙干扰中断</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Topics Grid -->
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {topics.map((t) => (
+        <div class="p-5 rounded-xl border border-slate-200 bg-white shadow-2xs space-y-2 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-semibold px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200">
+                {t.badge}
+              </span>
+            </div>
+            <h3 class="text-base font-bold text-brand-dark mb-1">
+              {t.href ? <a href={t.href} class="hover:text-brand-link">{t.title}</a> : t.title}
+            </h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              {t.desc}
+            </p>
+          </div>
+          {t.href && (
+            <div class="pt-3 border-t border-slate-100">
+              <a href={t.href} class="text-xs font-semibold text-brand-link hover:underline">
+                查阅警示专题 →
+              </a>
+            </div>
+          )}
+        </div>
+      ))}
+    </section>
+  </div>
+</BaseLayout>

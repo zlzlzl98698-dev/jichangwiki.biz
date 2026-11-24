@@ -1,0 +1,94 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const breadcrumbs = [
+  { name: 'AI 与流媒体', href: '/compatibility/' },
+  { name: 'ChatGPT / Claude / Gemini 诊断', href: '/compatibility/chatgpt-claude-gemini/' },
+];
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: 'ChatGPT、Claude 与 Gemini 报错深度排障指南：Access Denied 与地区限制解决办法',
+  description: '全面解析使用网络加速节点访问 OpenAI ChatGPT、Anthropic Claude、Google Gemini 时常见的 403 阻断、账号风控与分流规则配置。',
+  datePublished: '2026-10-19',
+  dateModified: '2026-11-24',
+  inLanguage: 'zh-CN',
+};
+---
+
+<BaseLayout
+  title="ChatGPT与Claude无法访问排障指南 (2026) - 解决 Access Denied 与地区限制"
+  description="2026 年最新 AI 工具连接诊断：针对 ChatGPT 报错 403 Forbidden、Claude 账号封禁风控、Google Gemini 不在支持国家等问题，提供完整的节点选择与分流规则教程。"
+  breadcrumbs={breadcrumbs}
+  schema={articleSchema}
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+    <header class="pb-6 border-b border-brand-border">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="px-2.5 py-0.5 text-xs font-semibold rounded bg-indigo-100 text-indigo-800">
+          AI 工具深度诊断
+        </span>
+        <span class="text-xs text-brand-muted">更新日期：2026-11-24</span>
+      </div>
+
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-brand-dark tracking-tight leading-tight">
+        ChatGPT、Claude 与 Gemini 访问报错排障：Access Denied 与地区限制解决方案
+      </h1>
+
+      <p class="text-xs sm:text-sm text-slate-600 mt-3 leading-relaxed">
+        随着人工智能成为日常办公的核心生产力工具，各大模型提供商对网络连接的审查机制也日益严密。本文基于真实排查经验，梳理常见报错原因与可行的解决方案。
+      </p>
+    </header>
+
+    <!-- Error 1: ChatGPT Access Denied -->
+    <section class="p-6 rounded-xl border border-rose-200 bg-rose-50/40 space-y-3">
+      <h2 class="text-lg font-bold text-rose-900 flex items-center gap-2">
+        <span>❌</span> 常见故障 1：OpenAI 提示 “Access Denied (Error 1020 / 403)”
+      </h2>
+      <div class="text-xs sm:text-sm text-slate-700 leading-relaxed space-y-2">
+        <p><strong>根本原因：</strong>Cloudflare WAF 或 OpenAI 的风控系统判定当前节点的出口 IP 属于高危险数据中心或已有过多并发爬虫行为。</p>
+        <div class="bg-white p-3.5 rounded-lg border border-rose-100 text-xs space-y-1">
+          <strong class="text-brand-dark block">解决步骤：</strong>
+          <ul class="list-disc list-inside space-y-1 text-slate-600">
+            <li>在客户端中手动切换至该机场的其他专线节点（例如香港专线 02、新加坡原生节点或日本东京节点）。</li>
+            <li>开启浏览器的“无痕模式 / 隐身窗口”，或彻底清除浏览器中 chatgpt.com 和 openai.com 的本地 Storage 与 Cookies。</li>
+            <li>检查客户端是否启用了正确的分流规则，确保流量没有被误判为 DIRECT（直连国内）。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Error 2: Claude Not Available -->
+    <section class="p-6 rounded-xl border border-amber-200 bg-amber-50/40 space-y-3">
+      <h2 class="text-lg font-bold text-amber-900 flex items-center gap-2">
+        <span>⚠️</span> 常见故障 2：Claude 提示 “App unavailable in your region”
+      </h2>
+      <div class="text-xs sm:text-sm text-slate-700 leading-relaxed space-y-2">
+        <p><strong>根本原因：</strong>Anthropic 对服务可用地区的限制比 OpenAI 更加严格。若节点 IP 定位信息被识别为中国大陆、香港、澳门或部分未开放欧洲区域，便会弹出此限制。</p>
+        <div class="bg-white p-3.5 rounded-lg border border-amber-100 text-xs space-y-1">
+          <strong class="text-brand-dark block">应对方案：</strong>
+          <p class="text-slate-600">
+            优先选择<strong>美国本土专线、日本东京原生 IP 或英国专线节点</strong>。尽量保持固定的单节点登录，避免一小时内跨越多个国家 IP 引起 Anthropic 系统的防欺诈封号机制。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Error 3: Google Gemini -->
+    <section class="p-6 rounded-xl border border-blue-200 bg-blue-50/40 space-y-3">
+      <h2 class="text-lg font-bold text-blue-900 flex items-center gap-2">
+        <span>✨</span> 常见故障 3：Gemini 提示 “Gemini is not supported in your country”
+      </h2>
+      <div class="text-xs sm:text-sm text-slate-700 leading-relaxed space-y-2">
+        <p><strong>根本原因：</strong>Google Gemini 的区域判定不仅读取 IP，还会综合读取 Google 账号注册地区、浏览器默认语言以及 DNS 归属地。</p>
+        <div class="bg-white p-3.5 rounded-lg border border-blue-100 text-xs space-y-1">
+          <strong class="text-brand-dark block">排障措施：</strong>
+          <p class="text-slate-600">
+            在 Clash Verge 中开启 TUN 模式以接管全局 DNS 请求，避免 DNS 泄漏为国内运营商地址；将 Google 账号语言设置为英文（English），并选用美国或台湾干净节点。
+          </p>
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

@@ -1,0 +1,212 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ComplianceAffiliateBox from '../../components/observatory/ComplianceAffiliateBox.astro';
+import brands from '../../data/published-brands.json';
+
+export async function getStaticPaths() {
+  const comparisons = [
+    { slug: 'guangsu-vs-muguang', aSlug: 'guangsu', bSlug: 'muguang' },
+    { slug: 'feimao-vs-weifeng', aSlug: 'feimao', bSlug: 'weifeng' },
+    { slug: 'shandianshu-vs-dalaoyun', aSlug: 'shandianshu', bSlug: 'dalaoyun' },
+    { slug: 'firefly-vs-weitu', aSlug: 'firefly', bSlug: 'weitu' },
+    { slug: 'yifan-vs-u1s1', aSlug: 'yifan', bSlug: 'u1s1' },
+    { slug: 'sogo-vs-yinxingren', aSlug: 'sogo', bSlug: 'yinxingren' },
+  ];
+
+  return comparisons.map((c) => {
+    const brandA = brands.find((b) => b.slug === c.aSlug)!;
+    const brandB = brands.find((b) => b.slug === c.bSlug)!;
+    return {
+      params: { comparison: c.slug },
+      props: { brandA, brandB },
+    };
+  });
+}
+
+const { brandA, brandB } = Astro.props;
+
+const breadcrumbs = [
+  { name: '推荐与比较', href: '/recommend/' },
+  { name: `${brandA.name} vs ${brandB.name}`, href: `/compare/${brandA.slug}-vs-${brandB.slug}/` },
+];
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: `${brandA.name} 与 ${brandB.name} 全面横向对比分析`,
+  description: `详细对比 ${brandA.name} 和 ${brandB.name} 的线路架构、起步价格折算、客户端兼容性与流媒体解锁能力。`,
+  datePublished: '2026-10-19',
+  dateModified: '2026-11-24',
+  inLanguage: 'zh-CN',
+  author: {
+    '@type': 'Organization',
+    name: '机场 Wiki 评测实验室',
+    url: 'https://jichangwiki.biz/',
+  },
+};
+---
+
+<BaseLayout
+  title={`${brandA.name} vs ${brandB.name} 对比：哪一个更适合你？参数、价格与线路全方位对照`}
+  description={`${brandA.name} 与 ${brandB.name} 的深度客观对比：比较起步月费（¥${brandA.startingMonthlyCny.toFixed(1)} vs ¥${brandB.startingMonthlyCny.toFixed(1)}）、专线网络拓扑、客户端导入方式与流媒体解锁区别。`}
+  breadcrumbs={breadcrumbs}
+  schema={articleSchema}
+>
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+    <!-- Header -->
+    <header class="pb-6 border-b border-brand-border">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="px-2.5 py-0.5 text-xs font-semibold rounded bg-blue-100 text-blue-800">
+          双雄客观对照
+        </span>
+        <span class="text-xs text-brand-muted">更新日期：2026-11-24</span>
+      </div>
+
+      <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-brand-dark tracking-tight leading-tight">
+        {brandA.name} VS {brandB.name}：技术架构、价格换算与使用场景深度对比
+      </h1>
+
+      <p class="text-xs sm:text-sm text-slate-600 mt-3 leading-relaxed">
+        本文不推行“非黑即白”的排名结论，而是通过并排参数表格与事实推导，帮助读者认清 <strong>{brandA.name}</strong> 与 <strong>{brandB.name}</strong> 的真实差异与各自优缺点。
+      </p>
+    </header>
+
+    <!-- Side-by-side Table -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        一、核心参数并排对比矩阵
+      </h2>
+      <div class="overflow-x-auto custom-scrollbar">
+        <table class="w-full text-xs text-left border border-slate-200 rounded-xl overflow-hidden shadow-2xs">
+          <thead class="bg-slate-100 text-slate-800">
+            <tr>
+              <th class="py-3 px-4 font-bold w-1/4">对比维度</th>
+              <th class="py-3 px-4 font-bold text-brand-link w-3/8 text-base">{brandA.name}</th>
+              <th class="py-3 px-4 font-bold text-teal-700 w-3/8 text-base">{brandB.name}</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200 bg-white">
+            <tr>
+              <th class="py-3 px-4 bg-slate-50 font-semibold text-slate-700">开业年份</th>
+              <td class="py-3 px-4 text-slate-800">{brandA.foundedYear || '待核实'} 年</td>
+              <td class="py-3 px-4 text-slate-800">{brandB.foundedYear || '待核实'} 年</td>
+            </tr>
+            <tr>
+              <th class="py-3 px-4 bg-slate-50 font-semibold text-slate-700">线路架构</th>
+              <td class="py-3 px-4 text-slate-800 font-medium">{brandA.networkRefs.join('、')}</td>
+              <td class="py-3 px-4 text-slate-800 font-medium">{brandB.networkRefs.join('、')}</td>
+            </tr>
+            <tr>
+              <th class="py-3 px-4 bg-slate-50 font-semibold text-slate-700">起步价格换算</th>
+              <td class="py-3 px-4 text-blue-700 font-bold data-num">¥{brandA.startingMonthlyCny.toFixed(2)}/月 ({brandA.startingPriceDesc})</td>
+              <td class="py-3 px-4 text-teal-700 font-bold data-num">¥{brandB.startingMonthlyCny.toFixed(2)}/月 ({brandB.startingPriceDesc})</td>
+            </tr>
+            <tr>
+              <th class="py-3 px-4 bg-slate-50 font-semibold text-slate-700">客户端模式</th>
+              <td class="py-3 px-4 text-slate-800">
+                {brandA.clientMode === 'custom_app_only' ? '仅专属 App（免配置）' : '自研 + 支持第三方 Clash/Shadowrocket'}
+              </td>
+              <td class="py-3 px-4 text-slate-800">
+                {brandB.clientMode === 'custom_app_only' ? '仅专属 App（免配置）' : '自研 + 支持第三方 Clash/Shadowrocket'}
+              </td>
+            </tr>
+            <tr>
+              <th class="py-3 px-4 bg-slate-50 font-semibold text-slate-700">协议支持</th>
+              <td class="py-3 px-4 font-mono text-slate-700">{brandA.protocolRefs.join('、')}</td>
+              <td class="py-3 px-4 font-mono text-slate-700">{brandB.protocolRefs.join('、')}</td>
+            </tr>
+            <tr>
+              <th class="py-3 px-4 bg-slate-50 font-semibold text-slate-700">ChatGPT 解锁</th>
+              <td class="py-3 px-4 text-slate-800 font-medium">
+                {brandA.unlocking.chatgpt === 'supported' ? '🟢 大多数节点正常' : '🟡 部分节点需手动切换'}
+              </td>
+              <td class="py-3 px-4 text-slate-800 font-medium">
+                {brandB.unlocking.chatgpt === 'supported' ? '🟢 大多数节点正常' : '🟡 部分节点需手动切换'}
+              </td>
+            </tr>
+            <tr>
+              <th class="py-3 px-4 bg-slate-50 font-semibold text-slate-700">Netflix 流媒体</th>
+              <td class="py-3 px-4 text-slate-800">
+                {brandA.unlocking.netflix === 'supported' ? '🟢 原生 IP 支持' : '🟡 视节点而定'}
+              </td>
+              <td class="py-3 px-4 text-slate-800">
+                {brandB.unlocking.netflix === 'supported' ? '🟢 原生 IP 支持' : '🟡 视节点而定'}
+              </td>
+            </tr>
+            <tr>
+              <th class="py-3 px-4 bg-slate-50 font-semibold text-slate-700">可用优惠券</th>
+              <td class="py-3 px-4">
+                {brandA.couponCode ? <code class="font-mono bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded">{brandA.couponCode}</code> : '无公开活动券'}
+              </td>
+              <td class="py-3 px-4">
+                {brandB.couponCode ? <code class="font-mono bg-teal-50 text-teal-700 px-1.5 py-0.5 rounded">{brandB.couponCode}</code> : '无公开活动券'}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Qualitative Pros & Cons Breakdown -->
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Brand A Card -->
+      <div class="p-5 rounded-xl border border-blue-200 bg-white shadow-2xs space-y-3">
+        <h3 class="text-lg font-bold text-brand-dark flex items-center justify-between">
+          <span>{brandA.name} 核心特征分析</span>
+          <a href={`/brands/${brandA.slug}/`} class="text-xs text-brand-link font-normal hover:underline">查阅档案 →</a>
+        </h3>
+        <p class="text-xs text-slate-600 leading-relaxed">{brandA.description}</p>
+        <div class="space-y-1.5 text-xs">
+          <strong class="text-slate-800 block">突出优势：</strong>
+          <ul class="list-disc list-inside text-slate-600 space-y-1">
+            {brandA.pros.map((p) => <li>{p}</li>)}
+          </ul>
+        </div>
+        <div class="pt-2">
+          <ComplianceAffiliateBox
+            brandName={brandA.name}
+            affiliateUrl={brandA.primaryAffiliate}
+            couponCode={brandA.couponCode}
+            discountDesc={brandA.discountDesc}
+            isFeaturedPartner={brandA.isFeaturedPartner}
+          />
+        </div>
+      </div>
+
+      <!-- Brand B Card -->
+      <div class="p-5 rounded-xl border border-teal-200 bg-white shadow-2xs space-y-3">
+        <h3 class="text-lg font-bold text-brand-dark flex items-center justify-between">
+          <span>{brandB.name} 核心特征分析</span>
+          <a href={`/brands/${brandB.slug}/`} class="text-xs text-teal-700 font-normal hover:underline">查阅档案 →</a>
+        </h3>
+        <p class="text-xs text-slate-600 leading-relaxed">{brandB.description}</p>
+        <div class="space-y-1.5 text-xs">
+          <strong class="text-slate-800 block">突出优势：</strong>
+          <ul class="list-disc list-inside text-slate-600 space-y-1">
+            {brandB.pros.map((p) => <li>{p}</li>)}
+          </ul>
+        </div>
+        <div class="pt-2">
+          <ComplianceAffiliateBox
+            brandName={brandB.name}
+            affiliateUrl={brandB.primaryAffiliate}
+            couponCode={brandB.couponCode}
+            discountDesc={brandB.discountDesc}
+            isFeaturedPartner={brandB.isFeaturedPartner}
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- Selection Advice Conclusion -->
+    <section class="p-6 rounded-xl border border-slate-200 bg-slate-50 text-xs sm:text-sm text-slate-700 leading-relaxed space-y-3">
+      <h3 class="text-base font-bold text-brand-dark">选型结论与决策指引</h3>
+      <p>
+        如果你的需求偏向 <strong>{brandA.suitableFor[0]}</strong>，建议优先考虑 <strong>{brandA.name}</strong>；如果你的主要使用场景为 <strong>{brandB.suitableFor[0]}</strong>，则 <strong>{brandB.name}</strong> 具有更好的契合度。
+      </p>
+      <p class="text-slate-500 text-xs">
+        * 建议先购买单月或入门小包套餐，在晚高峰时段亲自测试本地网络表现后，再决定长期选购方案。
+      </p>
+    </section>
+  </div>
+</BaseLayout>

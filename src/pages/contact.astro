@@ -1,0 +1,36 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const breadcrumbs = [
+  { name: '联系编辑部', href: '/contact/' },
+];
+---
+
+<BaseLayout
+  title="联系编辑部 - 机场 Wiki"
+  description="联系机场 Wiki 编辑部：提交品牌收录申请、反馈事实更正或洽谈商业合作展示。"
+  breadcrumbs={breadcrumbs}
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <header class="pb-6 border-b border-brand-border">
+      <h1 class="text-3xl font-extrabold text-brand-dark">联系编辑部与反馈渠道</h1>
+      <p class="text-xs text-brand-muted mt-1">机场 Wiki 运营与技术团队</p>
+    </header>
+
+    <div class="space-y-6 text-xs sm:text-sm text-slate-700 leading-relaxed">
+      <div class="p-5 rounded-xl border border-slate-200 bg-white shadow-2xs space-y-3">
+        <h2 class="text-base font-bold text-brand-dark">联系方式说明</h2>
+        <p>
+          本站官方客服邮箱与即时工单渠道目前处于<strong>站长域名解析与安全网关配置阶段（待站长授权配置）</strong>，暂未向公网直接开放明文个人邮箱，以防被爬虫大量抓取垃圾邮件。
+        </p>
+        <p>
+          如果您是服务商运营团队希望更新品牌数据，或读者发现正文存在事实错误，可通过以下规范途径：
+        </p>
+        <ul class="list-disc list-inside space-y-1.5 text-xs text-slate-600 pl-2">
+          <li><strong>事实更正：</strong>查阅 <a href="/corrections/" class="text-brand-link hover:underline">事实更正日志</a>，并在 GitHub 知识库仓库提交 Issue。</li>
+          <li><strong>数据下载与审计：</strong>访问 <a href="/data/" class="text-brand-link hover:underline">公开数据下载</a> 获取当前版本快照并进行离线比对。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

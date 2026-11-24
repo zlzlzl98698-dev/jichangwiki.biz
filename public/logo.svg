@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 40" width="160" height="40" fill="none">
+  <!-- Original Graphic: Book pages + Connected network topology nodes -->
+  <g transform="translate(6, 6)">
+    <!-- Book silhouette base -->
+    <path d="M4 22C7 20 12 19 16 20C20 19 25 20 28 22V6C25 4 20 3 16 4C12 3 7 4 4 6V22Z" fill="#18334B" fill-opacity="0.08" stroke="#18334B" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M16 4V20" stroke="#18334B" stroke-width="1.75" stroke-linecap="round"/>
+    <!-- Network Nodes & Connecting Lines -->
+    <path d="M9 10L16 6L23 11" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M16 6V15" stroke="#0F766E" stroke-width="1.5" stroke-linecap="round"/>
+    <circle cx="16" cy="6" r="2.2" fill="#2563EB" stroke="#FFFFFF" stroke-width="1.2"/>
+    <circle cx="9" cy="10" r="1.8" fill="#0F766E" stroke="#FFFFFF" stroke-width="1"/>
+    <circle cx="23" cy="11" r="1.8" fill="#0F766E" stroke="#FFFFFF" stroke-width="1"/>
+    <circle cx="16" cy="15" r="1.8" fill="#18334B" stroke="#FFFFFF" stroke-width="1"/>
+  </g>
+  <!-- Text Brand -->
+  <text x="44" y="24" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif" font-weight="700" font-size="16" fill="#18334B" letter-spacing="-0.02em">机场 Wiki</text>
+  <rect x="114" y="14" width="36" height="15" rx="3" fill="#E2E8F0"/>
+  <text x="120" y="25" font-family="JetBrains Mono, monospace" font-size="9" font-weight="600" fill="#475569">GEO 1.0</text>
+</svg>

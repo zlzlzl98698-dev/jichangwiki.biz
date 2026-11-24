@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const breadcrumbs = [
+  { name: '关于本站', href: '/about/' },
+];
+---
+
+<BaseLayout
+  title="关于本站 - 机场 Wiki 品牌知识库定位与使命"
+  description="了解机场 Wiki（jichangwiki.biz）：中文网络加速品牌百科、可验证资料中心、技术知识库与消费者客观指南。"
+  breadcrumbs={breadcrumbs}
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <header class="pb-6 border-b border-brand-border">
+      <h1 class="text-3xl font-extrabold text-brand-dark">关于 机场 Wiki</h1>
+      <p class="text-xs text-brand-muted mt-1">域名：https://jichangwiki.biz/ · 品牌：机场 Wiki</p>
+    </header>
+
+    <section class="space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed">
+      <h2 class="text-xl font-bold text-brand-dark">1. 站点定位与初衷</h2>
+      <p>
+        <strong>机场 Wiki</strong> 定位为中文网络服务品牌百科、可验证资料中心、技术知识库和消费者选择指南。我们不是任何服务商的官方网站，不冒充独立测评机构，也绝不以粗制滥造的商业广告落地页充当首页。
+      </p>
+      <p>
+        在过去的中文网络环境中，加速器与机场类内容充斥着夸大其词的宣传、虚假的晚高峰满速截图、以及模糊不清的年付折算陷阱。很多用户盲目相信所谓的“永久免费”或“全网最稳定”，最终遭受经济损失与隐私泄露。
+      </p>
+      <p>
+        因此，我们创立了 机场 Wiki，力图用<strong>可溯源的原始数据、结构化的技术参数、真实的协议与客户端指南</strong>，帮助用户在信息透明的前提下做出最适合自身网络环境的选择。
+      </p>
+    </section>
+
+    <section class="space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed">
+      <h2 class="text-xl font-bold text-brand-dark">2. 商业模式与透明度原则</h2>
+      <p>
+        本站坚决秉持公开透明原则。站点内部分服务商入口包含经过核查的推广链接（统一标注 <code class="font-mono bg-slate-100 px-1 py-0.5 rounded">rel="nofollow sponsored noopener"</code>）。用户通过链接注册时，可能会为本站带来一定的服务器与维护佣金，但绝不增加用户的付款金额。
+      </p>
+      <p>
+        我们对核心合作展示位（如光速云）进行清晰的标识，禁止将商业合作列表伪装为客观技术排行榜。
+      </p>
+    </section>
+  </div>
+</BaseLayout>

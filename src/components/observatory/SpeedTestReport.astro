@@ -1,0 +1,95 @@
+---
+export interface SpeedNode {
+  region: string;
+  latency: string;
+  download: string;
+}
+
+export interface Props {
+  brandName: string;
+  testDate?: string;
+  testWindow?: string;
+  tool?: string;
+  nodes: any[];
+  dataStatus?: string;
+}
+
+const {
+  brandName,
+  testDate = '2026-10-19',
+  testWindow = '非晚高峰 (Off-peak)',
+  tool = 'Speedtest.net / Clash Verge Rev',
+  nodes,
+  dataStatus = 'historical_record',
+} = Astro.props;
+
+// Determine max download for bar calculation
+const maxSpeed = 600; // Mbps
+---
+
+<div class="bg-lab-bg text-lab-text rounded-xl border border-lab-border p-5 my-6 font-mono shadow-md overflow-hidden">
+  <!-- Header Bar -->
+  <div class="flex flex-wrap items-center justify-between pb-3.5 border-b border-lab-border/70 gap-2">
+    <div class="flex items-center gap-2.5">
+      <span class="inline-block w-2.5 h-2.5 rounded-full bg-lab-emerald animate-pulse"></span>
+      <span class="text-sm font-semibold tracking-tight text-white">
+        PERFORMANCE MONITORING REPORT // {brandName}
+      </span>
+    </div>
+    <div class="flex items-center gap-2 text-xs text-lab-muted">
+      <span class="px-2 py-0.5 rounded bg-lab-card text-[11px] border border-lab-border">
+        {dataStatus === 'independently_verified' ? 'LAB VERIFIED' : dataStatus === 'historical_record' ? 'HISTORICAL LOG' : 'VENDOR CLAIM'}
+      </span>
+      <span>{testDate}</span>
+    </div>
+  </div>
+
+  <!-- Meta Info Grid -->
+  <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 py-3 text-[11px] text-lab-muted border-b border-lab-border/40">
+    <div>环境: <span class="text-slate-300">{tool}</span></div>
+    <div>测试窗口: <span class="text-slate-300">{testWindow}</span></div>
+    <div>采样范围: <span class="text-slate-300">核心枢纽节点</span></div>
+  </div>
+
+  <!-- Nodes List -->
+  <div class="space-y-3.5 py-4">
+    {nodes.length > 0 ? (
+      nodes.map((node) => {
+        const speedValue = parseFloat(node.download) || 0;
+        const percent = Math.min(100, Math.round((speedValue / maxSpeed) * 100));
+        return (
+          <div class="space-y-1">
+            <div class="flex justify-between items-center text-xs">
+              <span class="flex items-center gap-2 text-slate-200">
+                <span class="w-1.5 h-1.5 rounded-full bg-lab-cyan"></span>
+                {node.region} 专线节点
+              </span>
+              <div class="flex items-center gap-4 text-xs">
+                <span class="text-lab-muted">延迟: <strong class="text-slate-300">{node.latency}</strong></span>
+                <span class="text-lab-cyan font-bold w-24 text-right">下载: {node.download}</span>
+              </div>
+            </div>
+            <!-- Progress Bar -->
+            <div class="w-full bg-lab-card rounded-xs h-2 overflow-hidden flex">
+              <div
+                class="bg-gradient-to-r from-blue-500 to-cyan-400 h-full rounded-xs transition-all duration-500"
+                style={`width: ${percent}%`}
+              ></div>
+            </div>
+          </div>
+        );
+      })
+    ) : (
+      <div class="py-6 text-center text-xs text-lab-muted">
+        <p>⚠️ 该服务商暂无公开逐节点历史测速数据。</p>
+        <p class="mt-1 text-[11px] text-slate-500">本站坚持客观审计原则，不编造非实测延迟与带宽指标。</p>
+      </div>
+    )}
+  </div>
+
+  <!-- Footer Stats & Disclaimer -->
+  <div class="pt-3 border-t border-lab-border/70 flex flex-wrap justify-between items-center text-[11px] text-lab-muted gap-2">
+    <span>指标说明：历史单次测速不直接等同于 24 小时晚高峰稳定性，建议以实测为准。</span>
+    <span class="text-slate-500 font-sans">[jichangwiki.biz / 数据观测台]</span>
+  </div>
+</div>

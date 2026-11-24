@@ -1,0 +1,84 @@
+---
+export interface Props {
+  brandName: string;
+  networkType?: string;
+  protocol?: string;
+  transitBGP?: string;
+  overseasEgress?: string;
+}
+
+const {
+  brandName,
+  networkType = 'IEPL 国际专线',
+  protocol = 'VLESS / Trojan',
+  transitBGP = '上海 / 广州 BGP 入口',
+  overseasEgress = '香港 / 东京 / 新加坡落地',
+} = Astro.props;
+---
+
+<div class="bg-lab-bg text-lab-text rounded-xl border border-lab-border p-5 my-6 font-mono shadow-md overflow-hidden">
+  <!-- Header -->
+  <div class="flex flex-wrap items-center justify-between pb-3.5 border-b border-lab-border/70 gap-2">
+    <div class="flex items-center gap-2">
+      <span class="inline-block w-2.5 h-2.5 rounded-full bg-blue-400"></span>
+      <span class="text-sm font-semibold tracking-tight text-white">
+        NETWORK PATH OBSERVATORY // {brandName}
+      </span>
+    </div>
+    <div class="text-[11px] text-lab-muted">
+      架构标准: <span class="text-slate-300">防 GFW 流量特征识别与 QoS 抑制</span>
+    </div>
+  </div>
+
+  <!-- Topology Flow -->
+  <div class="py-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs">
+    <!-- Node 1: Client Device -->
+    <div class="w-full md:w-1/4 bg-lab-surface border border-lab-border rounded-lg p-3 text-center">
+      <div class="text-[10px] text-lab-muted mb-1">ORIGIN TERMINAL</div>
+      <div class="font-bold text-white">用户终端设备</div>
+      <div class="text-[11px] text-slate-400 mt-1">PC / 手机 / 软路由</div>
+      <div class="mt-2 text-[10px] text-lab-cyan">加密: {protocol}</div>
+    </div>
+
+    <!-- Arrow 1 -->
+    <div class="text-slate-500 flex flex-col items-center">
+      <span class="text-[10px] text-slate-400">本地就近</span>
+      <svg class="w-5 h-5 text-blue-400 rotate-90 md:rotate-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+      </svg>
+    </div>
+
+    <!-- Node 2: Domestic Transit -->
+    <div class="w-full md:w-1/4 bg-lab-surface border border-lab-border rounded-lg p-3 text-center">
+      <div class="text-[10px] text-lab-muted mb-1">TRANSIT INGRESS</div>
+      <div class="font-bold text-emerald-400">{transitBGP}</div>
+      <div class="text-[11px] text-slate-400 mt-1">隐藏真实IP · 三网优化</div>
+      <div class="mt-2 text-[10px] text-emerald-400/80">抗震荡智能调度</div>
+    </div>
+
+    <!-- Arrow 2: Dedicated Cross-Border Line -->
+    <div class="text-slate-500 flex flex-col items-center">
+      <span class="text-[10px] text-amber-300 font-bold px-1 rounded bg-amber-950/60 border border-amber-800">
+        {networkType}
+      </span>
+      <svg class="w-5 h-5 text-amber-400 rotate-90 md:rotate-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+      </svg>
+      <span class="text-[9px] text-slate-500">点对点不过 GFW</span>
+    </div>
+
+    <!-- Node 3: Overseas Egress -->
+    <div class="w-full md:w-1/4 bg-lab-surface border border-lab-border rounded-lg p-3 text-center">
+      <div class="text-[10px] text-lab-muted mb-1">OVERSEAS EGRESS</div>
+      <div class="font-bold text-cyan-400">{overseasEgress}</div>
+      <div class="text-[11px] text-slate-400 mt-1">原生住宅/机房 IP 落地</div>
+      <div class="mt-2 text-[10px] text-cyan-400/80">解除区域流媒体限制</div>
+    </div>
+  </div>
+
+  <!-- Note -->
+  <div class="pt-3 border-t border-lab-border/70 text-[11px] text-lab-muted flex justify-between items-center">
+    <span>原理示意：展示专线传输技术路径，具体物理机房与路由以服务商实际调配为准。</span>
+    <span class="text-slate-500">[jichangwiki.biz / 拓扑图谱]</span>
+  </div>
+</div>

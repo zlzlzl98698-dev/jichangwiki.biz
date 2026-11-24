@@ -1,0 +1,86 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const breadcrumbs = [
+  { name: '客户端', href: '/clients/' },
+  { name: 'iOS 苹果小火箭专栏', href: '/clients/ios/' },
+];
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: 'iOS 苹果网络代理客户端大全 (2026)：Shadowrocket、Stash、Surge 购买下载指引',
+  description: '全面解析 iOS (iPhone / iPad) 平台主流代理软件：Shadowrocket（小火箭）、Stash、Quantumult X 的外区 Apple ID 购买与订阅导入教程。',
+  datePublished: '2026-10-19',
+  dateModified: '2026-11-24',
+  inLanguage: 'zh-CN',
+};
+---
+
+<BaseLayout
+  title="iOS 苹果手机代理客户端下载教程 (2026) - Shadowrocket 小火箭与 Stash 官方正版获取"
+  description="2026 年最新 iPhone/iPad 代理软件获取指南：通过美区/港区 App Store 下载 Shadowrocket（小火箭）、Stash，免越狱一键导入订阅，实现自动分流与流媒体解锁。"
+  breadcrumbs={breadcrumbs}
+  schema={articleSchema}
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+    <header class="pb-6 border-b border-brand-border">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="px-2.5 py-0.5 text-xs font-semibold rounded bg-purple-100 text-purple-800">
+          iOS 苹果专栏
+        </span>
+        <span class="text-xs text-brand-muted">更新日期：2026-11-24</span>
+      </div>
+
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-brand-dark tracking-tight leading-tight">
+        iPhone / iPad 代理客户端选型与正版获取指南 (2026)
+      </h1>
+
+      <p class="text-xs sm:text-sm text-slate-600 mt-3 leading-relaxed">
+        受苹果 App Store 区域政策限制，代理类软件未在中国大陆区 App Store 上架。用户需登录非大陆区（如美区、日区、港区）Apple ID 并在 App Store 购买下载。
+      </p>
+    </header>
+
+    <!-- Top Pick 1: Shadowrocket -->
+    <section class="p-6 rounded-xl border border-blue-200 bg-white shadow-2xs space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xl font-bold text-brand-dark flex items-center gap-2">
+          <span>🚀</span> 首选神器：Shadowrocket (小火箭)
+        </h2>
+        <span class="px-2 py-0.5 rounded bg-blue-100 text-blue-800 text-xs font-semibold">约 2.99 美元</span>
+      </div>
+
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        Shadowrocket（小火箭）是 iOS 生态中普及率最高、协议支持最全的工具。支持 Shadowsocks、VMess、VLESS、Trojan、Hysteria 2 全系协议。
+      </p>
+
+      <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 text-xs space-y-2">
+        <strong class="text-brand-dark block">正版下载与订阅添加流程：</strong>
+        <ol class="list-decimal list-inside space-y-1.5 text-slate-600">
+          <li>打开 App Store，退出国区账号，登录外区 Apple ID（切勿在“设置-iCloud”登录未知账号）。</li>
+          <li>在 App Store 搜索 <strong>Shadowrocket</strong>（认准开发者为 Shadow Launch Technology Limited，图标为白色火箭深色底）。</li>
+          <li>安装完成后打开小火箭，点击右上角 “+” 号，类型选择 “Subscribe”，粘贴订阅 URL 保存即可自动拉取节点。</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Top Pick 2: Stash -->
+    <section class="p-6 rounded-xl border border-purple-200 bg-purple-50/40 space-y-3">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-bold text-brand-dark flex items-center gap-2">
+          <span>📦</span> Clash 规则首选：Stash
+        </h2>
+        <span class="px-2 py-0.5 rounded bg-purple-100 text-purple-800 text-xs font-semibold">约 3.99 美元</span>
+      </div>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        如果你在电脑上习惯使用 Clash 策略组和 YAML 规则集，Stash 是 iOS 端体验最贴合 Clash 的原生工具。支持自动按应用、按网络 SSID 切换策略。
+      </p>
+    </section>
+
+    <!-- Safety Warning -->
+    <section class="p-4 rounded-xl border border-amber-200 bg-amber-50 text-xs text-amber-900 leading-relaxed">
+      <strong>⚠️ 苹果用户防坑警告：</strong>
+      网上有很多所谓的“免费小火箭共享账号”，切记只能在 <strong>App Store 商店内登录</strong>，绝对不能在 iPhone “系统设置 -> 最上方 Apple ID / iCloud” 中登录！一旦在系统 iCloud 登录他人账号，手机极易被远程锁定勒索！
+    </section>
+  </div>
+</BaseLayout>

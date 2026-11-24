@@ -1,0 +1,111 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const breadcrumbs = [
+  { name: '客户端', href: '/clients/' },
+  { name: 'Windows 电脑客户端专栏', href: '/clients/windows/' },
+];
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: 'Windows 电脑代理软件选型指南 (2026)：Clash Verge Rev 与 v2rayN 下载配置',
+  description: '全面解析 Windows 平台主流代理软件：Clash Verge Rev（基于 Mihomo 内核）、v2rayN、FlClash 的下载来源、TUN 模式与订阅导入教程。',
+  datePublished: '2026-10-19',
+  dateModified: '2026-11-24',
+  inLanguage: 'zh-CN',
+};
+---
+
+<BaseLayout
+  title="Windows 电脑代理客户端下载与使用教程 (2026) - Clash Verge Rev、v2rayN 官方正版"
+  description="2026 年最新 Windows 电脑代理软件指南：Clash for Windows 停更后推荐使用 Clash Verge Rev、v2rayN，提供 GitHub 官方下载、TUN 虚拟网卡开启教程与防踩坑指南。"
+  breadcrumbs={breadcrumbs}
+  schema={articleSchema}
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+    <header class="pb-6 border-b border-brand-border">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="px-2.5 py-0.5 text-xs font-semibold rounded bg-blue-100 text-blue-800">
+          Windows 专栏
+        </span>
+        <span class="text-xs text-brand-muted">更新日期：2026-11-24</span>
+      </div>
+
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-brand-dark tracking-tight leading-tight">
+        Windows 电脑代理客户端选型与教程 (2026)：Clash Verge Rev 与 v2rayN 正版指引
+      </h1>
+
+      <p class="text-xs sm:text-sm text-slate-600 mt-3 leading-relaxed">
+        随着老旧的 Clash for Windows (CFW) 停止维护，<strong>Clash Verge Rev</strong> 与 <strong>v2rayN</strong> 已成为 Windows 用户最主流的现代化选择。本文梳理官方安全下载渠道与核心配置要领。
+      </p>
+    </header>
+
+    <!-- Top Pick Spotlight: Clash Verge Rev -->
+    <section class="p-6 rounded-xl border border-blue-200 bg-blue-50/40 space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xl font-bold text-brand-dark flex items-center gap-2">
+          <span>🥇</span> 首推软件：Clash Verge Rev (基于 Mihomo 内核)
+        </h2>
+        <span class="px-2 py-0.5 rounded bg-blue-600 text-white text-xs font-semibold">年度首选</span>
+      </div>
+
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        Clash Verge Rev 是目前最成熟的 Clash GUI 替代品。采用 Tauri 框架开发，内存占用更低（约 30MB–60MB），完美继承了 Mihomo 内核的高级分流、Sniffer 域名嗅探与高效 TUN 模式。
+      </p>
+
+      <div class="bg-white p-4 rounded-lg border border-blue-100 text-xs space-y-2">
+        <strong class="text-brand-dark block">新手五分钟上手步骤：</strong>
+        <ol class="list-decimal list-inside space-y-1.5 text-slate-600">
+          <li>访问官方 GitHub Releases 页面，下载 <code class="bg-slate-100 px-1 py-0.5 rounded font-mono">Clash.Verge_x.x.x_x64-setup.exe</code> 安装。</li>
+          <li>在“订阅 (Profiles)”页面，粘贴服务商提供的 Clash 订阅链接，点击“导入 (Import)”。</li>
+          <li>在“代理 (Proxies)”面板中，选择“自动选择”或低延迟的香港/日本专线节点。</li>
+          <li>在“设置 (Settings)”中开启“系统代理 (System Proxy)”；若需要给游戏或特定软件加速，建议额外开启“TUN 模式”。</li>
+        </ol>
+      </div>
+
+      <div class="text-xs pt-1 flex items-center justify-between">
+        <span class="text-slate-500">项目许可：GPL-3.0 · 开源透明</span>
+        <a
+          href="https://github.com/clash-verge-rev/clash-verge-rev"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="font-semibold text-brand-link hover:underline inline-flex items-center gap-1"
+        >
+          <span>前往 GitHub Releases 下载官方安装包</span>
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+          </svg>
+        </a>
+      </div>
+    </section>
+
+    <!-- Alternative Pick: v2rayN -->
+    <section class="p-6 rounded-xl border border-slate-200 bg-white shadow-2xs space-y-3">
+      <h2 class="text-lg font-bold text-brand-dark flex items-center gap-2">
+        <span>🥈</span> 极客备选：v2rayN (Xray / sing-box 多核心引擎)
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+        如果你需要测试成百上千个节点的延迟、需要自由切换 Xray 或 sing-box 核心，或者你的机场提供了原始 VLESS / VMess 链接，v2rayN 是最可靠的批量调试与节点管理工作台。
+      </p>
+      <div class="text-xs text-slate-500">
+        官方项目：<a href="https://github.com/2dust/v2rayN" target="_blank" rel="noopener noreferrer" class="text-brand-link hover:underline">2dust/v2rayN on GitHub</a>
+      </div>
+    </section>
+
+    <!-- Windows FAQ -->
+    <section class="space-y-4">
+      <h2 class="text-lg font-bold text-brand-dark border-b border-slate-200 pb-2">
+        Windows 常见疑问解答
+      </h2>
+      <div class="space-y-3 text-xs sm:text-sm">
+        <div class="p-4 rounded-lg border border-slate-200 bg-slate-50">
+          <h3 class="font-bold text-brand-dark mb-1">Q: 为什么打开 Clash Verge 后浏览器打不开网页，提示代理服务器连接被拒绝？</h3>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            通常是因为系统代理设置未正常关闭便强制退出了软件。解决办法：重新打开 Clash Verge，关闭“系统代理”开关；或者在 Windows 设置 -> 网络和 Internet -> 代理中，关闭“使用代理服务器”。
+          </p>
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

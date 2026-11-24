@@ -1,0 +1,71 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const breadcrumbs = [
+  { name: '事实更正', href: '/corrections/' },
+];
+
+const logs = [
+  {
+    date: '2026-11-24',
+    title: '品牌去重与重复别名合并修正',
+    desc: '将附录中的“Firefly 萤火虫”合并至主体 Firefly 档案，别名予以保留，避免重复生成两个竞争页面。',
+    status: '已实施'
+  },
+  {
+    date: '2026-11-24',
+    title: '光速云套餐月流量冲突标注与核准',
+    desc: '在光速云档案中明确指出 59GB 与 69GB 的口径差异，并在详细表中以 69GB 为准，增加订购页核对提示。',
+    status: '已实施'
+  },
+  {
+    date: '2026-11-24',
+    title: '云界线与环球梯推广链接格式异常提示',
+    desc: '核实发现两家品牌的推广 URL 缺失 #/ 锚点，如实保留原链接并增加防失效提示。',
+    status: '已实施'
+  }
+];
+---
+
+<BaseLayout
+  title="事实更正与版本修订日志 - 机场 Wiki"
+  description="机场 Wiki 事实勘误公开记录：追踪数据纠错、价格变更修复与用户反馈处理状态。"
+  breadcrumbs={breadcrumbs}
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <header class="pb-6 border-b border-brand-border">
+      <h1 class="text-3xl font-extrabold text-brand-dark">事实更正与版本修订日志</h1>
+      <p class="text-xs text-brand-muted mt-1">公开透明 · 有错必纠</p>
+    </header>
+
+    <div class="space-y-4">
+      {logs.map((log) => (
+        <div class="p-5 rounded-xl border border-slate-200 bg-white shadow-2xs space-y-2">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-mono text-slate-400">{log.date}</span>
+            <span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 font-semibold border border-emerald-100">
+              {log.status}
+            </span>
+          </div>
+          <h2 class="text-base font-bold text-brand-dark">{log.title}</h2>
+          <p class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-lg border border-slate-100">
+            {log.desc}
+          </p>
+        </div>
+      ))}
+    </div>
+
+    <!-- Submit Correction Form / Contact -->
+    <div class="p-6 rounded-xl border border-blue-200 bg-blue-50/40 text-xs sm:text-sm text-slate-700 space-y-3">
+      <h3 class="font-bold text-brand-dark text-base">发现数据过时或错误？</h3>
+      <p>
+        欢迎服务商官方或读者向我们提供第一手的官网最新截图或订购页面证据。我们将尽快核验并在下一版本快照中更新。
+      </p>
+      <div class="pt-2">
+        <a href="/contact/" class="text-brand-link font-medium hover:underline">
+          前往联系编辑部提交更正线索 →
+        </a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

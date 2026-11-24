@@ -1,0 +1,90 @@
+---
+export interface UnlockingStatus {
+  chatgpt: 'supported' | 'partial' | 'unavailable' | 'untested';
+  claude: 'supported' | 'partial' | 'unavailable' | 'untested';
+  gemini: 'supported' | 'partial' | 'unavailable' | 'untested';
+  netflix: 'supported' | 'partial' | 'unavailable' | 'untested';
+  disney: 'supported' | 'partial' | 'unavailable' | 'untested';
+  youtube: 'supported' | 'partial' | 'unavailable' | 'untested';
+  tiktok: 'supported' | 'partial' | 'unavailable' | 'untested';
+}
+
+export interface Props {
+  brandName: string;
+  unlocking: any;
+  checkDate?: string;
+}
+
+const {
+  brandName,
+  unlocking,
+  checkDate = '2026-10-19',
+} = Astro.props;
+
+const services = [
+  { key: 'chatgpt', name: 'ChatGPT', type: 'AI 工具', icon: '🤖' },
+  { key: 'claude', name: 'Claude', type: 'AI 工具', icon: '🧠' },
+  { key: 'gemini', name: 'Gemini', type: 'AI 工具', icon: '✨' },
+  { key: 'netflix', name: 'Netflix', type: '流媒体', icon: '🍿' },
+  { key: 'disney', name: 'Disney+', type: '流媒体', icon: '🏰' },
+  { key: 'youtube', name: 'YouTube 4K', type: '流媒体', icon: '▶️' },
+  { key: 'tiktok', name: 'TikTok 跨区', type: '海外社媒', icon: '📱' },
+];
+
+const getStatusBadge = (status: string) => {
+  switch (status) {
+    case 'supported':
+      return { label: 'Operational (支持)', color: 'text-emerald-400 border-emerald-500/30 bg-emerald-950/30' };
+    case 'partial':
+      return { label: 'Partial (视节点)', color: 'text-amber-300 border-amber-500/30 bg-amber-950/30' };
+    case 'unavailable':
+      return { label: 'Unavailable (受限)', color: 'text-rose-400 border-rose-500/30 bg-rose-950/30' };
+    default:
+      return { label: 'Untested (未实测)', color: 'text-slate-400 border-slate-700 bg-slate-900/40' };
+  }
+};
+---
+
+<div class="bg-lab-bg text-lab-text rounded-xl border border-lab-border p-5 my-6 font-mono shadow-md overflow-hidden">
+  <!-- Header -->
+  <div class="flex flex-wrap items-center justify-between pb-3.5 border-b border-lab-border/70 gap-2">
+    <div class="flex items-center gap-2">
+      <span class="inline-block w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
+      <span class="text-sm font-semibold tracking-tight text-white">
+        SERVICE AVAILABILITY MATRIX // {brandName}
+      </span>
+    </div>
+    <div class="text-xs text-lab-muted">
+      核验时间: <span class="text-slate-300">{checkDate}</span>
+    </div>
+  </div>
+
+  <!-- Matrix Grid -->
+  <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3 py-4">
+    {services.map((item) => {
+      const status = unlocking[item.key as keyof UnlockingStatus] || 'untested';
+      const badge = getStatusBadge(status);
+      return (
+        <div class="bg-lab-surface border border-lab-border/80 rounded-lg p-2.5 sm:p-3 flex flex-col justify-between hover:border-slate-500 transition-colors">
+          <div class="flex items-center justify-between gap-1 mb-2">
+            <span class="text-xs font-semibold text-white flex items-center gap-1.5 truncate">
+              <span>{item.icon}</span>
+              <span class="truncate">{item.name}</span>
+            </span>
+            <span class="text-[10px] text-lab-muted shrink-0">{item.type}</span>
+          </div>
+          <div class:list={['text-center py-1 px-1.5 rounded text-[11px] font-medium border whitespace-nowrap', badge.color]}>
+            {badge.label}
+          </div>
+        </div>
+      );
+    })}
+  </div>
+
+  <!-- Rule & Risk Disclaimer -->
+  <div class="pt-3 border-t border-lab-border/70 text-[11px] text-lab-muted leading-relaxed">
+    <p>
+      * 解锁状态受官方服务商（OpenAI、Netflix、Google）IP 风控规则动态调整影响，本站记录不构成永久有效承诺。建议根据实际使用环境开启规则分流。
+    </p>
+  </div>
+</div>

@@ -1,0 +1,90 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const breadcrumbs = [
+  { name: '教程与排障', href: '/guides/' },
+];
+
+const guideList = [
+  {
+    title: '节点全部超时（-1ms / 10000ms）终极排查手册',
+    desc: '从系统时间同步偏差、订阅过期、防火墙冲突到 TUN 模式死锁，逐步定位并解决连不上问题。',
+    href: '/guides/node-timeout-troubleshooting/',
+    tag: '高频故障',
+    difficulty: '入门级'
+  },
+  {
+    title: 'TUN 虚拟网卡模式原理解析与游戏分流配置',
+    desc: '为什么普通浏览器代理无法给非系统代理软件加速？开启 TUN 模式如何接管所有 UDP 流量。',
+    href: '/guides/node-timeout-troubleshooting/#tun-guide',
+    tag: '进阶技能',
+    difficulty: '中级'
+  },
+  {
+    title: 'Clash 规则分流配置入门：如何让国内网站直连？',
+    desc: '搞懂 DIRECT（直连）、PROXY（代理）、REJECT（拦截）策略，告别访问淘宝或网银变慢的困扰。',
+    href: '/guides/node-timeout-troubleshooting/#rule-split',
+    tag: '基础教程',
+    difficulty: '入门级'
+  },
+  {
+    title: 'DNS 污染与 DNS 泄漏深度防范指南',
+    desc: '理解 Fake-IP 模式与 Redir-Host 模式的区别，防止本地运营商 DNS 劫持你的域名解析。',
+    href: '/guides/node-timeout-troubleshooting/#dns-leak',
+    tag: '安全防护',
+    difficulty: '高级'
+  }
+];
+---
+
+<BaseLayout
+  title="网络排障与使用教程中心 (2026) - 节点超时、订阅导入与 TUN 模式配置指南"
+  description="针对日常网络诊断与合法测试提供详尽指南：涵盖节点超时排查、Clash 规则分流定制、TUN 网卡模式开启及 DNS 泄漏防范教程。"
+  breadcrumbs={breadcrumbs}
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+    <header class="pb-6 border-b border-brand-border">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="px-2.5 py-0.5 text-xs font-semibold rounded bg-emerald-100 text-emerald-800">
+          实战技术手册
+        </span>
+        <span class="text-xs text-brand-muted">更新日期：2026-11-24</span>
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-brand-dark tracking-tight">
+        网络加速实用指南与故障排障中心
+      </h1>
+      <p class="text-sm text-brand-muted mt-2 max-w-3xl leading-relaxed">
+        本教程专栏面向合法授权网络日常测试与故障诊断编写。所有配置示例均去标识化，不包含真实敏感凭证，严格遵守安全规范，不要求关闭 Windows Defender 或系统防火墙。
+      </p>
+    </header>
+
+    <!-- Guides Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {guideList.map((g) => (
+        <a
+          href={g.href}
+          class="p-6 rounded-xl border border-brand-border bg-white shadow-xs hover:border-brand-link hover:shadow-md transition-all group flex flex-col justify-between"
+        >
+          <div>
+            <div class="flex items-center justify-between mb-2.5">
+              <span class="text-xs font-semibold px-2 py-0.5 rounded bg-blue-50 text-brand-link border border-blue-100">
+                {g.tag}
+              </span>
+              <span class="text-[11px] text-slate-400">难度: {g.difficulty}</span>
+            </div>
+            <h3 class="text-base font-bold text-brand-dark group-hover:text-brand-link mb-2">
+              {g.title}
+            </h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              {g.desc}
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 text-xs font-semibold text-brand-link flex items-center justify-between">
+            <span>查阅完整教程步骤</span>
+            <span>→</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</BaseLayout>

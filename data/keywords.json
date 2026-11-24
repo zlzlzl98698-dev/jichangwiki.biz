@@ -1,0 +1,534 @@
+[
+  {
+    "keyword": "机场推荐",
+    "intent": "commercial_investigation",
+    "targetUrl": "/recommend/",
+    "priority": "P0",
+    "volume": "高"
+  },
+  {
+    "keyword": "便宜机场",
+    "intent": "commercial_investigation",
+    "targetUrl": "/pricing/",
+    "priority": "P0",
+    "volume": "高"
+  },
+  {
+    "keyword": "稳定机场",
+    "intent": "commercial_investigation",
+    "targetUrl": "/recommend/stable/",
+    "priority": "P0",
+    "volume": "高"
+  },
+  {
+    "keyword": "IEPL专线机场",
+    "intent": "informational",
+    "targetUrl": "/network/iepl/",
+    "priority": "P0",
+    "volume": "高"
+  },
+  {
+    "keyword": "IPLC专线",
+    "intent": "informational",
+    "targetUrl": "/network/iplc/",
+    "priority": "P0",
+    "volume": "高"
+  },
+  {
+    "keyword": "Clash Verge Rev下载",
+    "intent": "transactional",
+    "targetUrl": "/clients/windows/",
+    "priority": "P0",
+    "volume": "高"
+  },
+  {
+    "keyword": "Shadowrocket下载与使用",
+    "intent": "transactional",
+    "targetUrl": "/clients/ios/",
+    "priority": "P0",
+    "volume": "高"
+  },
+  {
+    "keyword": "ChatGPT节点推荐",
+    "intent": "commercial_investigation",
+    "targetUrl": "/compatibility/chatgpt/",
+    "priority": "P0",
+    "volume": "高"
+  },
+  {
+    "keyword": "光速云怎么样",
+    "intent": "commercial_investigation",
+    "targetUrl": "/brands/guangsu/",
+    "priority": "P0",
+    "volume": "高"
+  },
+  {
+    "keyword": "微风网络",
+    "intent": "commercial_investigation",
+    "targetUrl": "/brands/weifeng/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "飞猫云",
+    "intent": "commercial_investigation",
+    "targetUrl": "/brands/feimao/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "暮光加速",
+    "intent": "commercial_investigation",
+    "targetUrl": "/brands/muguang/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "节点超时排查",
+    "intent": "informational",
+    "targetUrl": "/guides/node-timeout-troubleshooting/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "机场跑路名单与防范",
+    "intent": "informational",
+    "targetUrl": "/evidence/refunds-and-risks/",
+    "priority": "P0",
+    "volume": "高"
+  },
+  {
+    "keyword": "光速云官网",
+    "intent": "transactional",
+    "targetUrl": "/brands/guangsu/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "光速云评测",
+    "intent": "commercial_investigation",
+    "targetUrl": "/reviews/guangsu/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "暮光加速官网",
+    "intent": "transactional",
+    "targetUrl": "/brands/muguang/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "暮光加速评测",
+    "intent": "commercial_investigation",
+    "targetUrl": "/reviews/muguang/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "飞猫云官网",
+    "intent": "transactional",
+    "targetUrl": "/brands/feimao/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "飞猫云评测",
+    "intent": "commercial_investigation",
+    "targetUrl": "/reviews/feimao/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "微风网络官网",
+    "intent": "transactional",
+    "targetUrl": "/brands/weifeng/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "微风网络评测",
+    "intent": "commercial_investigation",
+    "targetUrl": "/reviews/weifeng/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "大佬云官网",
+    "intent": "transactional",
+    "targetUrl": "/brands/dalaoyun/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "大佬云评测",
+    "intent": "commercial_investigation",
+    "targetUrl": "/reviews/dalaoyun/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "星岛梦官网",
+    "intent": "transactional",
+    "targetUrl": "/brands/xingdaomeng/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "星岛梦评测",
+    "intent": "commercial_investigation",
+    "targetUrl": "/reviews/xingdaomeng/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "二猫云官网",
+    "intent": "transactional",
+    "targetUrl": "/brands/ermao/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "二猫云评测",
+    "intent": "commercial_investigation",
+    "targetUrl": "/reviews/ermao/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "无忧链接官网",
+    "intent": "transactional",
+    "targetUrl": "/brands/wuyou/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "无忧链接评测",
+    "intent": "commercial_investigation",
+    "targetUrl": "/reviews/wuyou/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "唯兔云官网",
+    "intent": "transactional",
+    "targetUrl": "/brands/weitu/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "唯兔云评测",
+    "intent": "commercial_investigation",
+    "targetUrl": "/reviews/weitu/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "Firefly官网",
+    "intent": "transactional",
+    "targetUrl": "/brands/firefly/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "Firefly评测",
+    "intent": "commercial_investigation",
+    "targetUrl": "/reviews/firefly/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "宇宙云官网",
+    "intent": "transactional",
+    "targetUrl": "/brands/yuzhou/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "宇宙云评测",
+    "intent": "commercial_investigation",
+    "targetUrl": "/reviews/yuzhou/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "U1S1官网",
+    "intent": "transactional",
+    "targetUrl": "/brands/u1s1/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "U1S1评测",
+    "intent": "commercial_investigation",
+    "targetUrl": "/reviews/u1s1/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "灵猫网络官网",
+    "intent": "transactional",
+    "targetUrl": "/brands/lingmao/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "灵猫网络评测",
+    "intent": "commercial_investigation",
+    "targetUrl": "/reviews/lingmao/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "极连云官网",
+    "intent": "transactional",
+    "targetUrl": "/brands/jilian/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "极连云评测",
+    "intent": "commercial_investigation",
+    "targetUrl": "/reviews/jilian/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "光年梯官网",
+    "intent": "transactional",
+    "targetUrl": "/brands/guangnian/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "光年梯评测",
+    "intent": "commercial_investigation",
+    "targetUrl": "/reviews/guangnian/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "一翻云官网",
+    "intent": "transactional",
+    "targetUrl": "/brands/yifan/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "一翻云评测",
+    "intent": "commercial_investigation",
+    "targetUrl": "/reviews/yifan/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "SOGO云官网",
+    "intent": "transactional",
+    "targetUrl": "/brands/sogo/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "SOGO云评测",
+    "intent": "commercial_investigation",
+    "targetUrl": "/reviews/sogo/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "可信云官网",
+    "intent": "transactional",
+    "targetUrl": "/brands/kexin/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "可信云评测",
+    "intent": "commercial_investigation",
+    "targetUrl": "/reviews/kexin/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "速界官网",
+    "intent": "transactional",
+    "targetUrl": "/brands/sujie/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "速界评测",
+    "intent": "commercial_investigation",
+    "targetUrl": "/reviews/sujie/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "闪跃官网",
+    "intent": "transactional",
+    "targetUrl": "/brands/shanyue/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "闪跃评测",
+    "intent": "commercial_investigation",
+    "targetUrl": "/reviews/shanyue/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "全球云官网",
+    "intent": "transactional",
+    "targetUrl": "/brands/quanqiu/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "全球云评测",
+    "intent": "commercial_investigation",
+    "targetUrl": "/reviews/quanqiu/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "闪电鼠官网",
+    "intent": "transactional",
+    "targetUrl": "/brands/shandianshu/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "闪电鼠评测",
+    "intent": "commercial_investigation",
+    "targetUrl": "/reviews/shandianshu/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "云界线官网",
+    "intent": "transactional",
+    "targetUrl": "/brands/yunjiexian/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "云界线评测",
+    "intent": "commercial_investigation",
+    "targetUrl": "/reviews/yunjiexian/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "榴莲云官网",
+    "intent": "transactional",
+    "targetUrl": "/brands/liulianyun/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "榴莲云评测",
+    "intent": "commercial_investigation",
+    "targetUrl": "/reviews/liulianyun/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "神行加速官网",
+    "intent": "transactional",
+    "targetUrl": "/brands/shenxing/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "神行加速评测",
+    "intent": "commercial_investigation",
+    "targetUrl": "/reviews/shenxing/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "环球梯官网",
+    "intent": "transactional",
+    "targetUrl": "/brands/huanqiuti/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "环球梯评测",
+    "intent": "commercial_investigation",
+    "targetUrl": "/reviews/huanqiuti/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "隐形人官网",
+    "intent": "transactional",
+    "targetUrl": "/brands/yinxingren/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "隐形人评测",
+    "intent": "commercial_investigation",
+    "targetUrl": "/reviews/yinxingren/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "梯子云官网",
+    "intent": "transactional",
+    "targetUrl": "/brands/tiziyun/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "梯子云评测",
+    "intent": "commercial_investigation",
+    "targetUrl": "/reviews/tiziyun/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "灵动云官网",
+    "intent": "transactional",
+    "targetUrl": "/brands/lingdong/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "灵动云评测",
+    "intent": "commercial_investigation",
+    "targetUrl": "/reviews/lingdong/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "浪网官网",
+    "intent": "transactional",
+    "targetUrl": "/brands/langwang/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "浪网评测",
+    "intent": "commercial_investigation",
+    "targetUrl": "/reviews/langwang/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "边缘节点 EdgeNova官网",
+    "intent": "transactional",
+    "targetUrl": "/brands/edgenova/",
+    "priority": "P1",
+    "volume": "中"
+  },
+  {
+    "keyword": "边缘节点 EdgeNova评测",
+    "intent": "commercial_investigation",
+    "targetUrl": "/reviews/edgenova/",
+    "priority": "P1",
+    "volume": "中"
+  }
+]

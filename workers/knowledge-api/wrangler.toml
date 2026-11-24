@@ -1,0 +1,16 @@
+name = "jichangwiki-knowledge-api"
+main = "src/index.ts"
+compatibility_date = "2024-11-01"
+compatibility_flags = ["nodejs_compat"]
+
+# D1 Database binding
+[[d1_databases]]
+binding = "DB"
+database_name = "jichangwiki-db"
+database_id = "local-d1-placeholder"
+migrations_dir = "migrations"
+
+# Environment Variables
+[vars]
+ENVIRONMENT = "production"
+PUBLIC_SITE_ORIGIN = "https://jichangwiki.biz"

@@ -1,0 +1,85 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SpeedTestReport from '../../components/observatory/SpeedTestReport.astro';
+import brands from '../../data/published-brands.json';
+
+const breadcrumbs = [
+  { name: '证据与风险', href: '/evidence/' },
+];
+
+const testedBrands = brands.filter((b) => b.speedHighlights.length > 0);
+---
+
+<BaseLayout
+  title="证据中心与数据观测实验室 (2026) - 测速方法论、历史测试日志与风险预警"
+  description="机场 Wiki 证据中心：公开测试方法论、真实测速日志、IP 风控观测记录与服务商经营风险预警，坚持实事求是，杜绝未经证实的跑路谣言。"
+  breadcrumbs={breadcrumbs}
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+    <header class="pb-6 border-b border-brand-border">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="px-2.5 py-0.5 text-xs font-semibold rounded bg-slate-200 text-slate-800">
+          证据中心与观测实验室
+        </span>
+        <span class="text-xs text-brand-muted">更新日期：2026-11-24</span>
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-brand-dark tracking-tight">
+        可溯源证据中心、历史测速档案与行业风险预警
+      </h1>
+      <p class="text-sm text-brand-muted mt-2 max-w-3xl leading-relaxed">
+        本页面汇集本站所有可核验的历史测速原图数据、流媒体检测记录与价格变动日志。所有证据均保留时间戳、测试时段与方法限制说明。在未经法律证实或多方实锤前，不得随意对任何品牌扣上“跑路或欺诈”帽子。
+      </p>
+    </header>
+
+    <!-- Subpage highlight: Refunds & Risks -->
+    <div class="p-5 rounded-xl border border-red-200 bg-red-50/50 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div>
+        <h3 class="font-bold text-base text-red-950">运营风险与退款纠纷避坑专题</h3>
+        <p class="text-xs text-red-800/80 mt-1">分析机场行业“不支持退款”行规、域名污染应对、主备容灾策略与消费者自保四守则。</p>
+      </div>
+      <a
+        href="/evidence/refunds-and-risks/"
+        class="px-4 py-2 rounded-lg bg-red-700 hover:bg-red-800 text-white font-medium text-xs transition-colors shrink-0"
+      >
+        查阅风险防范专题 →
+      </a>
+    </div>
+
+    <!-- Methodology Statement -->
+    <section class="p-6 rounded-xl border border-brand-border bg-white shadow-2xs space-y-3">
+      <h2 class="text-lg font-bold text-brand-dark">测试方法论与数据可比性说明</h2>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        网络加速受三大物理变量影响：<strong>用户本地运营商宽带（电信/联通/移动/广电）</strong>、<strong>境内入口中转机房调度</strong>、<strong>境外落地节点出口状态</strong>。因此，任何单一测试记录只能代表“特定时间特定地理位置”的物理表现。
+      </p>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-xs text-slate-600">
+        <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
+          <strong>1. 测试时段标注：</strong>明确区分晚高峰（20:00–23:00）与非晚高峰（白天），未注明时段的记录不纳入高峰对比。
+        </div>
+        <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
+          <strong>2. 工具与单位标准：</strong>明确区分 Mbps（兆比特/秒）与 MB/s（兆字节/秒，1 MB/s = 8 Mbps），杜绝数字偷换。
+        </div>
+        <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
+          <strong>3. 缺失字段如实保留：</strong>没有实测数据的品牌一律标记为“未实测”，禁止编造任何虚假图表。
+        </div>
+      </div>
+    </section>
+
+    <!-- Speed Reports Collection -->
+    <section class="space-y-6">
+      <h2 class="text-xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        已收录历史测速记录 (前 4 家服务商示例)
+      </h2>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {testedBrands.slice(0, 4).map((b) => (
+          <SpeedTestReport
+            brandName={b.name}
+            testDate="2026-10-19"
+            testWindow="提供方历史非晚高峰测试"
+            nodes={b.speedHighlights}
+            dataStatus={b.dataStatus}
+          />
+        ))}
+      </div>
+    </section>
+  </div>
+</BaseLayout>

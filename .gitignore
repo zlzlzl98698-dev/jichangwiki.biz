@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build artifacts
+dist/
+.astro/
+.cache/
+
+# Cloudflare & Wrangler
+.wrangler/
+.mf/
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# Sensitive raw data & logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+Thumbs.db

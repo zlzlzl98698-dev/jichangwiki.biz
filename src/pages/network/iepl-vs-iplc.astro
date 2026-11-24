@@ -1,0 +1,156 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import NetworkPathObservatory from '../../components/observatory/NetworkPathObservatory.astro';
+
+const breadcrumbs = [
+  { name: '网络技术', href: '/network/' },
+  { name: 'IEPL vs IPLC 专线全面解析', href: '/network/iepl-vs-iplc/' },
+];
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: 'IEPL 与 IPLC 专线深度对比：技术架构、抗封锁原理与选购建议',
+  description: '全面解析 IEPL 国际以太网专线与 IPLC 私有租用线路的区别，为什么流量不过 GFW，以及机场如何权衡成本与晚高峰稳定性。',
+  datePublished: '2026-10-19',
+  dateModified: '2026-11-24',
+  inLanguage: 'zh-CN',
+};
+---
+
+<BaseLayout
+  title="IEPL与IPLC专线区别全面解析 (2026) - 原理、延迟、抗封锁与成本对照"
+  description="深度解析 IEPL（国际以太网专线）与 IPLC（国际私有租用线路）的技术原理、二层与物理层差异、为什么不过 GFW 以及如何挑选稳定专线机场。"
+  breadcrumbs={breadcrumbs}
+  schema={articleSchema}
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+    <header class="pb-6 border-b border-brand-border">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="px-2.5 py-0.5 text-xs font-semibold rounded bg-cyan-100 text-cyan-800">
+          专线核心技术
+        </span>
+        <span class="text-xs text-brand-muted">更新日期：2026-11-24</span>
+      </div>
+
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-brand-dark tracking-tight leading-tight">
+        IEPL vs IPLC 专线全面解析：技术原理、抗封锁机制与真实成本对比
+      </h1>
+
+      <p class="text-xs sm:text-sm text-slate-600 mt-3 leading-relaxed">
+        在各大机场的宣传文案中，“全线 IEPL”、“纯物理 IPLC”常被作为高级卖点频繁提及。这两种专线究竟有什么技术区别？为什么它们在敏感时期具备高存活性？本文从电信网络底层架构为你讲清本质。
+      </p>
+    </header>
+
+    <!-- Visual Diagram -->
+    <NetworkPathObservatory
+      brandName="IEPL / IPLC 专线拓扑对比示意"
+      networkType="IEPL (Layer 2 Ethernet) / IPLC (Layer 1 TDM)"
+      protocol="加密封装"
+      transitBGP="国内中转节点"
+      overseasEgress="海外落地 POP 点"
+    />
+
+    <!-- Chapter 1: Definitions -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        一、什么是 IPLC？什么是 IEPL？
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs sm:text-sm text-slate-700">
+        <div class="p-4 rounded-xl border border-slate-200 bg-white shadow-2xs space-y-2">
+          <h3 class="font-bold text-base text-brand-dark">IPLC (International Private Leased Circuit)</h3>
+          <p class="leading-relaxed text-xs">
+            国际私有租用线路。本质上是电信运营商在跨国海缆或陆缆上开辟的<strong>物理层（OSI Layer 1）或 TDM 纯管道</strong>。对于用户而言，相当于在深圳与香港之间拉了一条专属直连物理光纤。
+          </p>
+          <ul class="list-disc list-inside text-xs text-slate-600 space-y-1">
+            <li>传输延迟极低（接近光纤极限物理延迟）</li>
+            <li>抖动几乎为零，带宽完全独享</li>
+            <li>造价昂贵，通常以 Mbps 为单位按月计费</li>
+          </ul>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-white shadow-2xs space-y-2">
+          <h3 class="font-bold text-base text-brand-dark">IEPL (International Ethernet Private Line)</h3>
+          <p class="leading-relaxed text-xs">
+            国际以太网专线。基于运营商的以太网传输网络（如 SDH/MSTP/OTN）封装的<strong>数据链路层（OSI Layer 2）点对点连接</strong>。
+          </p>
+          <ul class="list-disc list-inside text-xs text-slate-600 space-y-1">
+            <li>扩展性极高，易于调整带宽规格</li>
+            <li>容灾切换更灵活（支持环网自动愈合）</li>
+            <li>性价比优于 IPLC，是当前主流高端机场的首选</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chapter 2: Why not blocked by GFW? -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        二、为什么专线不过 GFW（防火长城）？
+      </h2>
+      <div class="text-xs sm:text-sm text-slate-700 leading-relaxed space-y-3">
+        <p>
+          普通网络连接（如直连 VPS 或普通公网中转）经过国内公网出口路由器，所有 TCP/UDP 数据包必须接受骨干网边界 GFW 的深度包检测（DPI）。一旦发现 TLS 握手特征异常或流量过大，即会触发阻断或 QoS 限速。
+        </p>
+        <p>
+          而无论是 <strong>IPLC 还是 IEPL</strong>，都是向具有跨境通信资质的电信运营商（如中国电信、中国联通、中国移动国际公司）租赁的<strong>私有合规企业传输通道</strong>。其跨境端点之间为内网封装传输，流量不进入公网互联互通节点，因此从根本上绕开了公网 DPI 检测设备。
+        </p>
+      </div>
+    </section>
+
+    <!-- Chapter 3: Comparison Table -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        三、IEPL 与 IPLC 详细技术指标对照
+      </h2>
+      <div class="overflow-x-auto custom-scrollbar">
+        <table class="w-full text-xs text-left border border-slate-200 rounded-xl overflow-hidden shadow-2xs">
+          <thead class="bg-slate-100 text-slate-800">
+            <tr>
+              <th class="py-3 px-4 font-semibold">技术特性</th>
+              <th class="py-3 px-4 font-semibold text-blue-700">IEPL 专线</th>
+              <th class="py-3 px-4 font-semibold text-teal-700">IPLC 专线</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200 bg-white">
+            <tr>
+              <th class="py-3 px-4 bg-slate-50 font-semibold text-slate-700">OSI 协议层级</th>
+              <td class="py-3 px-4">Layer 2 (以太网二层)</td>
+              <td class="py-3 px-4">Layer 1 (物理层 / TDM)</td>
+            </tr>
+            <tr>
+              <th class="py-3 px-4 bg-slate-50 font-semibold text-slate-700">网络抖动 (Jitter)</th>
+              <td class="py-3 px-4">&lt; 2ms (极优)</td>
+              <td class="py-3 px-4">&lt; 0.5ms (极限物理稳)</td>
+            </tr>
+            <tr>
+              <th class="py-3 px-4 bg-slate-50 font-semibold text-slate-700">带宽扩容灵活性</th>
+              <td class="py-3 px-4">高（软件秒级调速）</td>
+              <td class="py-3 px-4">中（需光路端口调整）</td>
+            </tr>
+            <tr>
+              <th class="py-3 px-4 bg-slate-50 font-semibold text-slate-700">海缆中断容灾</th>
+              <td class="py-3 px-4">自动路由环网倒换</td>
+              <td class="py-3 px-4">依赖预留备份光纤</td>
+            </tr>
+            <tr>
+              <th class="py-3 px-4 bg-slate-50 font-semibold text-slate-700">综合性价比</th>
+              <td class="py-3 px-4 font-bold text-emerald-600">高（主流机场黄金方案）</td>
+              <td class="py-3 px-4 font-bold text-amber-600">中等（高成本旗舰方案）</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Chapter 4: Multiplier Trap -->
+    <section id="multipliers" class="space-y-3">
+      <h2 class="text-xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        四、小心“流量倍率”背后的隐形扣费
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        部分机场虽然声称拥有专线，但在节点列表中为 IEPL 或 IPLC 节点设置了 <strong>2.0x 甚至 3.0x 的流量倍率</strong>。这意味着你看 1GB 的视频，实际在账户中扣除 2GB–3GB 流量。本站收录的规范品牌（如光速云、星岛梦、二猫云等）普遍承诺核心节点全 1.0x 结算，选购时务必核验节点倍率。
+      </p>
+    </section>
+  </div>
+</BaseLayout>

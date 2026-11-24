@@ -1,0 +1,138 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const breadcrumbs = [
+  { name: '公开数据', href: '/data/' },
+];
+
+const datasetSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Dataset',
+  name: '机场 Wiki 品牌知识库 1.0 公开数据集',
+  description: '收录 31 家网络加速服务商的结构化参数、线路协议、价格折算与流媒体可用性数据。',
+  url: 'https://jichangwiki.biz/data/',
+  license: 'https://creativecommons.org/licenses/by/4.0/',
+  distribution: [
+    {
+      '@type': 'DataDownload',
+      encodingFormat: 'application/json',
+      contentUrl: 'https://jichangwiki.biz/data/brands-v1.0.json',
+    },
+    {
+      '@type': 'DataDownload',
+      encodingFormat: 'text/csv',
+      contentUrl: 'https://jichangwiki.biz/data/brands-v1.0.csv',
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="公开数据下载与字段字典 (v1.0) - 机场 Wiki"
+  description="机场 Wiki 提供经过审计的 31 家品牌结构化数据快照下载（JSON / CSV），包含完整的字段定义字典与更新时间戳。"
+  breadcrumbs={breadcrumbs}
+  schema={datasetSchema}
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <header class="pb-6 border-b border-brand-border">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="px-2.5 py-0.5 text-xs font-semibold rounded bg-blue-100 text-blue-800">
+          开源开放数据
+        </span>
+        <span class="text-xs text-brand-muted">版本：v1.0 · 数据核准：2026-11-24</span>
+      </div>
+      <h1 class="text-3xl font-extrabold text-brand-dark">公开数据快照与数据字典</h1>
+      <p class="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed">
+        本页面提供已审核公开数据的版本快照下载。仅包含经过脱敏处理的可公开技术字段，不包含任何个人隐私凭证或推广后台私有数据。欢迎研究人员与开发者引用。
+      </p>
+    </header>
+
+    <!-- Download Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <div class="p-6 rounded-xl border border-slate-200 bg-white shadow-2xs space-y-3 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="px-2 py-0.5 text-xs font-mono font-bold bg-blue-50 text-blue-700 rounded">
+              JSON FORMAT
+            </span>
+            <span class="text-xs text-slate-400 font-mono">v1.0.0</span>
+          </div>
+          <h2 class="text-base font-bold text-brand-dark">31 家品牌实体 JSON 快照</h2>
+          <p class="text-xs text-slate-600 mt-1">适合程序解析与自动化测试，包含完整的嵌套测速与解锁状态。</p>
+        </div>
+        <div class="pt-3 border-t border-slate-100">
+          <a
+            href="/data/brands-v1.0.json"
+            download
+            class="w-full inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-brand-dark hover:bg-brand-link text-white text-xs font-semibold transition-colors"
+          >
+            <span>下载 JSON 文件</span>
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="p-6 rounded-xl border border-slate-200 bg-white shadow-2xs space-y-3 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="px-2 py-0.5 text-xs font-mono font-bold bg-green-50 text-green-700 rounded">
+              CSV FORMAT
+            </span>
+            <span class="text-xs text-slate-400 font-mono">v1.0.0</span>
+          </div>
+          <h2 class="text-base font-bold text-brand-dark">31 家品牌表格 CSV 快照</h2>
+          <p class="text-xs text-slate-600 mt-1">适合在 Excel 或 Google Sheets 中快速筛选、透视分析价格与线路。</p>
+        </div>
+        <div class="pt-3 border-t border-slate-100">
+          <a
+            href="/data/brands-v1.0.csv"
+            download
+            class="w-full inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-brand-dark hover:bg-brand-link text-white text-xs font-semibold transition-colors"
+          >
+            <span>下载 CSV 表格</span>
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data Dictionary -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        公开数据集字段定义字典 (Data Dictionary)
+      </h2>
+      <div class="overflow-x-auto custom-scrollbar">
+        <table class="w-full text-xs text-left border border-slate-200 rounded-xl overflow-hidden shadow-2xs">
+          <thead class="bg-slate-100 text-slate-800">
+            <tr>
+              <th class="py-2.5 px-4 font-semibold w-40">字段名称 (Key)</th>
+              <th class="py-2.5 px-4 font-semibold">语义定义与枚举取值</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200 bg-white">
+            <tr>
+              <td class="py-2.5 px-4 font-mono font-bold text-blue-700">id</td>
+              <td class="py-2.5 px-4 text-slate-700">持久化实体 ID，格式如 brand-guangsu，不可变更。</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 px-4 font-mono font-bold text-blue-700">startingMonthlyCny</td>
+              <td class="py-2.5 px-4 text-slate-700">按人民币元计算的标准每月起步折算费用（浮点数）。</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 px-4 font-mono font-bold text-blue-700">clientMode</td>
+              <td class="py-2.5 px-4 text-slate-700">客户端模式：dual (双支持) / custom_app_only (仅专属App)。</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 px-4 font-mono font-bold text-blue-700">dataStatus</td>
+              <td class="py-2.5 px-4 text-slate-700">数据可信度：vendor_claim (商家自述) / historical_record (历史日志) / independently_verified (独立实测)。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

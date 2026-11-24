@@ -1,0 +1,119 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import NetworkPathObservatory from '../../components/observatory/NetworkPathObservatory.astro';
+
+const breadcrumbs = [
+  { name: '网络技术', href: '/network/' },
+];
+
+const topics = [
+  {
+    title: 'IEPL vs IPLC 专线全面对比',
+    slug: 'iepl-vs-iplc',
+    desc: '解析以太网二层专线与纯物理租用线路的技术差异、成本结构与防封锁能力。',
+    href: '/network/iepl-vs-iplc/',
+    badge: '核心技术'
+  },
+  {
+    title: 'BGP 智能调度与多线接入原理',
+    slug: 'bgp-transit',
+    desc: '国内入口如何通过 Border Gateway Protocol 识别电信/联通/移动并动态切至最优中转。',
+    href: '/network/iepl-vs-iplc/#bgp-concept',
+    badge: '入口优化'
+  },
+  {
+    title: '流量倍率陷阱与计量机制',
+    slug: 'bandwidth-multipliers',
+    desc: '揭秘为什么 0.5x、1.0x、3.0x 倍率会对真实流量消耗产生决定性影响。',
+    href: '/network/iepl-vs-iplc/#multipliers',
+    badge: '避坑指南'
+  },
+  {
+    title: '网络延迟 (RTT) 与抖动 (Jitter) 指标',
+    slug: 'latency-and-jitter',
+    desc: '为什么 20ms 的 ping 值依然可能出现卡顿？理解丢包率与 TCP 拥塞控制。',
+    href: '/network/iepl-vs-iplc/#jitter',
+    badge: '性能指标'
+  }
+];
+---
+
+<BaseLayout
+  title="网络技术知识库 - IEPL、IPLC、BGP 与跨境网络加速架构解析"
+  description="深入了解跨境网络技术：解析 IEPL 国际以太网专线、IPLC 私有租用线路、BGP 智能入口调度、原生住宅 IP 识别与晚高峰抗封锁机制。"
+  breadcrumbs={breadcrumbs}
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+    <header class="pb-6 border-b border-brand-border">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="px-2.5 py-0.5 text-xs font-semibold rounded bg-cyan-100 text-cyan-800">
+          底层技术与基础设施
+        </span>
+        <span class="text-xs text-brand-muted">更新日期：2026-11-24</span>
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-brand-dark tracking-tight">
+        网络加速技术知识库：专线架构、BGP 调度与拓扑原理解析
+      </h1>
+      <p class="text-sm text-brand-muted mt-2 max-w-3xl leading-relaxed">
+        了解网络背后的工作机制，是避开虚假营销宣传、选择适合自己网络环境服务商的前提。本专题以客观工程视角，拆解常见网络概念与链路工作原理。
+      </p>
+    </header>
+
+    <!-- Visual Observatory Diagram -->
+    <NetworkPathObservatory
+      brandName="典型跨境专线拓扑 (标准工程实现)"
+      networkType="IEPL / IPLC 物理专线"
+      protocol="VLESS / Shadowsocks / Hysteria 2"
+      transitBGP="上海/广州 BGP 多线接入入口"
+      overseasEgress="香港/东京/洛杉矶原生住宅落地"
+    />
+
+    <!-- Topics Grid -->
+    <section class="space-y-6">
+      <h2 class="text-xl font-bold text-brand-dark pb-2 border-b border-slate-200">
+        核心网络技术专题
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {topics.map((t) => (
+          <a
+            href={t.href}
+            class="p-5 rounded-xl border border-brand-border hover:border-brand-link bg-white shadow-xs hover:shadow-md transition-all group flex flex-col justify-between"
+          >
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-blue-50 text-brand-link border border-blue-100">
+                  {t.badge}
+                </span>
+                <span class="text-xs text-slate-400 group-hover:translate-x-1 transition-transform">→</span>
+              </div>
+              <h3 class="text-base font-bold text-brand-dark group-hover:text-brand-link mb-1.5">
+                {t.title}
+              </h3>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                {t.desc}
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 text-xs font-semibold text-brand-link">
+              阅读完整解析 →
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Technical FAQ Glossary -->
+    <section class="p-6 rounded-xl border border-slate-200 bg-slate-50 space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed">
+      <h3 class="text-base font-bold text-brand-dark">常见术语速查与关键定义</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <strong class="text-slate-900 block mb-1">什么是原生 IP (Native IP)？</strong>
+          指所属运营商在本地互联网注册机构（如 APNIC、ARIN）登记归属为本地的 IP。常被 Netflix、TikTok 等平台作为判定真实海外用户的核心依据。
+        </div>
+        <div>
+          <strong class="text-slate-900 block mb-1">什么是住宅 IP (Residential IP)？</strong>
+          指由海外普通家庭宽带运营商（如 AT&T、Comcast）分配给家庭用户的 IP 地址，风控信任度远高于数据中心机房 IP。
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

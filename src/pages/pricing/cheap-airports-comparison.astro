@@ -1,0 +1,125 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import brands from '../../data/published-brands.json';
+
+const cheapBrands = brands.filter((b) => b.startingMonthlyCny <= 6.0);
+
+const breadcrumbs = [
+  { name: '套餐价格', href: '/pricing/' },
+  { name: '便宜机场与 5.6 元档分析', href: '/pricing/cheap-airports-comparison/' },
+];
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: '便宜机场与一元机场全景测评：5.6 元 IEPL 方案深度剖析',
+  description: '客观分析 5.6 元档极限平价机场（闪电鼠、大佬云、云界线、榴莲云、环球梯）的技术规格、同质化现象与使用边界。',
+  datePublished: '2026-10-19',
+  dateModified: '2026-11-24',
+  inLanguage: 'zh-CN',
+};
+---
+
+<BaseLayout
+  title="便宜机场推荐与一元机场真相 (2026) - 5.6 元极限平价专线深度对比"
+  description="2026 年最新便宜机场深度测评：解析闪电鼠、大佬云、云界线等 5.6 元/月 IEPL 方案的真实流量、季付 7 折优惠、晚高峰抗压能力与潜在风险。"
+  breadcrumbs={breadcrumbs}
+  schema={articleSchema}
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+    <header class="pb-6 border-b border-brand-border">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="px-2.5 py-0.5 text-xs font-semibold rounded bg-green-100 text-green-800">
+          价格专题测评
+        </span>
+        <span class="text-xs text-brand-muted">更新审核：2026-11-24</span>
+      </div>
+
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-brand-dark tracking-tight leading-tight">
+        便宜机场与“一元机场”真相：5.6 元 IEPL 方案横向测评与避坑指南
+      </h1>
+
+      <p class="text-xs sm:text-sm text-slate-600 mt-3 leading-relaxed">
+        在各大社交平台，“一元机场”、“一分机场”常被作为引流噱头。然而在真实的电信骨干网跨境带宽成本下，真正的纯 1 元月付专线在商业逻辑上几乎无法维持。目前市场上最接近极限平价且能稳定运营的，是 <strong>5.6 元/月（年付约 67.2 元 60GB/月）</strong> 的 IEPL 方案梯队。
+      </p>
+    </header>
+
+    <!-- Key Insights -->
+    <section class="p-5 rounded-xl border border-blue-200 bg-blue-50/50 text-xs sm:text-sm text-slate-800 leading-relaxed space-y-2">
+      <strong class="font-bold text-base text-brand-dark block">核心测评观察：</strong>
+      <p>
+        收录资料显示，<strong>闪电鼠、大佬云、云界线、榴莲云、环球梯</strong> 五个品牌在规格上高度相似：均采用 IEPL 专线，提供年付折算约 5.6 元/月、月流量 60GB，支持自研客户端与第三方订阅导入，且季付及以上支持 7 折。这表明该梯队很可能共用相同的上游基础设施，属于同一技术方案的多品牌分发。
+      </p>
+    </section>
+
+    <!-- Detailed 5.6 RMB Tier Comparison Table -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        一、5.6 元档五大品牌规格与细微差异对照
+      </h2>
+      <div class="overflow-x-auto custom-scrollbar">
+        <table class="w-full text-xs text-left border border-slate-200 rounded-xl overflow-hidden shadow-2xs">
+          <thead class="bg-slate-100 text-slate-800">
+            <tr>
+              <th class="py-3 px-3 font-semibold">品牌</th>
+              <th class="py-3 px-3 font-semibold">起步折算</th>
+              <th class="py-3 px-3 font-semibold">月流量</th>
+              <th class="py-3 px-3 font-semibold">明确协议</th>
+              <th class="py-3 px-3 font-semibold">优惠活动</th>
+              <th class="py-3 px-4 font-semibold">独有特征与审计提示</th>
+              <th class="py-3 px-3 font-semibold text-right">操作</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200 bg-white">
+            {cheapBrands.map((b) => (
+              <tr class="hover:bg-slate-50 transition-colors">
+                <td class="py-3 px-3 font-bold text-brand-dark">{b.name}</td>
+                <td class="py-3 px-3 text-blue-700 font-bold data-num">¥{b.startingMonthlyCny.toFixed(2)}/月</td>
+                <td class="py-3 px-3">60GB/月</td>
+                <td class="py-3 px-3 font-mono text-slate-700">{b.protocolRefs.join('、')}</td>
+                <td class="py-3 px-3 font-mono text-purple-700 font-bold">{b.couponCode}</td>
+                <td class="py-3 px-4 text-slate-600">
+                  {b.slug === 'liulianyun' ? '协议未公开明确标明' : b.slug === 'yunjiexian' || b.slug === 'huanqiuti' ? '推广链接缺少 #/ 路径异常' : '标准 IEPL + VLESS 方案'}
+                </td>
+                <td class="py-3 px-3 text-right">
+                  <a href={`/brands/${b.slug}/`} class="text-brand-link hover:underline font-medium">
+                    档案 →
+                  </a>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Pros & Limitations of Cheap Airports -->
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="p-5 rounded-xl border border-emerald-200 bg-emerald-50/40 text-xs sm:text-sm text-slate-700 space-y-2">
+        <h3 class="font-bold text-emerald-800 text-base">🟢 便宜机场的实用价值</h3>
+        <ul class="list-disc list-inside space-y-1.5 text-xs">
+          <li><strong>试错成本极低：</strong>年付仅需几十元，即使偶遇波动也不至于造成重大财务损失。</li>
+          <li><strong>轻度日常完全胜任：</strong>微信接收海外信息、Google 搜索技术文档、轻度网页查阅毫无压力。</li>
+          <li><strong>天然的低成本备用防线：</strong>作为高端主力机场遭遇意外断流时的双保险。</li>
+        </ul>
+      </div>
+
+      <div class="p-5 rounded-xl border border-rose-200 bg-rose-50/40 text-xs sm:text-sm text-slate-700 space-y-2">
+        <h3 class="font-bold text-rose-800 text-base">🔴 便宜机场的必然妥协</h3>
+        <ul class="list-disc list-inside space-y-1.5 text-xs">
+          <li><strong>晚高峰丢包与限速：</strong>低价决定了运营商难以维持 1:1 的豪华峰值冗余带宽。</li>
+          <li><strong>流量池较小：</strong>每月 60GB 难以支撑全天候 4K YouTube 或下载大文件。</li>
+          <li><strong>客服与售后响应中等：</strong>多数依靠工单或 AI 客服处理常见问题。</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Recommendations -->
+    <section class="p-6 rounded-xl border border-slate-200 bg-slate-50 text-xs sm:text-sm text-slate-700 leading-relaxed space-y-3">
+      <h3 class="text-base font-bold text-brand-dark">编辑部选购建议</h3>
+      <p>
+        如果你确定选择 5.6 元档方案，建议优先选择协议标注明确、链接规范的 <strong>闪电鼠</strong> 或 <strong>大佬云</strong>。在注册购买前，建议先测试单季方案确认线路是否契合你当地的宽带运营商。
+      </p>
+    </section>
+  </div>
+</BaseLayout>

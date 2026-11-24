@@ -1,0 +1,204 @@
+{
+  "timestamp": "2026-11-24T06:00:04.786Z",
+  "uniqueBrandCount": 31,
+  "brands": [
+    {
+      "name": "光速云",
+      "slug": "guangsu",
+      "primaryAffiliate": "https://sahude.gsyvipaff.com/#/?code=keqgvT5Y",
+      "isFeaturedPartner": true
+    },
+    {
+      "name": "暮光加速",
+      "slug": "muguang",
+      "primaryAffiliate": "https://varnexa.twilightaff.com/#/?code=D1LHglg3"
+    },
+    {
+      "name": "飞猫云",
+      "slug": "feimao",
+      "primaryAffiliate": "https://guangs.flycataff.com/#/?code=6uq0Xe9y"
+    },
+    {
+      "name": "微风网络",
+      "slug": "weifeng",
+      "primaryAffiliate": "https://edp01.breezenetaff.com/#/?code=t3huofyI"
+    },
+    {
+      "name": "大佬云",
+      "slug": "dalaoyun",
+      "primaryAffiliate": "https://qwerty.dalaoyunaff.com/#/?code=jCPLmoWN"
+    },
+    {
+      "name": "星岛梦",
+      "slug": "xingdaomeng",
+      "primaryAffiliate": "https://guangs.xingdaomeng.com/#/?code=1TynBYnR"
+    },
+    {
+      "name": "二猫云",
+      "slug": "ermao",
+      "primaryAffiliate": "https://guangs.2maoyunaff.cc/#/?code=7mjvgGbW"
+    },
+    {
+      "name": "无忧链接",
+      "slug": "wuyou",
+      "primaryAffiliate": "https://wep01.worryfreeaff.com/#/?code=4ZoSbLdL"
+    },
+    {
+      "name": "唯兔云",
+      "slug": "weitu",
+      "primaryAffiliate": "https://guangs.v2yunvipaff.com/#/?code=xIutqOBA"
+    },
+    {
+      "name": "Firefly",
+      "slug": "firefly",
+      "aliases": [
+        "Firefly 萤火虫",
+        "萤火虫"
+      ],
+      "primaryAffiliate": "https://vip02.fireflyaff.com/#/?code=2n7VURre"
+    },
+    {
+      "name": "宇宙云",
+      "slug": "yuzhou",
+      "primaryAffiliate": "https://wzjc.yuzoucloud.cc/#/?code=yrThwMP1"
+    },
+    {
+      "name": "U1S1",
+      "slug": "u1s1",
+      "primaryAffiliate": "https://guangs.vipaff.cc/#/?code=xhX5X22f"
+    },
+    {
+      "name": "灵猫网络",
+      "slug": "lingmao",
+      "primaryAffiliate": "https://vip01.civetnet.com/#/?code=8MIAyxak"
+    },
+    {
+      "name": "极连云",
+      "slug": "jilian",
+      "primaryAffiliate": "https://guangs.jlyvipaff.com/#/?code=VM1rKGUu"
+    },
+    {
+      "name": "光年梯",
+      "slug": "guangnian",
+      "primaryAffiliate": "https://guangs.gntaff.com/#/?code=X1FoxjGE"
+    },
+    {
+      "name": "一翻云",
+      "slug": "yifan",
+      "primaryAffiliate": "https://guangs.1flyunaff.cc/#/register?code=Yr7FhB7r"
+    },
+    {
+      "name": "SOGO云",
+      "slug": "sogo",
+      "primaryAffiliate": "https://guangs.sogoyunaff.cc/#/?code=327Vs0w7"
+    },
+    {
+      "name": "可信云",
+      "slug": "kexin",
+      "primaryAffiliate": "https://guangs.kosingaff.com/#/register?code=UYDtNlCY"
+    },
+    {
+      "name": "速界",
+      "slug": "sujie",
+      "primaryAffiliate": "https://guangs.speedworldaff.cc/#/register?code=xgXzEfZB"
+    },
+    {
+      "name": "闪跃",
+      "slug": "shanyue",
+      "primaryAffiliate": "https://vip02.flashleapaff.com/#/?code=3lgzm9mm"
+    },
+    {
+      "name": "全球云",
+      "slug": "quanqiu",
+      "primaryAffiliate": "https://guangs.gcvipaff.com/#/?code=Ov2nvU9C"
+    },
+    {
+      "name": "闪电鼠",
+      "slug": "shandianshu",
+      "primaryAffiliate": "https://qwerty.shandianshuaff.com/#/?code=rUE75iYh"
+    },
+    {
+      "name": "云界线",
+      "slug": "yunjiexian",
+      "primaryAffiliate": "https://qwerty.yunjiexianaff.com/?code=aycnwNUi"
+    },
+    {
+      "name": "榴莲云",
+      "slug": "liulianyun",
+      "primaryAffiliate": "https://qwerty.liulianyunaff.com#/?code=hS5pvbfE"
+    },
+    {
+      "name": "神行加速",
+      "slug": "shenxing",
+      "primaryAffiliate": "https://qwerty.shenxingaff.com/#/?code=gawDQqVE"
+    },
+    {
+      "name": "环球梯",
+      "slug": "huanqiuti",
+      "primaryAffiliate": "https://qwerty.huanqiutiaff.com/?code=9I4KRNPH"
+    },
+    {
+      "name": "隐形人",
+      "slug": "yinxingren",
+      "primaryAffiliate": "https://yinxingren1.invisibleaff.com/#/?code=kcyEeoJT"
+    },
+    {
+      "name": "梯子云",
+      "slug": "tiziyun",
+      "primaryAffiliate": "https://tiziyun3.ladderaff.com/#/?code=7EmnpHs0"
+    },
+    {
+      "name": "灵动云",
+      "slug": "lingdong",
+      "primaryAffiliate": "https://varnexa.lingdongaff.com/#/?code=wZvEhEoI"
+    },
+    {
+      "name": "浪网",
+      "slug": "langwang",
+      "primaryAffiliate": "https://varnexa.wavenetaff.com/#/?code=xwAM4tTd"
+    },
+    {
+      "name": "边缘节点 EdgeNova",
+      "slug": "edgenova",
+      "primaryAffiliate": "https://work.edgenovaaff.cc/#/register?code=cl3iB5YG"
+    }
+  ],
+  "conflictCount": 7,
+  "dataQualityIssues": [
+    {
+      "brand": "光速云",
+      "issue": "轻量版月流量概述（59GB/月）与套餐详细表（69GB/月）存在冲突；年付 99 元折算为 8.25 元/月，非标准月付价格。",
+      "resolution": "保留原始双重事实记录，展示时标注“待官方复核”，年付折算明确注明计算方式。"
+    },
+    {
+      "brand": "微风网络",
+      "issue": "简介起价（7元/月、11元/月）与套餐表清风年付 137 元（折合 11.4 元/月）存在冲突。",
+      "resolution": "如实展示年付 137 元/100GB，折合 11.4 元/月，将 7 元标为历史活动宣传。"
+    },
+    {
+      "brand": "Firefly",
+      "issue": "正文为 Firefly，附录存在“Firefly 萤火虫”历史记录及次级推广链接。",
+      "resolution": "合并为一个实体 Firefly，将“Firefly 萤火虫”作为别名，不重复开页。"
+    },
+    {
+      "brand": "云界线 / 环球梯",
+      "issue": "注册链接缺少 #/ 锚点路径（格式异常）。",
+      "resolution": "在推广链接字段中如实保留原 URL，前台渲染及测试时增加链接有效性提示。"
+    },
+    {
+      "brand": "榴莲云",
+      "issue": "5.6 元档中唯一未明确标注具体协议类型的品牌。",
+      "resolution": "协议标记为“待核实”，明确告知用户此项数据缺口。"
+    },
+    {
+      "brand": "浪网 / 边缘节点 EdgeNova",
+      "issue": "原始资料明确标注“未实测”或缺少地区测速与 AI/流媒体测试。",
+      "resolution": "测速与流媒体解锁显示“暂无独立实测数据”，禁止伪造数据。"
+    },
+    {
+      "brand": "灵猫网络",
+      "issue": "优惠码存在 lmao888 与 lingmao 两种表述。",
+      "resolution": "在优惠码表中列出两种候选，提示用户若无效可尝试备选码。"
+    }
+  ]
+}

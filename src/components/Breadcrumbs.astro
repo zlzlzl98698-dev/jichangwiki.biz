@@ -1,0 +1,56 @@
+---
+export interface BreadcrumbItem {
+  name: string;
+  href: string;
+}
+
+export interface Props {
+  items: BreadcrumbItem[];
+}
+
+const { items } = Astro.props;
+
+const breadcrumbList = [
+  { name: '首页', href: '/' },
+  ...items,
+];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: breadcrumbList.map((item, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    name: item.name,
+    item: `https://jichangwiki.biz${item.href}`,
+  })),
+};
+---
+
+<nav aria-label="面包屑导航" class="py-3 text-xs text-brand-muted">
+  <ol class="flex items-center flex-wrap gap-1.5">
+    {breadcrumbList.map((item, index) => {
+      const isLast = index === breadcrumbList.length - 1;
+      return (
+        <li class="flex items-center gap-1.5">
+          {index > 0 && (
+            <svg class="w-3 h-3 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          )}
+          {isLast ? (
+            <span class="text-brand-dark font-medium" aria-current="page">
+              {item.name}
+            </span>
+          ) : (
+            <a href={item.href} class="hover:text-brand-link transition-colors">
+              {item.name}
+            </a>
+          )}
+        </li>
+      );
+    })}
+  </ol>
+</nav>
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />

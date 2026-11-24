@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const breadcrumbs = [
+  { name: '编辑方针', href: '/editorial-policy/' },
+];
+---
+
+<BaseLayout
+  title="编辑方针与独立性准则 - 机场 Wiki"
+  description="机场 Wiki 严格遵守中立、客观、可验证的编辑准则：禁止编造测速数据，禁止虚假排名，明确披露商业展示关系。"
+  breadcrumbs={breadcrumbs}
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <header class="pb-6 border-b border-brand-border">
+      <h1 class="text-3xl font-extrabold text-brand-dark">编辑方针与独立性原则</h1>
+      <p class="text-xs text-brand-muted mt-1">版本：1.0 · 生效日期：2026-11-24</p>
+    </header>
+
+    <div class="space-y-6 text-xs sm:text-sm text-slate-700 leading-relaxed">
+      <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+        <h2 class="text-base font-bold text-brand-dark">一、真实性与数据溯源优先</h2>
+        <p>
+          所有品牌参数、线路协议、节点数量均取自官方文档与经过核验的历史日志。严禁为了丰富内容而凭空捏造未经验证的测速图表、晚高峰丢包率或用户好评。缺乏可靠佐证的信息一律标注“待核实”。
+        </p>
+      </div>
+
+      <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+        <h2 class="text-base font-bold text-brand-dark">二、商业利益与测评结果严格分离</h2>
+        <p>
+          赞助商或合作品牌（包括主推展示位）可以获得更突出的视觉展示位，但在技术参数、实际缺陷评述以及同类横向比对中，必须接受与其他品牌完全一致的客观审计标准。任何赞助商无权要求本站删除经证实的客观缺陷记录。
+        </p>
+      </div>
+
+      <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+        <h2 class="text-base font-bold text-brand-dark">三、严谨对待负面评价与跑路指控</h2>
+        <p>
+          在缺乏确凿法律证据或多源实证支持前，严禁仅凭单一论坛发帖将任何品牌冠以“欺诈、跑路”等定性词汇。对于服务中断事件，客观记录现象、时间与客服回应，为读者呈现完整事实闭环。
+        </p>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

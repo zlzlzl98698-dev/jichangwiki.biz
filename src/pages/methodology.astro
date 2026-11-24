@@ -1,0 +1,49 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const breadcrumbs = [
+  { name: '测试方法论', href: '/methodology/' },
+];
+---
+
+<BaseLayout
+  title="测试方法论与性能观测标准 - 机场 Wiki"
+  description="详细说明机场 Wiki 数据观测台的测试环境、指标定义（RTT延迟、下载吞吐、流媒体解锁检验）与数据局限性。"
+  breadcrumbs={breadcrumbs}
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <header class="pb-6 border-b border-brand-border">
+      <h1 class="text-3xl font-extrabold text-brand-dark">性能测试方法论与观测标准</h1>
+      <p class="text-xs text-brand-muted mt-1">版本：1.0 · 适用平台：Dark Network Observatory</p>
+    </header>
+
+    <div class="space-y-6 text-xs sm:text-sm text-slate-700 leading-relaxed">
+      <section class="space-y-3">
+        <h2 class="text-lg font-bold text-brand-dark border-b border-slate-200 pb-2">1. 测试指标与计算单位</h2>
+        <ul class="space-y-2 list-disc list-inside text-xs text-slate-600">
+          <li><strong>往返延迟 (RTT / Latency)：</strong>单位为毫秒 (ms)，表示从客户端发送握手探针至远端落地返回的耗时。</li>
+          <li><strong>下载吞吐 (Download Bandwidth)：</strong>单位严格统一为 <strong>Mbps</strong>（兆比特每秒），1 MB/s = 8 Mbps，杜绝利用不同单位虚标速率。</li>
+          <li><strong>丢包率 (Packet Loss)：</strong>在持续 100 次 ICMP/TCP 探针测试中丢失的数据包百分比。</li>
+        </ul>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-lg font-bold text-brand-dark border-b border-slate-200 pb-2">2. 测试窗口与时间戳区分</h2>
+        <p>
+          任何不标注测试时段的测速均是不严谨的。本站将测试记录明确划分为两类：
+        </p>
+        <ul class="space-y-1.5 list-disc list-inside text-xs text-slate-600">
+          <li><strong>晚高峰时段 (Peak Hours)：</strong>20:00 至 23:00（此时段最考验专线带宽储备与抗拥塞能力）。</li>
+          <li><strong>非晚高峰时段 (Off-Peak)：</strong>白天或深夜，反映链路的理论带宽上限。</li>
+        </ul>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-lg font-bold text-brand-dark border-b border-slate-200 pb-2">3. 流媒体与 AI 解锁测试流程</h2>
+        <p>
+          使用开源的 RegionRestrictionCheck 脚本与真实浏览器无痕会话双重核验。对于 ChatGPT 与 Claude，仅当无弹窗、成功生成完整回答时才判定为“Operational (支持)”；出现 403 阻断或地区限制时标记为“Partial (视节点)”或“Unavailable”。
+        </p>
+      </section>
+    </div>
+  </div>
+</BaseLayout>

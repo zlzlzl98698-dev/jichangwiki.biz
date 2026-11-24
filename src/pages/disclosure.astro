@@ -1,0 +1,41 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const breadcrumbs = [
+  { name: '商业披露', href: '/disclosure/' },
+];
+---
+
+<BaseLayout
+  title="商业披露与透明度声明 - 机场 Wiki"
+  description="机场 Wiki 关于推广佣金（Affiliate Marketing）、展示位赞助与用户付款价格透明度的完整合规声明。"
+  breadcrumbs={breadcrumbs}
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <header class="pb-6 border-b border-brand-border">
+      <h1 class="text-3xl font-extrabold text-brand-dark">商业披露与推广声明</h1>
+      <p class="text-xs text-brand-muted mt-1">更新日期：2026-11-24</p>
+    </header>
+
+    <div class="space-y-6 text-xs sm:text-sm text-slate-700 leading-relaxed">
+      <div class="p-5 rounded-xl border border-blue-200 bg-blue-50/50 space-y-3">
+        <h2 class="text-base font-bold text-brand-dark">推广链接与佣金机制说明</h2>
+        <p>
+          在符合相关适用法律与平台规范的前提下，本站部分指向服务商官网的注册按钮含有商业推广代码（Affiliate Link）。当读者通过这些链接注册并实际发生购买时，服务商可能会向本站支付一定比例的维护佣金。
+        </p>
+        <p>
+          <strong>我们郑重承诺：</strong>用户通过本站推广链接购买，绝不会承担任何额外费用或高于官网公开价格。在很多情况下，使用本站收录的独家优惠码（如 AMM、flycat888 等），读者反而能够享受到 7 折至 9 折的额外折扣。
+        </p>
+      </div>
+
+      <div class="space-y-3">
+        <h3 class="text-base font-bold text-brand-dark">合规实施规范</h3>
+        <ul class="list-disc list-inside space-y-2 text-xs text-slate-600">
+          <li>所有推广外链统一采用 <code class="font-mono bg-slate-100 px-1 py-0.5 rounded">rel="nofollow sponsored noopener"</code> 属性，告知搜索引擎该链接具有赞助/推广属性。</li>
+          <li>推广链接与品牌官方根域名数据字段在底层数据库中完全解耦，不作为 Schema 结构化数据中的 sameAs 官网凭据。</li>
+          <li>严禁使用虚假倒计时、隐藏真实跳转、强制弹窗拦截等黑帽营销手法。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

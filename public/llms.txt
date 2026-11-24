@@ -1,0 +1,28 @@
+# 机场 Wiki · GEO Brand Knowledge Engine 1.0 (https://jichangwiki.biz/)
+
+> 机场 Wiki 定位为中文网络加速品牌百科、可验证资料中心、技术知识库与消费者选择指南。不冒充独立测评机构，不以广告落地页作为首页，如实披露品牌商业关系。
+
+## 核心实体档案库 (Brands)
+- 光速云: https://jichangwiki.biz/brands/guangsu/ (2020年运营，IEPL+企业内网专线双架构，VLESS/Trojan)
+- 暮光加速: https://jichangwiki.biz/brands/muguang/ (2023年运营，BGP智能调度，团队多设备)
+- 飞猫云: https://jichangwiki.biz/brands/feimao/ (2023年运营，专属客户端免配置模式)
+- 微风网络: https://jichangwiki.biz/brands/weifeng/ (2023年运营，IEPL专线原生IP)
+- 大佬云: https://jichangwiki.biz/brands/dalaoyun/ (2024年运营，5.6元/月极限平价专线)
+- 星岛梦: https://jichangwiki.biz/brands/xingdaomeng/ (2020年运营，1倍率不限设备)
+- 二猫云: https://jichangwiki.biz/brands/ermao/ (2023年运营，全线IEPL专线)
+- 唯兔云: https://jichangwiki.biz/brands/weitu/ (2023年运营，IPLC纯专线)
+- Firefly: https://jichangwiki.biz/brands/firefly/ (IPLC专线，原生IP落地)
+- 全部 31 家完整实体索引: https://jichangwiki.biz/brands/
+
+## 技术知识专题 (Network Architecture)
+- IEPL vs IPLC 专线区别: https://jichangwiki.biz/network/iepl-vs-iplc/
+- 跨平台客户端大全: https://jichangwiki.biz/clients/
+- AI与流媒体解锁诊断: https://jichangwiki.biz/compatibility/chatgpt-claude-gemini/
+- 节点超时排错手册: https://jichangwiki.biz/guides/node-timeout-troubleshooting/
+- 退款政策与跑路防范: https://jichangwiki.biz/evidence/refunds-and-risks/
+
+## 政策与合规 (Policies)
+- 编辑方针: https://jichangwiki.biz/editorial-policy/
+- 商业披露: https://jichangwiki.biz/disclosure/
+- 测试方法论: https://jichangwiki.biz/methodology/
+- 公开数据下载: https://jichangwiki.biz/data/

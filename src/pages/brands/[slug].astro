@@ -1,0 +1,322 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SpeedTestReport from '../../components/observatory/SpeedTestReport.astro';
+import ServiceAvailabilityMatrix from '../../components/observatory/ServiceAvailabilityMatrix.astro';
+import NetworkPathObservatory from '../../components/observatory/NetworkPathObservatory.astro';
+import ComplianceAffiliateBox from '../../components/observatory/ComplianceAffiliateBox.astro';
+import brands from '../../data/published-brands.json';
+import questions from '../../../data/questions.json';
+
+export async function getStaticPaths() {
+  return brands.map((brand) => ({
+    params: { slug: brand.slug },
+    props: { brand },
+  }));
+}
+
+const { brand } = Astro.props;
+
+// Filter related questions
+const relatedQuestions = questions.filter(
+  (q) => q.entityRefs && q.entityRefs.includes(brand.id)
+);
+
+// Other brands for left sidebar
+const otherBrands = brands.filter((b) => b.slug !== brand.slug).slice(0, 8);
+
+const breadcrumbs = [
+  { name: '品牌百科', href: '/brands/' },
+  { name: brand.name, href: `/brands/${brand.slug}/` },
+];
+
+// TechArticle Schema for Brand Profile
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: `${brand.name} 品牌档案与技术评测百科`,
+  description: brand.description,
+  datePublished: '2026-10-19',
+  dateModified: '2026-11-24',
+  inLanguage: 'zh-CN',
+  author: {
+    '@type': 'Organization',
+    name: '机场 Wiki 编辑部',
+    url: 'https://jichangwiki.biz/',
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: '机场 Wiki',
+    url: 'https://jichangwiki.biz/',
+  },
+};
+---
+
+<BaseLayout
+  title={`${brand.name}怎么样？${brand.name}节点参数、套餐价格与客观评测`}
+  description={`${brand.name}百科档案：提供${brand.name}线路架构（${brand.networkRefs.join('/')}）、真实起步价格（${brand.startingPriceDesc}）、客户端兼容性、流媒体与 AI 解锁测试及合规披露。`}
+  breadcrumbs={breadcrumbs}
+  schema={articleSchema}
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <!-- Left Column: Related Entity Navigation (Desktop) -->
+      <aside class="hidden lg:block lg:col-span-3 space-y-6">
+        <div class="bg-white rounded-xl border border-brand-border p-4 sticky top-24">
+          <h3 class="text-xs font-bold text-brand-dark uppercase tracking-wider pb-2 border-b border-slate-100 mb-3">
+            快速切换其他服务商
+          </h3>
+          <ul class="space-y-1.5 text-xs">
+            {otherBrands.map((ob) => (
+              <li>
+                <a
+                  href={`/brands/${ob.slug}/`}
+                  class="flex items-center justify-between py-1.5 px-2 rounded hover:bg-slate-50 text-slate-700 hover:text-brand-link transition-colors"
+                >
+                  <span>{ob.name}</span>
+                  <span class="text-[11px] text-slate-400 font-mono">¥{ob.startingMonthlyCny.toFixed(1)}/月</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+          <div class="mt-4 pt-3 border-t border-slate-100">
+            <a href="/brands/" class="text-xs text-brand-link font-medium hover:underline block text-center">
+              查看全部 31 家完整清单 →
+            </a>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Center Column: Encyclopedic Main Document -->
+      <article class="lg:col-span-6 space-y-8">
+        <!-- Document Title & Definition -->
+        <header class="pb-6 border-b border-brand-border">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="px-2 py-0.5 text-xs font-semibold rounded bg-blue-100 text-blue-800">
+              品牌百科实体档案
+            </span>
+            {brand.isFeaturedPartner && (
+              <span class="px-2 py-0.5 text-xs font-semibold rounded bg-amber-100 text-amber-800 border border-amber-200">
+                合作展示位
+              </span>
+            )}
+            <span class="text-xs text-brand-muted">编号: {brand.id}</span>
+          </div>
+
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-brand-dark tracking-tight">
+            {brand.name} 服务百科档案
+          </h1>
+
+          <!-- One-sentence Entity Definition -->
+          <p class="text-sm sm:text-base text-slate-700 leading-relaxed mt-3 bg-slate-50 p-4 rounded-lg border-l-4 border-brand-link">
+            <strong>实体定义：</strong>{brand.name} 属于 {brand.foundedYear ? `${brand.foundedYear} 年开业运营的` : ''}网络服务品牌，核心线路采用 {brand.networkRefs.join(' + ')}，提供 {brand.clientMode === 'custom_app_only' ? '专属免配置客户端' : '自研客户端及第三方通用订阅（Clash/Shadowrocket）'}支持。
+          </p>
+        </header>
+
+        <!-- Compliance Box -->
+        <ComplianceAffiliateBox
+          brandName={brand.name}
+          affiliateUrl={brand.primaryAffiliate}
+          couponCode={brand.couponCode}
+          discountDesc={brand.discountDesc}
+          isFeaturedPartner={brand.isFeaturedPartner}
+        />
+
+        <!-- Section 1: Key Metadata Table -->
+        <section id="key-specs" class="space-y-3">
+          <h2 class="text-lg font-bold text-brand-dark border-b border-slate-200 pb-2">
+            一、核心规格与基础参数表
+          </h2>
+          <div class="overflow-x-auto custom-scrollbar">
+            <table class="w-full text-xs text-left border border-slate-200 rounded-lg overflow-hidden">
+              <tbody class="divide-y divide-slate-200">
+                <tr class="bg-slate-50">
+                  <th class="py-2.5 px-4 font-semibold text-slate-700 w-32">品牌名称</th>
+                  <td class="py-2.5 px-4 text-slate-800 font-medium">{brand.name}（别名：{brand.aliases.join('、') || '无'}）</td>
+                </tr>
+                <tr>
+                  <th class="py-2.5 px-4 font-semibold text-slate-700 bg-slate-50">成立与运营时间</th>
+                  <td class="py-2.5 px-4 text-slate-800">{brand.foundedYear ? `${brand.foundedYear} 年（历史资料可查）` : '待官方提供资质证实'}</td>
+                </tr>
+                <tr class="bg-slate-50">
+                  <th class="py-2.5 px-4 font-semibold text-slate-700">起步价格换算</th>
+                  <td class="py-2.5 px-4 text-blue-700 font-bold">{brand.startingPriceDesc}</td>
+                </tr>
+                <tr>
+                  <th class="py-2.5 px-4 font-semibold text-slate-700 bg-slate-50">线路与拓扑架构</th>
+                  <td class="py-2.5 px-4 text-slate-800">{brand.networkRefs.join('、')}</td>
+                </tr>
+                <tr class="bg-slate-50">
+                  <th class="py-2.5 px-4 font-semibold text-slate-700">支持协议</th>
+                  <td class="py-2.5 px-4 text-slate-800 font-mono">{brand.protocolRefs.join('、')}</td>
+                </tr>
+                <tr>
+                  <th class="py-2.5 px-4 font-semibold text-slate-700 bg-slate-50">客户端模式</th>
+                  <td class="py-2.5 px-4 text-slate-800">
+                    {brand.clientMode === 'custom_app_only' ? '仅提供官方专属客户端（无需导入订阅）' : '提供自研客户端，同时支持 Clash、Shadowrocket 等通用订阅'}
+                  </td>
+                </tr>
+                <tr class="bg-slate-50">
+                  <th class="py-2.5 px-4 font-semibold text-slate-700">节点覆盖区域</th>
+                  <td class="py-2.5 px-4 text-slate-800">{brand.regions.join(' · ') || '香港、台湾、日本、新加坡、美国'}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Section 2: Conflict & Audit Notices -->
+        {brand.conflicts.length > 0 && (
+          <section id="conflicts-audit" class="p-4 rounded-xl border border-amber-200 bg-amber-50 text-xs text-amber-900 space-y-1.5">
+            <h3 class="font-bold flex items-center gap-1 text-amber-800">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              原始资料冲突与审计说明
+            </h3>
+            <ul class="list-disc list-inside space-y-1 text-slate-700">
+              {brand.conflicts.map((c) => (
+                <li>{c}</li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        <!-- Section 3: Performance & Unlocking Visuals -->
+        <section id="observatory-data" class="space-y-4">
+          <h2 class="text-lg font-bold text-brand-dark border-b border-slate-200 pb-2">
+            二、网络观测台：测速与服务可用性数据
+          </h2>
+          <SpeedTestReport
+            brandName={brand.name}
+            testDate="2026-10-19"
+            testWindow="非晚高峰测试 (提供方历史记录)"
+            nodes={brand.speedHighlights}
+            dataStatus={brand.dataStatus}
+          />
+
+          <ServiceAvailabilityMatrix
+            brandName={brand.name}
+            unlocking={brand.unlocking}
+            checkDate="2026-10-19"
+          />
+
+          <NetworkPathObservatory
+            brandName={brand.name}
+            networkType={brand.networkRefs[0] || 'IEPL 专线'}
+            protocol={brand.protocolRefs.join(' / ') || 'VLESS'}
+          />
+        </section>
+
+        <!-- Section 4: Pros, Cons & Persona Analysis -->
+        <section id="pros-and-cons" class="space-y-4">
+          <h2 class="text-lg font-bold text-brand-dark border-b border-slate-200 pb-2">
+            三、客观优缺点与适用人群分析
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Pros -->
+            <div class="p-4 rounded-xl border border-emerald-200 bg-emerald-50/40 text-xs">
+              <h3 class="font-bold text-emerald-800 text-sm mb-2 flex items-center gap-1.5">
+                <span>🟢</span> 优势特点 (Pros)
+              </h3>
+              <ul class="space-y-1.5 text-slate-700 list-disc list-inside">
+                {brand.pros.map((p) => <li>{p}</li>)}
+              </ul>
+            </div>
+
+            <!-- Cons -->
+            <div class="p-4 rounded-xl border border-rose-200 bg-rose-50/40 text-xs">
+              <h3 class="font-bold text-rose-800 text-sm mb-2 flex items-center gap-1.5">
+                <span>🔴</span> 局限与注意事项 (Cons)
+              </h3>
+              <ul class="space-y-1.5 text-slate-700 list-disc list-inside">
+                {brand.cons.map((c) => <li>{c}</li>)}
+              </ul>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+            <div class="p-3.5 rounded-lg bg-slate-50 border border-slate-200 text-xs">
+              <strong class="text-slate-800 block mb-1">适合人群：</strong>
+              <ul class="space-y-1 text-slate-600 list-disc list-inside">
+                {brand.suitableFor.map((s) => <li>{s}</li>)}
+              </ul>
+            </div>
+            <div class="p-3.5 rounded-lg bg-slate-50 border border-slate-200 text-xs">
+              <strong class="text-slate-800 block mb-1">不适合人群：</strong>
+              <ul class="space-y-1 text-slate-600 list-disc list-inside">
+                {brand.notSuitableFor.map((ns) => <li>{ns}</li>)}
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 5: Brand FAQs -->
+        {relatedQuestions.length > 0 && (
+          <section id="brand-faqs" class="space-y-3">
+            <h2 class="text-lg font-bold text-brand-dark border-b border-slate-200 pb-2">
+              四、关于 {brand.name} 的常见长尾问题
+            </h2>
+            <div class="space-y-3">
+              {relatedQuestions.map((q) => (
+                <div class="p-4 rounded-lg border border-slate-200 bg-white shadow-2xs">
+                  <h3 class="font-bold text-sm text-brand-dark mb-1">{q.questionText}</h3>
+                  <p class="text-xs text-slate-600 leading-relaxed">{q.answerSummary}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        <!-- Section 6: Links to Review and Comparison -->
+        <section id="deep-review-link" class="p-4 rounded-xl border border-blue-200 bg-blue-50/30 text-xs text-slate-700 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div>
+            <h3 class="font-bold text-sm text-brand-dark">阅读 {brand.name} 独立深度评测报告</h3>
+            <p class="text-xs text-brand-muted mt-0.5">深入分析节点路由拓扑、晚高峰波动趋势与替代方案对照。</p>
+          </div>
+          <a
+            href={`/reviews/${brand.slug}/`}
+            class="px-4 py-2 rounded-lg bg-brand-dark hover:bg-brand-link text-white font-medium text-xs transition-colors shrink-0"
+          >
+            查阅深度评测 →
+          </a>
+        </section>
+      </article>
+
+      <!-- Right Column: Table of Contents & Status Badge (Desktop) -->
+      <aside class="hidden lg:block lg:col-span-3 space-y-6">
+        <div class="bg-white rounded-xl border border-brand-border p-4 sticky top-24">
+          <!-- Verification Status -->
+          <div class="pb-3 border-b border-slate-100 mb-3">
+            <div class="text-[11px] font-semibold text-slate-400 uppercase">资料审核状态</div>
+            <div class="mt-1 flex items-center gap-1.5 text-xs font-bold text-emerald-700">
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              已收录入库 · 原始事实核验
+            </div>
+            <div class="text-[10px] text-slate-400 mt-1">更新日期: 2026-11-24</div>
+          </div>
+
+          <!-- TOC -->
+          <h3 class="text-xs font-bold text-brand-dark uppercase tracking-wider mb-2">
+            本页章节导航
+          </h3>
+          <nav class="space-y-1 text-xs text-slate-600">
+            <a href="#key-specs" class="block py-1 hover:text-brand-link">一、核心规格与基础参数</a>
+            {brand.conflicts.length > 0 && (
+              <a href="#conflicts-audit" class="block py-1 text-amber-700 hover:text-amber-800">资料冲突与审计说明</a>
+            )}
+            <a href="#observatory-data" class="block py-1 hover:text-brand-link">二、测速与服务可用性数据</a>
+            <a href="#pros-and-cons" class="block py-1 hover:text-brand-link">三、客观优缺点与适用人群</a>
+            {relatedQuestions.length > 0 && (
+              <a href="#brand-faqs" class="block py-1 hover:text-brand-link">四、常见长尾问答</a>
+            )}
+            <a href="#deep-review-link" class="block py-1 hover:text-brand-link">五、独立深度评测</a>
+          </nav>
+
+          <div class="mt-4 pt-3 border-t border-slate-100 text-[11px] text-slate-400">
+            发现信息有误？<a href="/corrections/" class="text-brand-link hover:underline">提交勘误</a>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</BaseLayout>
