@@ -132,7 +132,18 @@
   - [x] `reports/conversion-audit.md`
   - [x] `reports/final-delivery-report.md`
 - [x] **全站编译与 QA 验收**：
-  - [x] `npm run check`：70 个 Astro 文件 0 错误、0 警告、0 提示
-  - [x] `npm run build`：全站 129 个静态页面全部成功编译生成
-  - [x] `pagefind`：成功索引 129 个页面、41,175 个词汇
-  - [x] `scripts/qa-check.mjs`：129/129 页面全面通过 QA 审计，80 处商业链接 100% 符合 `rel="nofollow sponsored noopener"` 准则
+  - [x] `npm run check`：76 个 Astro 文件 0 错误、0 警告、0 提示
+  - [x] `npm run build`：全站 135 个静态页面全部成功编译生成
+  - [x] `pagefind`：成功索引 135 个页面、42,626 个词汇
+  - [x] `scripts/qa-check.mjs`：135/135 页面全面通过 QA 审计，80 处商业链接 100% 符合 `rel="nofollow sponsored noopener"` 准则
+
+- [x] **交互升级：二级专题三级矩阵全面可点击化与 TUN 模式 6 大深度技术指南落地**：
+  - [x] 解决卡片静态展示无法点击跳转问题：将全站 12 个二级专题枢纽页中的规划选题卡片全部升级为交互式超链接（带 hover 微动效与引导箭头）
+  - [x] 为 `/guides/tun-mode-setup/` 全量编写并发布 6 篇高深度底层技术实操指南：
+    - `01: Wintun 驱动源码级架构解析与性能基准` (`/guides/tun-mode-setup/wintun-driver-architecture/`)
+    - `02: Windows 路由表最长前缀匹配与冲突排查` (`/guides/tun-mode-setup/windows-route-table-metric/`)
+    - `03: WSL2 镜像网络模式与 TUN 模式深度协同` (`/guides/tun-mode-setup/wsl2-mirrored-networking-tun/`)
+    - `04: macOS utun 虚拟网卡与特权守护进程配置` (`/guides/tun-mode-setup/macos-utun-privileged-helper/`)
+    - `05: Docker 容器环境无缝走宿主机 TUN 代理实践` (`/guides/tun-mode-setup/docker-tun-transparent-proxy/`)
+    - `06: TUN 模式下防止真实物理 IPv6 泄漏全景指南` (`/guides/tun-mode-setup/ipv6-leak-prevention-tun/`)
+  - [x] 静态产物全面重新编译并热更新，预览服务运行在 `http://localhost:4321/`。
