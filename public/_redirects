@@ -1,0 +1,15 @@
+# Cloudflare Pages 301 Redirect Rules for https://jichangwiki.biz/
+
+# 1. Apex Domain Canonicalization (www -> apex)
+https://www.jichangwiki.biz/* https://jichangwiki.biz/:splat 301!
+
+# 2. Sitemap Standard Aliasing
+/sitemap.xml /sitemap-index.xml 301
+
+# 3. Shorthand Search Intent Aliases to Canonical Hubs
+/jichang/   /brands/                             301
+/clash/     /clients/clash-verge-rev/            301
+/nodes/     /network/regional-nodes-and-latency/ 301
+/tizi/      /recommend/stable-airports/          301
+/free/      /vpn/free-vpn-risks/                 301
+/tutorial/  /guides/                             301

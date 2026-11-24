@@ -99,6 +99,13 @@ for (const f of htmlFiles) {
 const sitemapExists = fs.existsSync(path.join(distDir, 'sitemap-index.xml')) || fs.existsSync(path.join(distDir, 'sitemap-0.xml'));
 if (!sitemapExists) {
   errors.push('Missing sitemap in dist/');
+} else {
+  // Ensure physical sitemap.xml mirror exists in dist/ alongside sitemap-index.xml
+  const sitemapIndexPath = path.join(distDir, 'sitemap-index.xml');
+  const sitemapXmlPath = path.join(distDir, 'sitemap.xml');
+  if (fs.existsSync(sitemapIndexPath)) {
+    fs.copyFileSync(sitemapIndexPath, sitemapXmlPath);
+  }
 }
 
 const qaReport = {

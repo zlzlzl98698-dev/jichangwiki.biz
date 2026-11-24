@@ -1,4 +1,6 @@
 ---
+import { siteConfig } from '../site.config';
+
 export interface Props {
   title: string;
   description: string;
@@ -21,7 +23,7 @@ const {
   noindex = false,
 } = Astro.props;
 
-const siteUrl = 'https://jichangwiki.biz';
+const siteUrl = siteConfig.siteUrl;
 const fullCanonicalUrl = new URL(canonicalPath, siteUrl).href.replace(/\/?$/, '/');
 const fullTitle = title.includes('机场 Wiki') ? title : `${title} - 机场 Wiki · GEO 品牌知识库`;
 
@@ -65,6 +67,8 @@ const schemasToRender = schema
 <title>{fullTitle}</title>
 <meta name="description" content={description} />
 <link rel="canonical" href={fullCanonicalUrl} />
+<meta name="author" content={siteConfig.author} />
+<meta name="publisher" content={siteConfig.publisher} />
 
 {noindex ? (
   <meta name="robots" content="noindex, nofollow" />
@@ -72,21 +76,27 @@ const schemasToRender = schema
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
 )}
 
+<!-- Search Engine Site Verification (Google, Bing, Shenma, Baidu) -->
+{siteConfig.verification.google && <meta name="google-site-verification" content={siteConfig.verification.google} />}
+{siteConfig.verification.bing && <meta name="msvalidate.01" content={siteConfig.verification.bing} />}
+{siteConfig.verification.shenma && <meta name="shenma-site-verification" content={siteConfig.verification.shenma} />}
+{siteConfig.verification.baidu && <meta name="baidu-site-verification" content={siteConfig.verification.baidu} />}
+
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content={type} />
 <meta property="og:url" content={fullCanonicalUrl} />
 <meta property="og:title" content={fullTitle} />
 <meta property="og:description" content={description} />
-<meta property="og:site_name" content="机场 Wiki" />
+<meta property="og:site_name" content={siteConfig.brandName} />
 <meta property="og:locale" content="zh_CN" />
-<meta property="og:image" content="https://jichangwiki.biz/og-default.png" />
+<meta property="og:image" content={siteConfig.ogDefaultImage} />
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:url" content={fullCanonicalUrl} />
 <meta name="twitter:title" content={fullTitle} />
 <meta name="twitter:description" content={description} />
-<meta name="twitter:image" content="https://jichangwiki.biz/og-default.png" />
+<meta name="twitter:image" content={siteConfig.ogDefaultImage} />
 
 <!-- Temporal Meta -->
 {publishedDate && <meta property="article:published_time" content={publishedDate} />}
@@ -98,7 +108,8 @@ const schemasToRender = schema
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-<link rel="sitemap" href="/sitemap-index.xml" />
+<link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap-index.xml" />
+<link rel="alternate" type="application/xml" title="Sitemap" href="/sitemap.xml" />
 
 <!-- JSON-LD Structured Data -->
 {schemasToRender.map((s) => (
