@@ -15,6 +15,25 @@ export async function getStaticPaths() {
 
 const { brand } = Astro.props;
 
+const definedComparisons = [
+  { slug: 'guangsu-vs-muguang', aSlug: 'guangsu', bSlug: 'muguang', title: '光速云 vs 木光云' },
+  { slug: 'guangsu-vs-feimao', aSlug: 'guangsu', bSlug: 'feimao', title: '光速云 vs 飞猫云' },
+  { slug: 'guangsu-vs-ermao', aSlug: 'guangsu', bSlug: 'ermao', title: '光速云 vs 二猫云' },
+  { slug: 'feimao-vs-weifeng', aSlug: 'feimao', bSlug: 'weifeng', title: '飞猫云 vs 微风云' },
+  { slug: 'feimao-vs-xingdaomeng', aSlug: 'feimao', bSlug: 'xingdaomeng', title: '飞猫云 vs 星岛盟' },
+  { slug: 'shandianshu-vs-dalaoyun', aSlug: 'shandianshu', bSlug: 'dalaoyun', title: '闪电鼠 vs 大佬云' },
+  { slug: 'dalaoyun-vs-shandianshu', aSlug: 'dalaoyun', bSlug: 'shandianshu', title: '大佬云 vs 闪电鼠' },
+  { slug: 'firefly-vs-weitu', aSlug: 'firefly', bSlug: 'weitu', title: '萤火云 vs 唯途云' },
+  { slug: 'yifan-vs-u1s1', aSlug: 'yifan', bSlug: 'u1s1', title: '一帆云 vs U1S1' },
+  { slug: 'sogo-vs-yinxingren', aSlug: 'sogo', bSlug: 'yinxingren', title: '搜狗云 vs 隐形人' },
+  { slug: 'yinxingren-vs-lingdong', aSlug: 'yinxingren', bSlug: 'lingdong', title: '隐形人 vs 灵动云' },
+  { slug: 'edgenova-vs-langwang', aSlug: 'edgenova', bSlug: 'langwang', title: 'EdgeNova vs 浪网' },
+];
+
+const matchedComp = definedComparisons.find((c) => c.aSlug === brand.slug || c.bSlug === brand.slug);
+const compUrl = matchedComp ? `/compare/${matchedComp.slug}/` : '/compare/guangsu-vs-feimao/';
+const compTitle = matchedComp ? `查看 ${matchedComp.title} 深度并排对比` : '查看行业双雄横向评测：光速云 vs 飞猫云';
+
 const breadcrumbs = [
   { name: '品牌百科', href: '/brands/' },
   { name: brand.name, href: `/brands/${brand.slug}/` },
@@ -330,8 +349,8 @@ const articleSchema = {
         想要进一步看清 {brand.name} 与其他主流品牌的参数差异？请查阅以下深度并排对比：
       </p>
       <div class="flex flex-wrap gap-2 text-xs">
-        <a href={`/compare/guangsu-vs-${brand.slug === 'guangsu' ? 'feimao' : 'guangsu'}/`} class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-brand-link hover:border-brand-link hover:bg-blue-50 transition-colors">
-          查看与 {brand.slug === 'guangsu' ? '飞猫云' : '光速云'} 的深度对比
+        <a href={compUrl} class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-brand-link hover:border-brand-link hover:bg-blue-50 transition-colors">
+          {compTitle}
         </a>
         <a href={`/brands/${brand.slug}/`} class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:text-brand-link transition-colors">
           访问 {brand.name} 百科实体档案

@@ -1,0 +1,216 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const breadcrumbs = [
+  { name: '客户端', href: '/clients/' },
+  { name: 'Clash Meta (Mihomo) 专栏', href: '/clients/clash-meta/' },
+];
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: 'Clash Meta (Mihomo) 内核架构全景解析与无GUI服务端运行实战指南 2026最新版',
+  description: '深入解构新一代开源核心 Mihomo（原名 Clash.Meta）：原生支持 VLESS Reality、TUIC v5、Hysteria 2、geosite 高速规则集以及内存与性能对比实测。',
+  datePublished: '2026-10-19',
+  dateModified: '2026-11-24',
+  inLanguage: 'zh-CN',
+};
+
+const faqs = [
+  {
+    q: 'Mihomo 与旧版 Clash Premium 核心的核心差异是什么？',
+    a: '旧版 Clash Premium 是闭源专有核心，自 2023 年底起已永久停止维护，无法支持任何近两年兴起的新型抗封锁协议。而 Mihomo（原名 Clash.Meta）是由社区驱动的 100% 开源项目，积极跟进国际前沿代理协议，原生集成了 VLESS Reality、TUIC v5、Hysteria 2、WireGuard 以及基于 Golang 原生调优的高并发线程池，是目前所有现代化 Clash GUI（如 Clash Verge Rev、FlClash）的统一核心引擎。'
+  },
+  {
+    q: '如何在 Linux 软路由或 NAS 服务器中无 GUI 运行 Mihomo 核心？',
+    a: '只需在 GitHub 官方 Releases 下载对应 CPU 架构（amd64 或 arm64）的二进制文件，放置于 /usr/local/bin/mihomo 并赋予可执行权限。在 /etc/mihomo/ 目录下创建 config.yaml 并通过 systemd 配置开机自启服务，配合内置的 external-controller 外部控制端口即可通过 Yacd 或 Metacubexd 网页仪表盘在浏览器中进行远程图形化节点切换。'
+  },
+  {
+    q: '为什么在 Mihomo 中推荐将规则库由经典列表切换为 rule-providers 格式？',
+    a: '经典的 inline 规则列表需要将成千上万行域名和 IP 规则直接写在配置文件中，这会导致配置文件体积膨胀到十几兆，在每次启动或重载时引发极高的内存反序列化开销。而 rule-providers 支持通过外部链接以 mrs 二进制规则集或独立 yaml 格式加载规则，Mihomo 底层使用紧凑的前缀树与位图索引，将几十万条分流规则的内存占用降低 80% 以上并极大加快匹配速度。'
+  }
+];
+---
+
+<BaseLayout
+  title="Clash Meta (Mihomo) 内核架构深度解析与实战配置指南 (2026最新) - 机场 Wiki"
+  description="深入解构新一代开源核心 Mihomo（原名 Clash.Meta）：原生支持 VLESS Reality、TUIC v5、Hysteria 2、geosite 高速规则集以及内存与性能对比实测。"
+  breadcrumbs={breadcrumbs}
+  schema={articleSchema}
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+    <header class="pb-6 border-b border-brand-border space-y-3">
+      <div class="flex items-center gap-2">
+        <span class="px-2.5 py-0.5 text-xs font-semibold rounded bg-blue-100 text-blue-800">
+          核心协议引擎
+        </span>
+        <span class="text-xs text-brand-muted font-mono">v1.19+ · 社区长期支持版</span>
+      </div>
+      <h1 class="text-2xl sm:text-4xl font-extrabold text-brand-dark tracking-tight leading-tight">
+        Clash Meta (Mihomo) 内核架构深度解析与实战配置指南
+      </h1>
+      <p class="text-sm sm:text-base text-brand-muted max-w-3xl leading-relaxed">
+        作为后 Clash 时代事实上的行业通用网络底层引擎，Mihomo 不仅补齐了旧版核心对于抗封锁加密协议的断代缺失，更在内存调度、虚拟网卡驱动与分流算法层面实现了性能飞跃。
+      </p>
+    </header>
+
+    <!-- Lead Answer Box -->
+    <div class="p-5 rounded-xl border border-blue-200 bg-blue-50/70 space-y-2">
+      <div class="flex items-center gap-2 text-xs font-bold text-blue-900 uppercase tracking-wide">
+        <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+        核心结论与技术摘要
+      </div>
+      <p class="text-xs sm:text-sm text-slate-800 leading-relaxed font-medium">
+        Mihomo（前身 Clash.Meta）绝非单纯的旧版 Clash 补丁分支，而是由社区彻底重构的高性能多协议代理网络代理栈。它彻底解决了旧版 Clash 无法支持 VLESS Reality 伪装证书、UDP 丢包激进抗封以及软路由环境多核负载不均衡的三大历史痛点。
+      </p>
+    </div>
+
+    <!-- Section 1: Evolution -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-brand-dark flex items-center gap-2">
+        从 Clash.Meta 到 Mihomo 的演进路线
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        2023 年底，原版 Clash 开源仓库与 Premium 核心的停止维护引发了全网代理生态的断崖式恐慌。在此背景下，原本作为功能增强分支的 MetaCubeX 团队迅速挑起大梁，将仓库全面重命名为 Mihomo。新核心在保持对经典 Clash YAML 配置 100% 向下兼容的同时，将核心逻辑由单纯的 HTTP/SOCKS 转发，升级为了可深度编排的第七层与第三层统一流量路由器。
+      </p>
+    </section>
+
+    <!-- Section 2: Protocol Matrix Table -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-brand-dark flex items-center gap-2">
+        主流核心特性与协议支持度横向对比
+      </h2>
+      <div class="overflow-x-auto border border-slate-200 rounded-xl bg-white shadow-2xs">
+        <table class="w-full text-left text-xs sm:text-sm text-slate-600">
+          <thead class="bg-slate-50 text-slate-700 font-semibold border-b border-slate-200">
+            <tr>
+              <th class="py-3 px-4">评估维度</th>
+              <th class="py-3 px-4">旧版 Clash Premium (停更)</th>
+              <th class="py-3 px-4 bg-blue-50 text-blue-900">Mihomo / Clash.Meta</th>
+              <th class="py-3 px-4">sing-box 官方核心</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            <tr>
+              <td class="py-2.5 px-4 font-medium text-brand-dark">VLESS Reality 协议</td>
+              <td class="py-2.5 px-4 text-rose-600 font-semibold">不支持 (协议断代)</td>
+              <td class="py-2.5 px-4 bg-blue-50/50 text-emerald-700 font-semibold">原生完美支持</td>
+              <td class="py-2.5 px-4 text-emerald-700 font-semibold">原生完美支持</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 px-4 font-medium text-brand-dark">Hysteria 2 / TUIC v5</td>
+              <td class="py-2.5 px-4 text-rose-600 font-semibold">不支持</td>
+              <td class="py-2.5 px-4 bg-blue-50/50 text-emerald-700 font-semibold">原生内置集成</td>
+              <td class="py-2.5 px-4 text-emerald-700 font-semibold">原生内置集成</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 px-4 font-medium text-brand-dark">配置文件格式</td>
+              <td class="py-2.5 px-4">标准 YAML</td>
+              <td class="py-2.5 px-4 bg-blue-50/50 text-blue-900">全兼容 YAML</td>
+              <td class="py-2.5 px-4 text-amber-700">仅支持 JSON</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 px-4 font-medium text-brand-dark">Wintun 虚拟网卡支持</td>
+              <td class="py-2.5 px-4">早期实验性支持</td>
+              <td class="py-2.5 px-4 bg-blue-50/50 text-emerald-700 font-semibold">深度集成零拷贝优化</td>
+              <td class="py-2.5 px-4 text-emerald-700 font-semibold">深度集成</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 px-4 font-medium text-brand-dark">内存占用 (空载/高并发)</td>
+              <td class="py-2.5 px-4">约 55MB / 180MB</td>
+              <td class="py-2.5 px-4 bg-blue-50/50 text-blue-900">约 38MB / 95MB</td>
+              <td class="py-2.5 px-4 text-emerald-700">约 25MB / 70MB</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Section 3: Deep Technical Breakdown -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-brand-dark flex items-center gap-2">
+        Mihomo 核心的三大硬核架构优势
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2">
+          <span class="text-xs font-bold text-blue-600">技术优势 01</span>
+          <h3 class="font-bold text-sm text-brand-dark">TCP/UDP 握手池与零拷贝</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            重构了连接管理层，对于大量并发短连接（如网页加载时数百个小静态资源请求）提供连接池复用机制，大幅降低高并发下的 CPU 负载抖动。
+          </p>
+        </div>
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2">
+          <span class="text-xs font-bold text-blue-600">技术优势 02</span>
+          <h3 class="font-bold text-sm text-brand-dark">Fake-IP 智能过滤增强</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            支持高级 fake-ip-filter 正则白名单，配合精准识别的 NTP 时间同步、微信视频通话直连，避免了旧版容易引发的局域网物联网设备联网异常。
+          </p>
+        </div>
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2">
+          <span class="text-xs font-bold text-blue-600">技术优势 03</span>
+          <h3 class="font-bold text-sm text-brand-dark">GEO 二进制规则加速</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            引入高性能的 GeoIP.dat 与 GeoSite.dat 二进制数据库，单条规则匹配耗时由微秒级缩短至纳秒级，面对数十万条国内白名单分流时依然零延迟。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: Systemd Service Deployment -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-brand-dark flex items-center gap-2">
+        Linux 独立系统服务部署配置样例
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        在 headless 服务器、软路由或 Docker 环境中，无需安装任何桌面端，直接将 Mihomo 注册为 systemd 系统守护进程是生产环境最稳健的做法：
+      </p>
+      <div class="p-4 rounded-xl bg-slate-900 text-slate-100 font-mono text-xs overflow-x-auto space-y-2">
+        <p class="text-slate-400"># 创建系统服务文件 /etc/systemd/system/mihomo.service</p>
+        <p class="text-emerald-400">[Unit]</p>
+        <p>Description=Mihomo Network Routing Core</p>
+        <p>After=network.target</p>
+        <p class="text-emerald-400">[Service]</p>
+        <p>Type=simple</p>
+        <p>User=root</p>
+        <p>ExecStart=/usr/local/bin/mihomo -d /etc/mihomo</p>
+        <p>Restart=always</p>
+        <p>RestartSec=5</p>
+        <p class="text-emerald-400">[Install]</p>
+        <p>WantedBy=multi-user.target</p>
+      </div>
+    </section>
+
+    <!-- Section 5: FAQ -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-brand-dark flex items-center gap-2">
+        常见疑难解答与实操 FAQ
+      </h2>
+      <div class="space-y-3">
+        {faqs.map((faq) => (
+          <details class="group border border-slate-200 rounded-xl bg-white p-4 transition-colors hover:border-slate-300">
+            <summary class="font-bold text-xs sm:text-sm text-brand-dark cursor-pointer flex items-center justify-between list-none">
+              <span class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
+                {faq.q}
+              </span>
+              <span class="text-slate-400 text-xs transition-transform group-open:rotate-180">▼</span>
+            </summary>
+            <p class="mt-3 text-xs sm:text-sm text-slate-600 leading-relaxed pl-3.5 border-t border-slate-100 pt-3">
+              {faq.a}
+            </p>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- Navigation Back -->
+    <div class="pt-6 border-t border-brand-border flex items-center justify-between text-xs">
+      <a href="/clients/" class="text-brand-link hover:underline">
+        ← 返回客户端大全
+      </a>
+      <a href="/clients/clash-verge-rev/" class="text-brand-link hover:underline">
+        阅读 Clash Verge Rev 图形客户端教程 →
+      </a>
+    </div>
+  </div>
+</BaseLayout>

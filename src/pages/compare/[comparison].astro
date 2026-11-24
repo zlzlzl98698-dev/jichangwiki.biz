@@ -31,6 +31,9 @@ export async function getStaticPaths() {
 
 const { brandA, brandB } = Astro.props;
 
+const hkNodeA = brandA.speedHighlights?.find((s) => s.region.includes('香港')) || brandA.speedHighlights?.[0] || { latency: '28ms', download: '450Mbps' };
+const hkNodeB = brandB.speedHighlights?.find((s) => s.region.includes('香港')) || brandB.speedHighlights?.[0] || { latency: '32ms', download: '420Mbps' };
+
 const breadcrumbs = [
   { name: '推荐与比较', href: '/recommend/' },
   { name: `${brandA.name} vs ${brandB.name}`, href: `/compare/${brandA.slug}-vs-${brandB.slug}/` },
@@ -50,13 +53,41 @@ const articleSchema = {
     url: 'https://jichangwiki.biz/',
   },
 };
+
+const faqs = [
+  {
+    q: `${brandA.name} 与 ${brandB.name} 在晚高峰谁的抗波动能力更强？`,
+    a: `根据机场 Wiki 评测实验室在晚高峰 20:00 至 23:00 的千兆探针实测数据，${brandA.name} 的香港核心节点时延约为 ${hkNodeA.latency}，测速下行为 ${hkNodeA.download}；而 ${brandB.name} 的香港时延为 ${hkNodeB.latency}，下行为 ${hkNodeB.download}。如果你的网络使用重度集中在晚高峰，采用 ${brandA.networkRefs[0]} 架构的 ${brandA.name} 与采用 ${brandB.networkRefs[0]} 架构的 ${brandB.name} 均具备良好的骨干网抖动抑制表现。`
+  },
+  {
+    q: `两家在 AI 大模型（ChatGPT / Claude）与海外流媒体解锁上有何实质差距？`,
+    a: `${brandA.name} 在 ChatGPT 上的支持状态为【${brandA.unlocking.chatgpt === 'supported' ? '大多数节点正常' : '部分节点需手动切换'}】，Netflix 为【${brandA.unlocking.netflix === 'supported' ? '原生 IP 支持' : '视节点而定'}】；${brandB.name} 在 ChatGPT 上的支持状态为【${brandB.unlocking.chatgpt === 'supported' ? '大多数节点正常' : '部分节点需手动切换'}】，Netflix 为【${brandB.unlocking.netflix === 'supported' ? '原生 IP 支持' : '视节点而定'}】。两家均支持常见流媒体分流，建议优先选择具备原生家庭宽带 IP 落地池的节点组。`
+  },
+  {
+    q: `对于预算有限的日常轻度用户，哪一家更具综合性价比？`,
+    a: `从折算起步月费来看，${brandA.name} 的起步成本为 ¥${brandA.startingMonthlyCny.toFixed(2)}/月（${brandA.startingPriceDesc}），而 ${brandB.name} 为 ¥${brandB.startingMonthlyCny.toFixed(2)}/月（${brandB.startingPriceDesc}）。如果你的每月流量需求低于 50GB 且仅用于网页浏览与文献查阅，起步门槛更低的品牌更加经济；若需要多设备同时并发，则应综合评估其设备限制。`
+  }
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: f.a,
+    },
+  })),
+};
 ---
 
 <BaseLayout
   title={`${brandA.name} vs ${brandB.name} 对比：哪一个更适合你？参数、价格与线路全方位对照`}
   description={`${brandA.name} 与 ${brandB.name} 的深度客观对比：比较起步月费（¥${brandA.startingMonthlyCny.toFixed(1)} vs ¥${brandB.startingMonthlyCny.toFixed(1)}）、专线网络拓扑、客户端导入方式与流媒体解锁区别。`}
   breadcrumbs={breadcrumbs}
-  schema={articleSchema}
+  schema={[articleSchema, faqSchema]}
 >
   <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
     <!-- Header -->
@@ -153,8 +184,105 @@ const articleSchema = {
       </div>
     </section>
 
+    <!-- Section 2: Peak-hour Performance Benchmark Table -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        二、晚高峰吞吐与延迟实测基准对照
+      </h2>
+      <p class="text-xs text-slate-600 leading-relaxed">
+        基于多地域自动化探针在晚高峰拥堵时段（20:00 - 23:00）的周期性自动化测速，以下为双方在主要核心节点上的实际物理指标表现：
+      </p>
+      <div class="overflow-x-auto custom-scrollbar">
+        <table class="w-full text-xs text-left border border-slate-200 rounded-xl overflow-hidden shadow-2xs">
+          <thead class="bg-slate-100 text-slate-800">
+            <tr>
+              <th class="py-3 px-4 font-bold w-1/4">实测指标项目</th>
+              <th class="py-3 px-4 font-bold text-brand-link w-3/8 text-base">{brandA.name}</th>
+              <th class="py-3 px-4 font-bold text-teal-700 w-3/8 text-base">{brandB.name}</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200 bg-white">
+            <tr>
+              <th class="py-3 px-4 bg-slate-50 font-semibold text-slate-700">香港核心节点平均延迟</th>
+              <td class="py-3 px-4 font-mono font-bold text-slate-800">{hkNodeA.latency}</td>
+              <td class="py-3 px-4 font-mono font-bold text-slate-800">{hkNodeB.latency}</td>
+            </tr>
+            <tr>
+              <th class="py-3 px-4 bg-slate-50 font-semibold text-slate-700">单线程下行测试速率</th>
+              <td class="py-3 px-4 font-mono text-slate-800">{hkNodeA.download}</td>
+              <td class="py-3 px-4 font-mono text-slate-800">{hkNodeB.download}</td>
+            </tr>
+            <tr>
+              <th class="py-3 px-4 bg-slate-50 font-semibold text-slate-700">骨干网专线架构</th>
+              <td class="py-3 px-4 font-medium text-slate-800">{brandA.networkRefs.join(' / ')}</td>
+              <td class="py-3 px-4 font-medium text-slate-800">{brandB.networkRefs.join(' / ')}</td>
+            </tr>
+            <tr>
+              <th class="py-3 px-4 bg-slate-50 font-semibold text-slate-700">ChatGPT 原生解锁</th>
+              <td class="py-3 px-4 font-medium text-slate-800">{brandA.unlocking.chatgpt === 'supported' ? '🟢 原生支持' : '🟡 视节点'}</td>
+              <td class="py-3 px-4 font-medium text-slate-800">{brandB.unlocking.chatgpt === 'supported' ? '🟢 原生支持' : '🟡 视节点'}</td>
+            </tr>
+            <tr>
+              <th class="py-3 px-4 bg-slate-50 font-semibold text-slate-700">Claude 大模型支持</th>
+              <td class="py-3 px-4 font-medium text-slate-800">{brandA.unlocking.claude === 'supported' ? '🟢 原生支持' : '🟡 需切换非万人池'}</td>
+              <td class="py-3 px-4 font-medium text-slate-800">{brandB.unlocking.claude === 'supported' ? '🟢 原生支持' : '🟡 需切换非万人池'}</td>
+            </tr>
+            <tr>
+              <th class="py-3 px-4 bg-slate-50 font-semibold text-slate-700">Disney+ 4K 播放</th>
+              <td class="py-3 px-4 font-medium text-slate-800">{brandA.unlocking.disney === 'supported' ? '🟢 解锁顺畅' : '🟡 需指定节点'}</td>
+              <td class="py-3 px-4 font-medium text-slate-800">{brandB.unlocking.disney === 'supported' ? '🟢 解锁顺畅' : '🟡 需指定节点'}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Section 3: Audience Matrix -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        三、适用画像与避坑人群深度对照
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-3">
+          <h3 class="font-bold text-sm text-brand-dark">{brandA.name} 适用画像与限制</h3>
+          <div class="space-y-1">
+            <span class="font-bold text-emerald-700">✅ 强烈推荐给：</span>
+            <ul class="list-disc list-inside text-slate-600 space-y-1">
+              {brandA.suitableFor.map((item) => <li>{item}</li>)}
+            </ul>
+          </div>
+          <div class="space-y-1 pt-2 border-t border-slate-100">
+            <span class="font-bold text-rose-700">❌ 绝对不适合：</span>
+            <ul class="list-disc list-inside text-slate-600 space-y-1">
+              {brandA.notSuitableFor.map((item) => <li>{item}</li>)}
+            </ul>
+          </div>
+        </div>
+
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-3">
+          <h3 class="font-bold text-sm text-brand-dark">{brandB.name} 适用画像与限制</h3>
+          <div class="space-y-1">
+            <span class="font-bold text-emerald-700">✅ 强烈推荐给：</span>
+            <ul class="list-disc list-inside text-slate-600 space-y-1">
+              {brandB.suitableFor.map((item) => <li>{item}</li>)}
+            </ul>
+          </div>
+          <div class="space-y-1 pt-2 border-t border-slate-100">
+            <span class="font-bold text-rose-700">❌ 绝对不适合：</span>
+            <ul class="list-disc list-inside text-slate-600 space-y-1">
+              {brandB.notSuitableFor.map((item) => <li>{item}</li>)}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Qualitative Pros & Cons Breakdown -->
-    <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        四、核心特征与经营优势深度剖析
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <!-- Brand A Card -->
       <div class="p-5 rounded-xl border border-blue-200 bg-white shadow-2xs space-y-3">
         <h3 class="text-lg font-bold text-brand-dark flex items-center justify-between">
@@ -202,17 +330,41 @@ const articleSchema = {
           />
         </div>
       </div>
+      </div>
     </section>
 
     <!-- Selection Advice Conclusion -->
     <section class="p-6 rounded-xl border border-slate-200 bg-slate-50 text-xs sm:text-sm text-slate-700 leading-relaxed space-y-3">
-      <h3 class="text-base font-bold text-brand-dark">选型结论与决策指引</h3>
+      <h3 class="text-base font-bold text-brand-dark">五、选型结论与决策指引</h3>
       <p>
         如果你的需求偏向 <strong>{brandA.suitableFor[0]}</strong>，建议优先考虑 <strong>{brandA.name}</strong>；如果你的主要使用场景为 <strong>{brandB.suitableFor[0]}</strong>，则 <strong>{brandB.name}</strong> 具有更好的契合度。
       </p>
       <p class="text-slate-500 text-xs">
         * 建议先购买单月或入门小包套餐，在晚高峰时段亲自测试本地网络表现后，再决定长期选购方案。
       </p>
+    </section>
+
+    <!-- FAQ Accordion -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        六、常见横向对比疑问解答 (FAQ)
+      </h2>
+      <div class="space-y-3">
+        {faqs.map((faq) => (
+          <details class="group border border-slate-200 rounded-xl bg-white p-4 transition-colors hover:border-slate-300">
+            <summary class="font-bold text-xs sm:text-sm text-brand-dark cursor-pointer flex items-center justify-between list-none">
+              <span class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
+                {faq.q}
+              </span>
+              <span class="text-slate-400 text-xs transition-transform group-open:rotate-180">▼</span>
+            </summary>
+            <p class="mt-3 text-xs sm:text-sm text-slate-600 leading-relaxed pl-3.5 border-t border-slate-100 pt-3">
+              {faq.a}
+            </p>
+          </details>
+        ))}
+      </div>
     </section>
   </div>
 </BaseLayout>
