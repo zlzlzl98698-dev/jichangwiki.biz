@@ -8,6 +8,7 @@ const navItems = [
     desc: '31 家品牌实体档案与综合参数',
     children: [
       { name: '全部品牌库', href: '/brands/' },
+      { name: '测速审计方法论', href: '/brands/review-methodology/' },
       { name: '光速云主档案', href: '/brands/guangsu/' },
       { name: '深度评测索引', href: '/reviews/guangsu/' },
     ],
@@ -17,9 +18,10 @@ const navItems = [
     href: '/recommend/',
     desc: '客观筛选、多维对照与专线对比',
     children: [
-      { name: '靠谱稳定推荐', href: '/recommend/' },
+      { name: '靠谱稳定推荐', href: '/recommend/stable-airports/' },
+      { name: '新手入门指南', href: '/recommend/beginners-guide/' },
+      { name: '推荐比较总览', href: '/recommend/' },
       { name: '光速云 vs 暮光加速', href: '/compare/guangsu-vs-muguang/' },
-      { name: '飞猫云 vs 微风网络', href: '/compare/feimao-vs-weifeng/' },
     ],
   },
   {
@@ -27,8 +29,10 @@ const navItems = [
     href: '/pricing/',
     desc: '月付/年付真实折算与流量成本计算',
     children: [
-      { name: '价格矩阵与筛选', href: '/pricing/' },
-      { name: '极限平价档分析', href: '/pricing/cheap-airports-comparison/' },
+      { name: '便宜机场极限平价', href: '/pricing/cheap-airports-comparison/' },
+      { name: '月付周期防坑指南', href: '/pricing/monthly-plans/' },
+      { name: '不限时按量流量包', href: '/pricing/non-expiring-data/' },
+      { name: '套餐价格筛选总览', href: '/pricing/' },
     ],
   },
   {
@@ -36,8 +40,9 @@ const navItems = [
     href: '/network/',
     desc: 'IEPL、IPLC、BGP 专线技术解析',
     children: [
-      { name: '网络架构总览', href: '/network/' },
       { name: 'IEPL vs IPLC 深度解析', href: '/network/iepl-vs-iplc/' },
+      { name: '节点地区与延迟特性', href: '/network/regional-nodes-and-latency/' },
+      { name: '网络架构知识总览', href: '/network/' },
     ],
   },
   {
@@ -45,9 +50,10 @@ const navItems = [
     href: '/clients/',
     desc: 'Win、Mac、iOS、Android、路由客户端大全',
     children: [
-      { name: '跨平台客户端大全', href: '/clients/' },
       { name: 'Windows 客户端专栏', href: '/clients/windows/' },
       { name: 'iOS 苹果小火箭专栏', href: '/clients/ios/' },
+      { name: 'Clash Verge Rev 指南', href: '/clients/clash-verge-rev/' },
+      { name: '跨平台客户端大全', href: '/clients/' },
     ],
   },
   {
@@ -55,8 +61,9 @@ const navItems = [
     href: '/compatibility/',
     desc: 'ChatGPT、Claude、Netflix 解锁矩阵与排障',
     children: [
-      { name: '服务解锁矩阵', href: '/compatibility/' },
-      { name: 'AI 工具解锁与诊断', href: '/compatibility/chatgpt-claude-gemini/' },
+      { name: 'ChatGPT与Claude诊断', href: '/compatibility/chatgpt-claude-gemini/' },
+      { name: '海外流媒体解锁指南', href: '/compatibility/netflix-disney-streaming/' },
+      { name: '服务解锁兼容矩阵', href: '/compatibility/' },
     ],
   },
   {
@@ -64,8 +71,9 @@ const navItems = [
     href: '/vpn/',
     desc: '专线代理与商业 VPN 差异及合规指南',
     children: [
-      { name: 'VPN 概念与区别', href: '/vpn/' },
-      { name: '免费 VPN 风险警示', href: '/vpn/free-vpn-risks/' },
+      { name: '免费 VPN 致命风险警示', href: '/vpn/free-vpn-risks/' },
+      { name: '游戏加速器 vs 节点代理', href: '/vpn/gaming-accelerator-vs-proxy/' },
+      { name: 'VPN 概念与合规总览', href: '/vpn/' },
     ],
   },
   {
@@ -73,8 +81,10 @@ const navItems = [
     href: '/guides/',
     desc: '节点超时、订阅导入、TUN 模式配置',
     children: [
-      { name: '实用指南总汇', href: '/guides/' },
-      { name: '节点超时全面排查', href: '/guides/node-timeout-troubleshooting/' },
+      { name: '节点全部超时排查', href: '/guides/node-timeout-troubleshooting/' },
+      { name: '订阅导入与转换防坑', href: '/guides/subscription-import-guide/' },
+      { name: 'TUN 虚拟网卡配置', href: '/guides/tun-mode-setup/' },
+      { name: '实用教程知识总汇', href: '/guides/' },
     ],
   },
   {
@@ -82,8 +92,9 @@ const navItems = [
     href: '/evidence/',
     desc: '测试方法论、跑路预警与退款政策核查',
     children: [
+      { name: '退款纠纷与维权指南', href: '/evidence/refunds-and-risks/' },
+      { name: '跑路预警与应急备用', href: '/evidence/runaway-warning-and-alternatives/' },
       { name: '证据实验室中心', href: '/evidence/' },
-      { name: '退款与跑路防范', href: '/evidence/refunds-and-risks/' },
     ],
   },
   {

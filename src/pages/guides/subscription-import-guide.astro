@@ -1,0 +1,403 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const breadcrumbs = [
+  { name: '教程排障', href: '/guides/' },
+  { name: '订阅导入与转换指南', href: '/guides/subscription-import-guide/' },
+];
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: '订阅链接导入与配置转换深度指南 2026 最新版 Clash YAML、Base64 通用链接、Subconverter 订阅转换风险与全平台导入实操',
+  description: '全面解析网络加速服务订阅链接机制：Clash YAML 与 Base64 格式底层差异、公共在线订阅转换工具窃取凭证黑幕、全平台主流客户端一键导入实操，以及彻底解决订阅拉取失败 403 阻断的自救手册。',
+  datePublished: '2026-10-19',
+  dateModified: '2026-11-24',
+  inLanguage: 'zh-CN',
+};
+
+const faqs = [
+  {
+    q: '为什么公共免费的在线“订阅转换平台”存在极其严重的账号与隐私安全隐患？',
+    a: '当你在第三方不知名或免费的在线订阅转换网站输入你的原始订阅链接并点击转换时，该网站的后台服务器会以发起者的身份向你的机场服务器完整下载你购买的所有节点原始配置信息（包含加密算法、密码、UUID 识别码、混淆域名与端口）。不良站长可以在后台数据库中静默抓取并提取这些有效凭据，将其聚合打包后转售牟利，或者直接利用你的个人付费流量搭建公共免费代理池。更为隐蔽的是，恶意转换后端还可能在返回的规则中悄悄插入特定的劫持节点与推广链接。为了确保绝对安全，建议直接使用机场官方提供的原生 Clash 订阅，或者在自己的本地电脑/私有 VPS 上通过 Docker 搭建私有 Subconverter 服务。'
+  },
+  {
+    q: '点击“更新订阅”时提示“403 Forbidden”或“连接重置”，通常由什么原因导致？',
+    a: '403 Forbidden 错误通常有两种诱因：一是你的套餐已到期欠费，或者当月流量额度已被完全耗尽，机场后台自动切断了该订阅 Token 的拉取权限；二是机场服务器开启了严格的 User-Agent 客户端白名单检测机制，如果你的客户端发送的请求头不包含 Clash 或 Shadowrocket 标识，服务器会直接拒接连接。如果提示“连接重置”或“解析超时”，则通常是因为机场提供的订阅下发域名在中国大陆遭遇了 DNS 污染或阻断，此时可以在客户端中开启已有的可用旧节点作为前置代理，勾选“通过代理更新订阅”即可重新拉取。'
+  },
+  {
+    q: 'Clash YAML 格式的订阅与普通的 Base64 通用订阅链接有什么本质区别？',
+    a: 'Base64 通用订阅链接本质上只是一段经过简单编码的单行纯文本，里面仅包含了零散的单节点连接信息（如多个以 vmess:// 或 vless:// 开头的链接字符串拼接），它完全不包含任何分流策略组、国内直连域名名单、DNS 配置或规则集逻辑；而 Clash YAML 是一种高度结构化的完整工程配置文件，它不仅包含了所有的节点服务器参数，还预先写好了复杂的策略组（如自动测速 Auto、故障转移 Fallback）、数千条智能域名分流规则以及 TUN 虚拟网卡底层运行参数。Clash Verge Rev 或 Stash 导入 YAML 配置后可以直接开箱即用，无需用户手动编写任何路由规则。'
+  },
+  {
+    q: '如何将订阅配置设置为自动定时更新，更新周期设置多久最合理？',
+    a: '在 Clash Verge Rev 中，右键点击已导入的订阅卡片，选择“编辑配置”，在自动更新（Auto Update）选项中填入时间间隔；在 Shadowrocket 中，进入设置 ➔ 订阅 ➔ 开启“打开时自动更新”或设置定时后台拉取。关于更新周期，推荐设置为 12 小时至 24 小时。切勿设置过短（如每隔几分钟自动更新一次），这不仅会消耗不必要的网络请求开销，还极易触发机场后端服务器的防 DDoS 频率限制（Rate Limit）导致你的 IP 被临时封禁几小时。'
+  },
+  {
+    q: '如果我不小心把自己的订阅链接公开发布到了技术论坛或群聊中，该如何挽救？',
+    a: '订阅链接中包含的 Token 字符串相当于你账户的完全访问钥匙。任何拿到该链接的人都可以无限期同步你的所有节点并疯狂消耗你的套餐流量。一旦泄漏，唯一的挽救方法是：立即登录该机场的官方网页管理后台，进入“用户中心”或“我的服务”，找到“重置订阅信息”或“重置 Token / 订阅密码”按钮并点击确认。重置后，原有的旧链接将永久失效，随后复制生成的新订阅链接重新导入你的客户端即可彻底切断他人的盗用。'
+  },
+  {
+    q: '为什么有时导入订阅后，节点名称全都是一串乱码或者显示为未命名？',
+    a: '这通常是字符编码格式不兼容导致的。现代网络软件严格要求使用 UTF-8 无 BOM 编码。如果机场服务商在后台下发配置文件时采用了旧版的 GBK 或特定本地化编码，或者在 Base64 解码过程中缺失了填充字符（=），客户端的解析器就会将中文节点名识别为乱码。此外，如果订阅文件在传输过程中由于网络中断被截断，导致 YAML 语法结构闭合损坏，也会引发解析异常。可尝试在客户端中清除该订阅并重新导入。'
+  },
+  {
+    q: '如何在一个客户端里同时管理两家或三家不同机场的订阅？',
+    a: '现代主流客户端（Clash Verge Rev、v2rayN、Shadowrocket、Stash）均原生支持多订阅共存管理。用户只需依次导入各家服务商的订阅链接并打上不同的备注标签（例如“主用专线机场”与“低价备用机场”）。在日常使用中，可以在代理列表中自由跨订阅勾选不同服务商的节点，或者在 Clash Verge Rev 中通过 Merge 配置扩展将多家机场的优质节点聚合到同一个策略组中进行横向故障转移。'
+  },
+  {
+    q: '什么是通过代理更新订阅（Proxy for Update），什么时候需要开启它？',
+    a: '当一家机场的下发订阅域名在中国大陆公网被全面屏蔽时，你直接通过本地宽带访问该链接就会提示超时断开。如果你的客户端当前已经有一个可以正常连接外网的旧节点，可以在客户端设置中勾选“通过代理更新订阅”或者“允许系统代理拉取配置”。这样客户端在更新订阅时，会先通过该旧节点建立一条境外加密隧道，通过该隧道向机场服务器拉取最新的完整节点列表，从而完美跨越本地网络封锁。'
+  }
+];
+---
+
+<BaseLayout
+  title="订阅链接导入与配置转换深度指南 (2026最新) - Clash YAML、Base64 与转换防坑全景"
+  description="全面解析网络加速服务订阅链接机制：Clash YAML 与 Base64 格式底层差异、公共在线订阅转换工具窃取凭证黑幕、全平台主流客户端一键导入实操，以及彻底解决订阅拉取失败 403 阻断的自救手册。"
+  breadcrumbs={breadcrumbs}
+  schema={articleSchema}
+>
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+    <!-- Header -->
+    <header class="pb-8 border-b border-brand-border space-y-4">
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="px-3 py-1 text-xs font-semibold rounded bg-emerald-100 text-emerald-800">
+          教程实操深度专栏
+        </span>
+        <span class="px-3 py-1 text-xs font-medium rounded bg-rose-100 text-rose-800">
+          账号隐私安全红线
+        </span>
+        <span class="text-xs text-brand-muted">更新时间 2026 年 11 月 24 日</span>
+      </div>
+
+      <h1 class="text-2xl sm:text-4xl font-extrabold text-brand-dark tracking-tight leading-tight">
+        订阅链接导入与配置转换深度指南：Clash YAML、Base64 差异与在线转换防盗凭证全景
+      </h1>
+
+      <p class="text-sm sm:text-base text-slate-600 leading-relaxed max-w-4xl">
+        无论购买了多么高端的专线服务，将<strong>托管订阅链接（Subscription URL）</strong>安全且正确地导入客户端，是开启所有网络体验的第一道门槛。然而，从公共在线订阅转换工具暗中窃取节点密码与转售流量的黑产内幕，到更新订阅时令人头疼的 403 阻断与证书握手失败，每一个环节都隐藏着安全陷阱与技术壁垒。本文系统拆解订阅底层协议、全平台导入步骤与私有化防盗方案。
+      </p>
+
+      <div class="p-4 rounded-lg bg-rose-50 border border-rose-200 text-xs text-rose-950 flex items-start gap-3">
+        <span class="text-base">🚨</span>
+        <div class="leading-relaxed">
+          <strong>财产与隐私核心铁律：</strong>
+          <strong>订阅链接等同于你的提款密码！</strong>任何获取了你订阅 URL 的第三方，都可以在无需输入你的登录账号与密码的情况下，无限期同步拉取你购买的所有节点，并随意消耗你的宝贵套餐流量。<strong>严禁在任何公共群组、公开 GitHub Issue 或来历不明的第三方在线转换网站粘贴原始订阅！</strong>
+        </div>
+      </div>
+    </header>
+
+    <!-- Table of Contents Quick Nav -->
+    <nav class="p-5 rounded-xl border border-slate-200 bg-slate-50 text-xs sm:text-sm space-y-3">
+      <div class="font-bold text-brand-dark text-sm uppercase tracking-wider">本专题深度目录导航</div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 text-brand-link">
+        <a href="#subscription-formats-breakdown" class="hover:underline">1. 订阅格式深度解构：YAML vs Base64 vs JSON</a>
+        <a href="#subconverter-risks" class="hover:underline">2. 在线订阅转换平台三大致命隐患与黑产内幕</a>
+        <a href="#cross-platform-import-steps" class="hover:underline">3. 全平台主流客户端标准化导入实操</a>
+        <a href="#failed-update-troubleshooting" class="hover:underline">4. 订阅更新失败 403 与超时排障手册</a>
+        <a href="#token-reset-recovery" class="hover:underline">5. 订阅泄漏自救：Token 重置与权限吊销</a>
+        <a href="#topic-clusters-sub" class="hover:underline">6. 订阅技术三级深度衍生选题矩阵</a>
+        <a href="#faq-section-sub" class="hover:underline">7. 高频技术疑问与权威解答</a>
+      </div>
+    </nav>
+
+    <!-- Section 1: Subscription Formats Breakdown -->
+    <section id="subscription-formats-breakdown" class="space-y-6">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark flex items-center gap-2">
+        <span class="w-2 h-6 bg-emerald-600 rounded"></span>
+        订阅格式深度解构：YAML vs Base64 vs JSON
+      </h2>
+
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        很多用户常常把“订阅”看作一个黑盒。实际上，在网络加速领域，主要流传着三种截然不同的订阅数据组织标准：
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-3 shadow-2xs">
+          <div class="font-bold text-brand-dark text-sm flex items-center gap-2">
+            <span class="text-blue-600">📄</span>
+            <span>Clash YAML 结构化配置</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            目前社区普及度最高的完整配置标准。不仅包含所有节点的服务器 IP、端口、密码与加密参数，更深度预设了 <code class="bg-slate-100 px-1 py-0.5 rounded font-mono">proxy-groups</code>（策略组）与数千行智能分流匹配规则。导入即可完整运行，无需用户进行任何二次调优。
+          </p>
+        </div>
+
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-3 shadow-2xs">
+          <div class="font-bold text-brand-dark text-sm flex items-center gap-2">
+            <span class="text-purple-600">🔤</span>
+            <span>Base64 通用单节点集合</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            将多个单独的节点协议 URL（如 vmess://、vless://、ss://、trojan://）通过换行拼接后进行标准的 Base64 编码。其体积最小，但<strong>完全不包含任何策略组与分流规则</strong>，需要依赖客户端自身的本地规则进行分流，常用于 v2rayN 与小火箭。
+          </p>
+        </div>
+
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-3 shadow-2xs">
+          <div class="font-bold text-brand-dark text-sm flex items-center gap-2">
+            <span class="text-emerald-600">🧩</span>
+            <span>sing-box JSON 新一代格式</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            基于严密 JSON Schema 构建的新型工业级标准。解析性能极高，支持精细到进程名称与独立端口的入站出站规则树。常驻内存占用极小，是现代移动端与嵌入式路由器固件的未来演进方向。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Subconverter Risks -->
+    <section id="subconverter-risks" class="space-y-6">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark flex items-center gap-2">
+        <span class="w-2 h-6 bg-emerald-600 rounded"></span>
+        在线订阅转换平台三大致命隐患与黑产内幕
+      </h2>
+
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        许多新手为了将机场的通用订阅转换成适合小火箭或 Clash 的格式，随意在百度或谷歌搜索“免费订阅转换”，直接将付费链接粘贴进不知名的第三方网站。这一看似便捷的操作，实际上让用户暴露在巨大的安全黑洞之中：
+      </p>
+
+      <div class="space-y-4">
+        <div class="p-5 rounded-xl border border-rose-200 bg-rose-50/40 space-y-2">
+          <div class="font-bold text-rose-900 text-sm flex items-center justify-between">
+            <span>🔴 隐患一：凭据与节点信息静默抓取与转售</span>
+            <span class="text-xs px-2 py-0.5 rounded bg-rose-200 text-rose-900 font-semibold">最高危</span>
+          </div>
+          <p class="text-xs text-rose-800 leading-relaxed">
+            由于转换过程是在第三方服务器的后端运行，站长可以在代码中轻松添加一行日志记录脚本，将所有用户的原始订阅链接和解析后的节点 IP、UUID 密匙完整转储到数据库中。这些数据会被打包出售给地下代理贩子，导致你的付费流量被几十个陌生人同时白嫖盗用。
+          </p>
+        </div>
+
+        <div class="p-5 rounded-xl border border-amber-200 bg-amber-50/40 space-y-2">
+          <div class="font-bold text-amber-900 text-sm">
+            <span>🟠 隐患二：恶意规则注入与中间人劫持风险</span>
+          </div>
+          <p class="text-xs text-amber-800 leading-relaxed">
+            不良转换平台会在生成的规则文件顶部，悄悄注入他们自己的劫持规则。例如将特定电商网站、虚拟币交易所或网银登录接口的流量重定向到站长控制的抓包跳板机，进而实施中间人会话窃取与敏感数据收集。
+          </p>
+        </div>
+
+        <div class="p-5 rounded-xl border border-blue-200 bg-blue-50/40 space-y-2">
+          <div class="font-bold text-blue-900 text-sm">
+            <span>🔵 安全解法：优先原生订阅或自建 Docker 私有转换</span>
+          </div>
+          <p class="text-xs text-blue-800 leading-relaxed">
+            正规靠谱的机场均在后台提供原生的 Clash、Shadowrocket 一键导入按钮，完全无需二次转换；如果确需转换，可在本地通过 Docker 运行开源的 <code class="bg-blue-100 px-1 py-0.5 rounded font-mono text-blue-950">tindy2013/subconverter</code> 镜像，全程在本地 127.0.0.1 闭环处理，数据绝不经过外部第三方服务器。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: Cross Platform Import Steps -->
+    <section id="cross-platform-import-steps" class="space-y-6">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark flex items-center gap-2">
+        <span class="w-2 h-6 bg-emerald-600 rounded"></span>
+        全平台主流客户端标准化导入实操
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <!-- Windows/macOS -->
+        <div class="bg-white p-6 rounded-xl border border-slate-200 space-y-3">
+          <div class="font-bold text-brand-dark text-base flex items-center gap-2">
+            <span>💻</span>
+            <span>Clash Verge Rev (Windows / macOS / Linux)</span>
+          </div>
+          <ol class="space-y-2 text-xs sm:text-sm text-slate-600 list-decimal list-inside">
+            <li>在机场后台复制 <strong>Clash 订阅链接</strong>。</li>
+            <li>打开 Clash Verge Rev，进入左侧 <strong>订阅 (Profiles)</strong> 面板。</li>
+            <li>在顶部输入框中粘贴链接，点击右侧 <strong>导入 (Import)</strong> 按钮。</li>
+            <li>导入成功后，点击该订阅卡片使其边框高亮（变为激活状态）。</li>
+            <li>进入“代理”面板选择心仪的节点，在“设置”中开启“系统代理”即可顺畅上网。</li>
+          </ol>
+        </div>
+
+        <!-- iOS -->
+        <div class="bg-white p-6 rounded-xl border border-slate-200 space-y-3">
+          <div class="font-bold text-brand-dark text-base flex items-center gap-2">
+            <span>📱</span>
+            <span>Shadowrocket 小火箭 (iPhone / iPad)</span>
+          </div>
+          <ol class="space-y-2 text-xs sm:text-sm text-slate-600 list-decimal list-inside">
+            <li>在手机 Safari 浏览器中登录机场后台，复制 <strong>通用订阅链接</strong>。</li>
+            <li>打开小火箭，点击右上角的 <strong>+（添加）</strong> 号。</li>
+            <li>在“类型”下拉菜单中选择 <strong>Subscribe</strong>。</li>
+            <li>在“URL”输入框中粘贴链接，备注填入机场品牌名称，点击右上角保存。</li>
+            <li>软件会自动完成节点解析并呈现在首页列表中，勾选节点后开启最顶端开关即可。</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: Failed Update Troubleshooting -->
+    <section id="failed-update-troubleshooting" class="space-y-6">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark flex items-center gap-2">
+        <span class="w-2 h-6 bg-emerald-600 rounded"></span>
+        订阅更新失败 403 与超时异常排障手册
+      </h2>
+
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        根据机场 Wiki 客服工单统计，订阅无法拉取是造成用户恐慌的最常见原因。以下五步自检流程可秒级定位故障根因：
+      </p>
+
+      <div class="overflow-x-auto border border-slate-200 rounded-xl shadow-2xs">
+        <table class="w-full text-xs text-left text-slate-600">
+          <thead class="bg-slate-100 text-brand-dark font-semibold border-b border-slate-200">
+            <tr>
+              <th class="p-3">报错现象</th>
+              <th class="p-3">最可能底层诱因</th>
+              <th class="p-3">核验方法</th>
+              <th class="p-3">官方解决途径</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 bg-white">
+            <tr class="hover:bg-slate-50">
+              <td class="p-3 font-bold text-rose-700">403 Forbidden</td>
+              <td class="p-3">套餐流量耗尽或已到期欠费</td>
+              <td class="p-3">登录网页后台查看当月剩余流量</td>
+              <td class="p-3">续费套餐或重置当月流量包</td>
+            </tr>
+            <tr class="hover:bg-slate-50">
+              <td class="p-3 font-bold text-rose-700">Connection Timed Out</td>
+              <td class="p-3">机场订阅下发域名在中国大陆被阻断</td>
+              <td class="p-3">本地 CMD 运行 ping 订阅域名</td>
+              <td class="p-3">开启现有代理节点后，勾选“通过代理更新”</td>
+            </tr>
+            <tr class="hover:bg-slate-50">
+              <td class="p-3 font-bold text-amber-700">SSL Handshake Failed</td>
+              <td class="p-3">电脑系统时间偏差超过 90 秒</td>
+              <td class="p-3">比对手机标准时间与电脑右下角时间</td>
+              <td class="p-3">在系统设置中点击“立即同步互联网时间”</td>
+            </tr>
+            <tr class="hover:bg-slate-50">
+              <td class="p-3 font-bold text-amber-700">Empty Profile / 无节点</td>
+              <td class="p-3">客户端 User-Agent 被机场防火墙拦截</td>
+              <td class="p-3">使用浏览器直接打开该订阅链接查看是否有文本返回</td>
+              <td class="p-3">在客户端高级设置中将 UA 伪装修改为 ClashVergeRev</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Section 5: Token Reset Recovery -->
+    <section id="token-reset-recovery" class="space-y-6">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark flex items-center gap-2">
+        <span class="w-2 h-6 bg-emerald-600 rounded"></span>
+        订阅泄漏自救：Token 重置与全量权限吊销
+      </h2>
+
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        如果你发现即使自己完全没有看视频，账户流量也在疯狂消耗，或者怀疑自己的订阅信息已经被盗用，必须立即执行紧急自救四步走：
+      </p>
+
+      <div class="bg-white p-6 rounded-xl border border-slate-200 space-y-3 text-xs sm:text-sm text-slate-600">
+        <ol class="space-y-2.5 list-decimal list-inside">
+          <li><strong>登录官方管理控制台：</strong>进入机场的官方网站，输入账号密码及两步验证登录后台。</li>
+          <li><strong>寻找 Token 重置入口：</strong>在“控制面板”或“资料修改”页面，找到名为【重置订阅链接】或【重置 Token】的红色风险操作按钮。</li>
+          <li><strong>执行强制注销与刷新：</strong>点击重置后，服务器会立即吊销旧有哈希令牌，并生成一段全新的加密特征字符串。此时所有使用旧链接拉取节点的盗用者将立即遭遇 403 阻断并彻底断网。</li>
+          <li><strong>重新导入新订阅到全部设备：</strong>将生成的新订阅链接重新复制，依次在你的手机、电脑与路由器中覆盖导入，即可完成全面的安全加固。</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Section 6: Topic Clusters -->
+    <section id="topic-clusters-sub" class="space-y-6">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark flex items-center gap-2">
+        <span class="w-2 h-6 bg-emerald-600 rounded"></span>
+        订阅技术三级深度衍生选题矩阵
+      </h2>
+
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        围绕网络订阅托管与数据流转换，机场 Wiki 知识体系规划了以下六大高价值三级深度技术选题：
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
+          <span class="text-xs font-bold text-emerald-600">三级选题 01</span>
+          <h3 class="font-bold text-sm text-brand-dark">Docker 本地私有化搭建 Subconverter 完全教程</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            手把手教你在群晖 NAS 或本地电脑运行私有转换容器，彻底杜绝凭证被第三方窃取。
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
+          <span class="text-xs font-bold text-emerald-600">三级选题 02</span>
+          <h3 class="font-bold text-sm text-brand-dark">Clash 订阅 YAML 语法全景拆解与手写定制</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            深入解析 proxies、proxy-groups 与 rules 的层次缩进规范，学会自己修改策略组参数。
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
+          <span class="text-xs font-bold text-emerald-600">三级选题 03</span>
+          <h3 class="font-bold text-sm text-brand-dark">订阅链接防封与自建 Cloudflare Worker 反代</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            利用 Cloudflare 免服务器架构构建专属的订阅反向代理，永久解决国内直连拉取超时。
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
+          <span class="text-xs font-bold text-emerald-600">三级选题 04</span>
+          <h3 class="font-bold text-sm text-brand-dark">多机场订阅智能合并与去重脚本实战</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            使用 Python 自动化脚本将多家不同服务商的节点混合清洗、过滤倍率并输出统一订阅。
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
+          <span class="text-xs font-bold text-emerald-600">三级选题 05</span>
+          <h3 class="font-bold text-sm text-brand-dark">Shadowrocket 订阅高级设置与正则节点重命名</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            教你利用小火箭的正则替换功能，自动剔除商家繁琐的推广前缀与失效广告节点。
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
+          <span class="text-xs font-bold text-emerald-600">三级选题 06</span>
+          <h3 class="font-bold text-sm text-brand-dark">sing-box 订阅转换与兼容性深度调试</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            针对新型 sing-box 客户端，解决 Clash 规则转换为 JSON 出站规则时的语法错误与丢包。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 7: FAQ Section -->
+    <section id="faq-section-sub" class="space-y-6">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark flex items-center gap-2">
+        <span class="w-2 h-6 bg-emerald-600 rounded"></span>
+        高频技术疑问与权威解答
+      </h2>
+
+      <div class="space-y-4">
+        {faqs.map((faq) => (
+          <details class="group bg-white p-5 rounded-xl border border-slate-200 [&_summary::-webkit-details-marker]:none">
+            <summary class="flex items-center justify-between cursor-pointer font-bold text-sm sm:text-base text-brand-dark">
+              <span>{faq.q}</span>
+              <span class="ml-4 transition-transform duration-200 group-open:rotate-180 text-emerald-600 shrink-0">
+                ▼
+              </span>
+            </summary>
+            <p class="mt-3 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
+              {faq.a}
+            </p>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- Schema FAQ injection -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: faqs.map(f => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: f.a
+        }
+      }))
+    })} />
+  </div>
+</BaseLayout>

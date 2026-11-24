@@ -27,6 +27,29 @@ const mainRoutes = [
   { name: '公开数据下载', href: '/data/' },
   { name: '联系编辑部', href: '/contact/' },
 ];
+
+const secondaryHubs = [
+  { name: '靠谱稳定专线推荐与晚高峰低丢包筛选', href: '/recommend/stable-airports/' },
+  { name: '新手入门实战指引与核心避坑指南', href: '/recommend/beginners-guide/' },
+  { name: '便宜机场极限平价与带宽成本测评', href: '/pricing/cheap-airports-comparison/' },
+  { name: '月付周期防坑指南与周期博弈分析', href: '/pricing/monthly-plans/' },
+  { name: '不限时按量流量包横向评测与选型', href: '/pricing/non-expiring-data/' },
+  { name: '测速审计方法论与虚假跑分拆解', href: '/brands/review-methodology/' },
+  { name: '免费 VPN 致命安全风险与灰产逆向', href: '/vpn/free-vpn-risks/' },
+  { name: '游戏加速器 vs 节点代理四层七层对比', href: '/vpn/gaming-accelerator-vs-proxy/' },
+  { name: 'Windows 电脑代理选型与实操教程', href: '/clients/windows/' },
+  { name: 'iOS 苹果小火箭选型与美区账号教程', href: '/clients/ios/' },
+  { name: 'Clash Verge Rev 官方指南与进阶脚本', href: '/clients/clash-verge-rev/' },
+  { name: 'ChatGPT与Claude访问报错排障与风控', href: '/compatibility/chatgpt-claude-gemini/' },
+  { name: '海外流媒体解锁与非自制剧全景指南', href: '/compatibility/netflix-disney-streaming/' },
+  { name: 'IEPL vs IPLC 跨境专线深度解析', href: '/network/iepl-vs-iplc/' },
+  { name: '节点地区与延迟特性物理极限测评', href: '/network/regional-nodes-and-latency/' },
+  { name: '订阅导入与转换防坑实操指南', href: '/guides/subscription-import-guide/' },
+  { name: 'TUN 虚拟网卡配置与全局流量接管', href: '/guides/tun-mode-setup/' },
+  { name: '节点全部超时与无法上网排查手册', href: '/guides/node-timeout-troubleshooting/' },
+  { name: '退款纠纷与维权实操指南', href: '/evidence/refunds-and-risks/' },
+  { name: '跑路预警三大信号与应急备用方案', href: '/evidence/runaway-warning-and-alternatives/' },
+];
 ---
 
 <BaseLayout
@@ -48,6 +71,20 @@ const mainRoutes = [
           <li>
             <a href={r.href} class="text-slate-700 hover:text-brand-link py-1 block">
               • {r.name}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <!-- Secondary Topic Hubs -->
+    <section class="space-y-3">
+      <h2 class="text-lg font-bold text-brand-dark border-b border-slate-200 pb-2">二级核心专题 Hub (深度权威指引)</h2>
+      <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+        {secondaryHubs.map((h) => (
+          <li>
+            <a href={h.href} class="text-slate-700 hover:text-brand-link py-1 block">
+              • {h.name}
             </a>
           </li>
         ))}

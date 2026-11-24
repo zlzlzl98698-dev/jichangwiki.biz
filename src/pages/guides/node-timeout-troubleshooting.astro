@@ -2,89 +2,433 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const breadcrumbs = [
-  { name: '教程与排障', href: '/guides/' },
+  { name: '教程排障', href: '/guides/' },
   { name: '节点超时排障指南', href: '/guides/node-timeout-troubleshooting/' },
 ];
 
 const articleSchema = {
   '@context': 'https://schema.org',
   '@type': 'TechArticle',
-  headline: '节点全部超时（-1ms / 10000ms）终极排查手册：五大常见根因与解决办法',
-  description: '全面梳理客户端导入机场订阅后节点测速全部超时的排错步骤：时间同步偏差、订阅格式损坏、安全软件冲突及 TUN 虚拟网卡死锁。',
+  headline: '节点全部超时与无法上网排障全景手册 2026 最新版 -1ms 与 Timeout 的六大底层根因与秒级自救指南',
+  description: '全面解析客户端节点全部超时（Timeout / -1ms / 10000ms）的深层诱因：系统时钟 90 秒时差阻断 TLS 握手、本地 DNS 污染、套餐流量耗尽、Wintun 虚拟网卡死锁与杀毒软件误杀，实操秒级定位与网络自愈。',
   datePublished: '2026-10-19',
   dateModified: '2026-11-24',
   inLanguage: 'zh-CN',
 };
+
+const faqs = [
+  {
+    q: '为什么点击测速时所有节点全都是红色的 Timeout 或 -1ms，但别人却说正常？',
+    a: '当遇到全列表节点百分之百超时时，95% 以上的概率问题出在用户本地系统环境或当前物理宽带，而非机场服务端全员宕机。最常见的原因包括：电脑本地系统时钟与标准时间存在超过 90 秒的偏差导致 TLS 加密握手被拒；电脑杀毒软件在后台静默拦截了内核的对外端口；或者当前连接的 Wi-Fi 路由器的 DNS 设置被污染，导致客户端根本解析不出节点入口服务器的公网 IP。按照时钟同步、热点交叉对比与日志查看三步走，通常可在三分钟内恢复。'
+  },
+  {
+    q: '为什么说系统时间偏差哪怕一两分钟，就会导致所有节点彻底瘫痪？',
+    a: '现代网络加密代理协议（如 TLS 1.3、XTLS Reality、VMess 以及 Hysteria 2）在设计之初就将“防止重放攻击（Replay Attack）”置于最高安全优先级。在建立加密连接的初始握手阶段，客户端会在数据包头附带高精度的时间戳。服务端的安全模块在接收到请求后，会拿此时间戳与国家授时中心的标准 UTC 时间进行核对。如果偏差超过允许的窗口阈值（通常为 60 秒至 90 秒），服务端会毫不犹豫地直接丢弃数据包，判定其为黑客截获并重新发送的伪造数据。因此本地时钟不同步会导致所有节点无一例外全部握手失败。'
+  },
+  {
+    q: '如何利用手机移动蜂窝热点进行“交叉对比法”，快速判断是哪里的问题？',
+    a: '断开电脑当前连接的家庭宽带或公司局域网，开启手机的 4G/5G 个人热点，让电脑连接手机热点再次进行节点测速。如果连接热点后节点瞬间全绿并能正常上网，证明机场服务器与电脑客户端软件完全完好，根本原因是你的家庭宽带光猫、本地路由器防火墙策略或者当地电信/移动运营商对该节点的入口 IP 进行了针对性拦截；如果连热点依然全部超时，则证明问题必定出在电脑本地的系统设置（如时钟、代理端口、安全软件）或机场账号欠费。'
+  },
+  {
+    q: '在 Clash Verge Rev 中，如何查看底层运行日志（Logs）来定位具体故障？',
+    a: '点击 Clash Verge Rev 左侧导航栏的“日志 (Logs)”选项。在右侧日志级别下拉菜单中选择“DEBUG”或“INFO”。随后发起一次网页访问，观察实时滚动的日志文本：如果出现 `handshake timeout`，说明物理网络丢包超时；如果出现 `certificate has expired or is not yet valid`，说明本地系统时间错误；如果出现 `connect: connection refused`，说明指定端口被占用或服务未开启；如果出现 `dial proxy error: proxy auth failed`，说明账号已欠费或 Token 失效。'
+  },
+  {
+    q: '如果只是部分特定地区的节点超时，其他地区正常，应该如何应对？',
+    a: '这通常属于正常的境外机房运维波动。例如某个特定机房正在进行电力割接、海底光缆切断导致该段路由临时绕行、或者该节点的落地 IP 遭遇了 DDoS 攻击被海外机房黑洞清洗。成熟的服务商都会在订阅中提供多个不同地区的备用节点。遇到单个节点异常时，只需在客户端中手动切换至同机场的其他可用地区（如从香港切至日本或新加坡），并耐心等待服务商运维人员修复即可，无需重置本地配置。'
+  },
+  {
+    q: '重新安装了客户端之后，为什么节点依然全部超时，甚至以前能用的节点也用不了了？',
+    a: '盲目卸载并重装客户端是新手最容易犯的错误。重装软件并不能解决系统层面的注册表残留、网络适配器驱动死锁或系统时钟偏差。相反，多次安装不同版本的客户端极易导致系统中并存多个不同版本的 Wintun 与 TAP 虚拟网卡驱动，引发底层网络栈更深层次的冲突。正确的做法是：保留一个稳定版本的客户端，通过设备管理器清理无效的虚拟网卡，并严格按照排障手册检查网络配置。'
+  },
+  {
+    q: '遇到特殊敏感时期大面积断连，用户如何判断机场是否真的发生卷款跑路？',
+    a: '在敏感时期，节点出现批量超时是较为常见的抗封锁拔河过程。判断一家品牌是否正常运营的关键是看其官方沟通渠道：如果机场的官方网站依然能正常登录、官方 Telegram 频道或公告栏在短时间内发布了维护通知并告知正在更换备用入口，通常在几小时至一两天内会陆续修复；但如果官方网站彻底无法访问、Telegram 群组突然开启全员永久禁言、客服工单彻底停止回复，且前不久刚刚进行过“多年付打折预售”，则必须高度警惕卷款跑路风险，应立即启用备用机场。'
+  },
+  {
+    q: '为什么有时候节点显示有延迟数值，但是浏览器访问任何网页都提示“ERR_TIMED_OUT”？',
+    a: '这是由于客户端的“系统代理”开关没有真正成功写入 Windows 注册表，或者浏览器的代理扩展插件（如 SwitchyOmega）接管了控制权并将流量导向了错误的空端口。打开浏览器扩展管理，临时禁用所有第三方代理插件；进入 Windows 系统设置 ➔ 网络和 Internet ➔ 代理，检查手动设置代理中的端口是否与客户端界面上显示的混合端口（通常为 7890）严格一致。'
+  }
+];
 ---
 
 <BaseLayout
-  title="节点全部超时怎么办？(2026) - Clash / v2rayN 连不上排查教程"
-  description="2026 最新网络排障手册：一步步教你解决 Clash Verge Rev、v2rayN、Shadowrocket 节点全部超时（-1ms）、无法连接外网的高频故障。"
+  title="节点全部超时排查手册 (2026最新) - 解决 -1ms、Timeout 与无法上网全景指南"
+  description="全面解析客户端节点全部超时（Timeout / -1ms / 10000ms）的深层诱因：系统时钟 90 秒时差阻断 TLS 握手、本地 DNS 污染、套餐流量耗尽、Wintun 虚拟网卡死锁与杀毒软件误杀，实操秒级定位与网络自愈。"
   breadcrumbs={breadcrumbs}
   schema={articleSchema}
 >
-  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
-    <header class="pb-6 border-b border-brand-border">
-      <div class="flex items-center gap-2 mb-2">
-        <span class="px-2.5 py-0.5 text-xs font-semibold rounded bg-red-100 text-red-800">
-          高频故障自查
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+    <!-- Header -->
+    <header class="pb-8 border-b border-brand-border space-y-4">
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="px-3 py-1 text-xs font-semibold rounded bg-rose-100 text-rose-800">
+          高频故障深度自查
         </span>
-        <span class="text-xs text-brand-muted">更新日期：2026-11-24</span>
+        <span class="px-3 py-1 text-xs font-medium rounded bg-blue-100 text-blue-800">
+          全客户端通用诊断体系
+        </span>
+        <span class="text-xs text-brand-muted">更新时间 2026 年 11 月 24 日</span>
       </div>
 
-      <h1 class="text-2xl sm:text-3xl font-extrabold text-brand-dark tracking-tight leading-tight">
-        节点全部超时（-1ms / 10000ms）排查手册：5 步彻底搞定连不上
+      <h1 class="text-2xl sm:text-4xl font-extrabold text-brand-dark tracking-tight leading-tight">
+        节点全部超时与无法上网排障全景手册：-1ms 与 Timeout 的六大底层根因与秒级自救指南
       </h1>
 
-      <p class="text-xs sm:text-sm text-slate-600 mt-3 leading-relaxed">
-        当你满心欢喜导入机场订阅后，点击测速却发现所有节点全部飘红显示 “Timeout” 或 “-1ms”。请不要慌张，95% 以上的情况并非机场跑路，而是本地系统配置或握手时间出现了偏差。
+      <p class="text-sm sm:text-base text-slate-600 leading-relaxed max-w-4xl">
+        无论使用的是 Clash Verge Rev、v2rayN 还是苹果小火箭，最令用户焦虑的时刻莫过于点击测速后，原本绿色的节点列表<strong>全军覆没、全部飘红显示 -1ms 或 Timeout</strong>。绝大多数用户此时会陷入盲目重装软件、甚至重装系统的慌乱之中。事实上，95% 以上的全盘超时并非机场跑路，而是本地协议栈握手或系统时间存在极小偏差。本文提供一套标准化的工业级诊断逻辑。
       </p>
+
+      <div class="p-4 rounded-lg bg-rose-50 border border-rose-200 text-xs text-rose-950 flex items-start gap-3">
+        <span class="text-base">⏱️</span>
+        <div class="leading-relaxed">
+          <strong>第一黄金排查定律：</strong>
+          遇到节点全红时，<strong>第一件事永远是检查电脑或手机的“系统时钟”！</strong>由于现代 TLS 1.3 与 Reality 协议对时间戳实施严密的反重放校验，只要你的本地时间与标准北京时间偏差超过 90 秒，所有加密握手包都会被服务端静默丢弃！
+        </div>
+      </div>
     </header>
 
-    <!-- Step 1: System Time Sync -->
-    <section class="p-6 rounded-xl border border-blue-200 bg-white shadow-2xs space-y-3">
-      <h2 class="text-lg font-bold text-brand-dark flex items-center gap-2">
-        <span>🕒</span> 第一步：检查电脑/手机系统时间是否精准（最常见诱因）
+    <!-- Table of Contents Quick Nav -->
+    <nav class="p-5 rounded-xl border border-slate-200 bg-slate-50 text-xs sm:text-sm space-y-3">
+      <div class="font-bold text-brand-dark text-sm uppercase tracking-wider">本专题深度目录导航</div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 text-brand-link">
+        <a href="#timeout-principles" class="hover:underline">1. 节点超时的底层网络工程判定逻辑</a>
+        <a href="#six-root-causes" class="hover:underline">2. 六大高频诱因与秒级处置自救</a>
+        <a href="#cross-verification-method" class="hover:underline">3. 手机热点双向交叉对比排错法</a>
+        <a href="#log-troubleshooting" class="hover:underline">4. 开启实时日志识别底层错误码</a>
+        <a href="#runaway-vs-maintenance" class="hover:underline">5. 敏感时期断连：是临时维护还是真跑路</a>
+        <a href="#topic-clusters-timeout" class="hover:underline">6. 排障技术三级深度衍生选题矩阵</a>
+        <a href="#faq-section-timeout" class="hover:underline">7. 高频技术疑问与权威解答</a>
+      </div>
+    </nav>
+
+    <!-- Section 1: Timeout Principles -->
+    <section id="timeout-principles" class="space-y-6">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark flex items-center gap-2">
+        <span class="w-2 h-6 bg-rose-600 rounded"></span>
+        节点超时的底层网络工程判定逻辑
       </h2>
+
       <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
-        现行主流代理协议（如 VLESS、VMess、Trojan、Hysteria 2）底层均高度依赖 TLS/SSL 加密握手。若你的电脑系统时钟与标准北京时间偏差超过 <strong>60 秒至 90 秒</strong>，服务端会判定为时钟重放攻击而直接拒绝连接！
+        当客户端向节点发送请求并返回“超时”时，其背后包含了四个完全不同的网络交互阶段：
       </p>
-      <div class="bg-blue-50/60 p-3.5 rounded-lg border border-blue-100 text-xs text-slate-700">
-        <strong>解决办法：</strong>在 Windows 任务栏右键点击时间 -> 选择“调整日期和时间” -> 点击“立即同步时钟”；iOS/Android 请在设置中开启“自动设置时间”。
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
+          <strong class="text-brand-dark block text-sm">阶段 1：DNS 解析阶段</strong>
+          <p class="text-slate-600 leading-relaxed">
+            客户端必须先将节点的域名（如 hk01.entry.com）转换为公网 IP。如果本地运营商 DNS 发生劫持或污染，请求在第一步就无法发出，直接报错。
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
+          <strong class="text-brand-dark block text-sm">阶段 2：TCP 三次握手</strong>
+          <p class="text-slate-600 leading-relaxed">
+            客户端向入口 IP 的指定端口发送 SYN 数据包。如果端口被中间防火墙阻断或服务器宕机，客户端等待 3 至 5 秒后抛出 TCP Timeout。
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
+          <strong class="text-brand-dark block text-sm">阶段 3：TLS 加密协商</strong>
+          <p class="text-slate-600 leading-relaxed">
+            双方交换安全证书与时钟时间戳。如果本地系统时间偏差、或者证书颁发机构被中间人篡改，握手在此阶段立即被单向切断。
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
+          <strong class="text-brand-dark block text-sm">阶段 4：协议认证鉴权</strong>
+          <p class="text-slate-600 leading-relaxed">
+            发送用户的加密 UUID 或密码。如果账户欠费、流量耗尽或 Token 过期，服务端回复鉴权拒绝，客户端关闭套接字。
+          </p>
+        </div>
       </div>
     </section>
 
-    <!-- Step 2: Expired Subscription -->
-    <section class="p-6 rounded-xl border border-slate-200 bg-white shadow-2xs space-y-3">
-      <h2 class="text-lg font-bold text-brand-dark flex items-center gap-2">
-        <span>💳</span> 第二步：确认机场账户是否欠费或流量耗尽
+    <!-- Section 2: Six Root Causes -->
+    <section id="six-root-causes" class="space-y-6">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark flex items-center gap-2">
+        <span class="w-2 h-6 bg-rose-600 rounded"></span>
+        六大高频诱因与秒级处置自救手册
       </h2>
-      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
-        登录你的机场用户中心后台，检查当前套餐的到期时间、剩余月流量。若已过期或已用完当月额度，服务端鉴权模块会自动将你的节点连接断开。
-      </p>
-    </section>
 
-    <!-- Step 3: TUN & Virtual Adapter Conflicts -->
-    <section id="tun-guide" class="p-6 rounded-xl border border-slate-200 bg-white shadow-2xs space-y-3">
-      <h2 class="text-lg font-bold text-brand-dark flex items-center gap-2">
-        <span>🔌</span> 第三步：重启 TUN 虚拟网卡服务，排查多代理冲突
-      </h2>
-      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
-        如果你同时安装了其他企业 VPN、杀毒软件虚拟网卡或加速器，可能会导致网络虚拟驱动（Wintun / TAP）死锁。
-      </p>
-      <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200 text-xs text-slate-700">
-        <strong>解决操作：</strong>在 Clash Verge Rev 中先关闭 TUN 模式，右键软件图标退出。进入设备管理器检查网络适配器，重启软件并以管理员身份重新启用 TUN 模式。
+      <div class="space-y-4">
+        <!-- Cause 1 -->
+        <div class="p-5 rounded-xl border border-rose-200 bg-rose-50/40 space-y-2">
+          <div class="font-bold text-rose-900 text-sm flex items-center justify-between">
+            <span>🔴 诱因一：系统时钟偏差大于 90 秒（占全网工单 60% 以上）</span>
+            <span class="text-xs px-2 py-0.5 rounded bg-rose-200 text-rose-900 font-semibold">首要元凶</span>
+          </div>
+          <p class="text-xs text-rose-800 leading-relaxed">
+            <strong>处置操作：</strong>按键盘 <kbd class="bg-white px-1 py-0.5 rounded border border-rose-300 font-mono">Win + I</kbd> 打开设置 ➔ “时间和语言” ➔ “日期和时间”，点击【立即同步】按钮。手机用户进入“设置 ➔ 通用 ➔ 日期与时间”，关闭后重新开启“自动设置”。同步完成后再次点击测速，节点通常瞬间全绿。
+          </p>
+        </div>
+
+        <!-- Cause 2 -->
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-2">
+          <div class="font-bold text-brand-dark text-sm">
+            <span>🟠 诱因二：账户流量耗尽或套餐已逾期</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            <strong>处置操作：</strong>登录机场网页管理后台，查看用户仪表盘。重点核验“到期时间”以及“本月已用流量 / 剩余可用流量”。若流量已跑空，节点鉴权会直接返回连接拒绝，需续费或购买流量重置包。
+          </p>
+        </div>
+
+        <!-- Cause 3 -->
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-2">
+          <div class="font-bold text-brand-dark text-sm">
+            <span>🟡 诱因三：本地家庭宽带光猫 DNS 污染</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            <strong>处置操作：</strong>在控制面板网络适配器中，将物理网卡的 IPv4 DNS 手动指定为公共无污染 DNS（首选 <code class="bg-slate-100 px-1 py-0.5 rounded font-mono">223.5.5.5</code>，备用 <code class="bg-slate-100 px-1 py-0.5 rounded font-mono">119.29.29.29</code>）；在客户端中开启 Fake-IP 模式消除本地解析依赖。
+          </p>
+        </div>
+
+        <!-- Cause 4 -->
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-2">
+          <div class="font-bold text-brand-dark text-sm">
+            <span>🔵 诱因四：杀毒软件启发式扫描拦截内核网络外联</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            <strong>处置操作：</strong>检查电脑中安装的第三方防护软件，打开其拦截日志或隔离区。将 Clash Verge Rev 及其核心可执行文件（mihomo.exe）添加到信任白名单，防止其发送的加密数据包被本地强行截杀。
+          </p>
+        </div>
+
+        <!-- Cause 5 -->
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-2">
+          <div class="font-bold text-brand-dark text-sm">
+            <span>🟣 诱因五：TUN 虚拟网卡与网络适配器驱动死锁</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            <strong>处置操作：</strong>在客户端关闭 TUN 开关，打开 Windows“设备管理器”，展开“网络适配器”，查看是否存在黄色警告的虚拟适配器驱动；右键卸载后在客户端重新以管理员身份安装 Service Mode 服务。
+          </p>
+        </div>
+
+        <!-- Cause 6 -->
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-2">
+          <div class="font-bold text-brand-dark text-sm">
+            <span>🟤 诱因六：客户端本地混合监听端口冲突 (7890 冲突)</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            <strong>处置操作：</strong>在客户端“设置”中，将“混合端口 (Mixed Port)”手动修改为其他未被占用的端口（例如从 7890 修改为 7895 或 10808），彻底避开后台其他开发环境或代理进程的争抢。
+          </p>
+        </div>
       </div>
     </section>
 
-    <!-- Step 4: Rule Split & DNS -->
-    <section id="rule-split" class="p-6 rounded-xl border border-slate-200 bg-white shadow-2xs space-y-3">
-      <h2 class="text-lg font-bold text-brand-dark flex items-center gap-2">
-        <span>🌐</span> 第四步：检查模式选择与 DNS 解析
+    <!-- Section 3: Cross Verification Method -->
+    <section id="cross-verification-method" class="space-y-6">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark flex items-center gap-2">
+        <span class="w-2 h-6 bg-rose-600 rounded"></span>
+        手机热点双向交叉对比排错法（黄金定位法则）
       </h2>
+
       <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
-        确保客户端处于“规则 (Rule)”模式而非“直接直连 (Direct)”；若依然无法解析，可在设置中切换 DNS 模式为 Fake-IP，或将上游 DNS 更改为 223.5.5.5 与 119.29.29.29。
+        当你无法判断故障到底出在“电脑系统”、“家庭宽带”还是“机场服务器”时，使用手机蜂窝网络作为中立参照物是最科学的解法：
       </p>
+
+      <div class="overflow-x-auto border border-slate-200 rounded-xl shadow-2xs">
+        <table class="w-full text-xs text-left text-slate-600">
+          <thead class="bg-slate-100 text-brand-dark font-semibold border-b border-slate-200">
+            <tr>
+              <th class="p-3">测试步骤</th>
+              <th class="p-3">家庭宽带下状态</th>
+              <th class="p-3">切换手机 5G 热点后状态</th>
+              <th class="p-3">故障根因精准定性</th>
+              <th class="p-3">正确解决路径</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 bg-white">
+            <tr class="hover:bg-slate-50">
+              <td class="p-3 font-bold text-brand-dark">场景 A</td>
+              <td class="p-3 text-rose-700 font-semibold">全部超时 (-1ms)</td>
+              <td class="p-3 text-emerald-700 font-semibold">瞬间恢复全绿 (正常可用)</td>
+              <td class="p-3 text-rose-700 font-semibold">家庭宽带路由器或当地运营商阻断</td>
+              <td class="p-3">重启光猫更换公网 IP，或修改路由器 DNS</td>
+            </tr>
+            <tr class="hover:bg-slate-50">
+              <td class="p-3 font-bold text-brand-dark">场景 B</td>
+              <td class="p-3 text-rose-700 font-semibold">全部超时 (-1ms)</td>
+              <td class="p-3 text-rose-700 font-semibold">依然全部超时 (-1ms)</td>
+              <td class="p-3 text-amber-700 font-semibold">电脑本地系统环境错误或账号欠费</td>
+              <td class="p-3">核验系统时钟、检查欠费、关闭杀毒软件</td>
+            </tr>
+            <tr class="hover:bg-slate-50">
+              <td class="p-3 font-bold text-brand-dark">场景 C</td>
+              <td class="p-3 text-emerald-700 font-semibold">节点全绿显示延迟</td>
+              <td class="p-3 text-emerald-700 font-semibold">节点全绿但打不开网页</td>
+              <td class="p-3 text-blue-700 font-semibold">浏览器系统代理未写入或扩展冲突</td>
+              <td class="p-3">禁用第三方浏览器插件，重置系统代理</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </section>
+
+    <!-- Section 4: Log Troubleshooting -->
+    <section id="log-troubleshooting" class="space-y-6">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark flex items-center gap-2">
+        <span class="w-2 h-6 bg-rose-600 rounded"></span>
+        开启实时运行日志（Logs）识别底层网络错误码
+      </h2>
+
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        高手排障从不盲猜。在客户端中打开实时日志，底层核心引擎会清晰吐出每一条套接字通信的具体失败原因：
+      </p>
+
+      <div class="bg-slate-900 text-slate-100 p-5 rounded-xl font-mono text-xs space-y-2 overflow-x-auto">
+        <div class="text-slate-400 text-xs">// 常见日志报错关键字段识别对照：</div>
+        <p class="text-rose-400">[ERROR] dial TCP to 120.x.x.x:443: i/o timeout</p>
+        <span class="text-slate-400 block text-xs">➔ 物理网络不通，入口服务器无响应或本地上行丢包严重。</span>
+
+        <p class="text-rose-400 pt-2">[ERROR] tls: handshake failure: certificate verify failed</p>
+        <span class="text-slate-400 block text-xs">➔ 系统时钟未同步，或本地存在中间人抓包软件证书拦截。</span>
+
+        <p class="text-amber-400 pt-2">[WARN] dial proxy error: user authentication failed (403)</p>
+        <span class="text-slate-400 block text-xs">➔ 账户已被停用，套餐流量跑完，或订阅 Token 已经被重置。</span>
+
+        <p class="text-blue-400 pt-2">[INFO] dns resolve failed for domain: NXDOMAIN</p>
+        <span class="text-slate-400 block text-xs">➔ 节点域名被上游 DNS 解析服务彻底封杀，需拉取最新订阅。</span>
+      </div>
+    </section>
+
+    <!-- Section 5: Runaway vs Maintenance -->
+    <section id="runaway-vs-maintenance" class="space-y-6">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark flex items-center gap-2">
+        <span class="w-2 h-6 bg-rose-600 rounded"></span>
+        敏感时期大面积断连：是临时维护还是真跑路？
+      </h2>
+
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        每年遇到重大节日或特殊地缘敏感时期，跨境网络出口常遭遇高强度的干扰拦截。如何一眼辨别商家是在积极抢修还是已经卷款跑路？
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="p-5 rounded-xl border border-emerald-200 bg-emerald-50/40 space-y-3">
+          <div class="text-sm font-bold text-emerald-900 flex items-center gap-2">
+            <span>🛡️</span>
+            <span>正常维护中的健康服务商特征</span>
+          </div>
+          <ul class="text-xs text-slate-600 space-y-1.5 list-disc list-inside">
+            <li>官方网站正常运转，控制台仍能顺畅登录。</li>
+            <li>官方 Telegram 频道在半小时内发布了紧急抢修公告。</li>
+            <li>用户交流群虽然禁言防止恐慌刷屏，但置顶说明了预计恢复时间。</li>
+            <li>具备多套备用入口解析，部分高级专线节点陆续在几小时内恢复通信。</li>
+          </ul>
+        </div>
+
+        <div class="p-5 rounded-xl border border-rose-200 bg-rose-50/40 space-y-3">
+          <div class="text-sm font-bold text-rose-900 flex items-center gap-2">
+            <span>🚨</span>
+            <span>高危跑路预警信号特征</span>
+          </div>
+          <ul class="text-xs text-slate-600 space-y-1.5 list-disc list-inside">
+            <li>官方网站域名直接解析失败或跳转至博彩欺诈页面。</li>
+            <li>官方 Telegram 群组彻底解散或群管理员全部销号。</li>
+            <li>在出事的前一两周，突然反常地推出“买两年送三年”等超低折扣促销狂揽资金池。</li>
+            <li>工单系统彻底关闭，全网没有任何公开回应。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 6: Topic Clusters -->
+    <section id="topic-clusters-timeout" class="space-y-6">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark flex items-center gap-2">
+        <span class="w-2 h-6 bg-rose-600 rounded"></span>
+        排障技术三级深度衍生选题矩阵
+      </h2>
+
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        围绕网络排障与高可用故障自愈，机场 Wiki 知识体系规划了以下六大高价值三级深度技术选题：
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
+          <span class="text-xs font-bold text-rose-600">三级选题 01</span>
+          <h3 class="font-bold text-sm text-brand-dark">Windows 注册表 ProxyEnable 残留锁死一键脚本</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            手写批处理脚本（.bat），双击一秒强制重置系统代理键值，彻底救活所有打不开的浏览器。
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
+          <span class="text-xs font-bold text-rose-600">三级选题 02</span>
+          <h3 class="font-bold text-sm text-brand-dark">Wireshark 抓包实战与 TLS 握手失败深度复盘</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            带你逐帧分析 Client Hello、Server Hello、Alert 协议包，揪出偷掐长连接的元凶。
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
+          <span class="text-xs font-bold text-rose-600">三级选题 03</span>
+          <h3 class="font-bold text-sm text-brand-dark">家庭光猫改桥接模式与公网 IP 申请实操</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            告别运营商光猫大内网 NAT 转发瓶颈，改用高端路由器拨号实现极速低丢包跨境通信。
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
+          <span class="text-xs font-bold text-rose-600">三级选题 04</span>
+          <h3 class="font-bold text-sm text-brand-dark">Clash Verge Rev 混合端口冲突与自适应绑定</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            如何防止开发工具（Node.js / Python）误抢 7890 端口，配置智能端口跳动脚本。
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
+          <span class="text-xs font-bold text-rose-600">三级选题 05</span>
+          <h3 class="font-bold text-sm text-brand-dark">运营商骨干网 QoS 降速与 UDP 阻断对抗</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            深入揭示省际公网出口限速机制，教你配置伪装协议与多倍率并发通道突破丢包封锁。
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
+          <span class="text-xs font-bold text-rose-600">三级选题 06</span>
+          <h3 class="font-bold text-sm text-brand-dark">全平台一键网络重置指令全集</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            收录 Windows netsh winsock reset、macOS dscacheutil 与 Linux systemd-resolved 恢复全指令。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 7: FAQ Section -->
+    <section id="faq-section-timeout" class="space-y-6">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark flex items-center gap-2">
+        <span class="w-2 h-6 bg-rose-600 rounded"></span>
+        高频技术疑问与权威解答
+      </h2>
+
+      <div class="space-y-4">
+        {faqs.map((faq) => (
+          <details class="group bg-white p-5 rounded-xl border border-slate-200 [&_summary::-webkit-details-marker]:none">
+            <summary class="flex items-center justify-between cursor-pointer font-bold text-sm sm:text-base text-brand-dark">
+              <span>{faq.q}</span>
+              <span class="ml-4 transition-transform duration-200 group-open:rotate-180 text-rose-600 shrink-0">
+                ▼
+              </span>
+            </summary>
+            <p class="mt-3 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
+              {faq.a}
+            </p>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- Schema FAQ injection -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: faqs.map(f => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: f.a
+        }
+      }))
+    })} />
   </div>
 </BaseLayout>

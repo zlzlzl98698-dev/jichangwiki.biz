@@ -3,84 +3,415 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const breadcrumbs = [
   { name: '客户端', href: '/clients/' },
-  { name: 'iOS 苹果小火箭专栏', href: '/clients/ios/' },
+  { name: 'iOS 苹果代理选型与实操', href: '/clients/ios/' },
 ];
 
 const articleSchema = {
   '@context': 'https://schema.org',
   '@type': 'TechArticle',
-  headline: 'iOS 苹果网络代理客户端大全 (2026)：Shadowrocket、Stash、Surge 购买下载指引',
-  description: '全面解析 iOS (iPhone / iPad) 平台主流代理软件：Shadowrocket（小火箭）、Stash、Quantumult X 的外区 Apple ID 购买与订阅导入教程。',
+  headline: 'iOS 苹果手机网络代理客户端选型与正版配置深度指南 2026 最新版 Shadowrocket、Loon、Stash 与 Quantumult X 深度横评与外区 Apple ID 避坑全景',
+  description: '全面解析 iPhone 与 iPad 平台主流网络代理工具：Shadowrocket（小火箭）、Loon、Stash、Quantumult X 的选型对比、美区 Apple ID 正版安全购买教程、iOS 严格后台保活机制与 NetworkExtension 内存防闪退优化手册。',
   datePublished: '2026-10-19',
   dateModified: '2026-11-24',
   inLanguage: 'zh-CN',
 };
+
+const faqs = [
+  {
+    q: '为什么在中国大陆 App Store 搜索不到 Shadowrocket 或小火箭？',
+    a: '根据苹果公司的合规管理政策与跨国服务条款，在中国大陆地区的 App Store 中未上架任何具备全局路由或网络代理功能的第三方网络工具。中国大陆用户如果需要合法合规地获取此类正版应用，必须在 App Store 中切换登录境外地区（如美国、日本、中国香港等）的 Apple ID 进行付费购买和正版下载。'
+  },
+  {
+    q: '网上流传的免费共享 Apple ID 存在哪些严重的财产与设备锁定风险？',
+    a: '绝对严禁在 iPhone 或 iPad 的系统“设置”最顶部个人中心登录来历不明的公共共享 Apple ID。公共账号随时可能被恶意管理员在后台开启“查找我的 iPhone”并远程将你的设备锁定为丢失模式，进而索要高额赎金进行勒索，或者同步你的个人通讯录、相册与备忘录等极其敏感的隐私数据。即使仅在 App Store 商店内登录，共享账号也极易遭遇频繁的双重验证锁定或被苹果风控封号。最稳妥安全的方式是自行注册一个专属的美区 Apple ID 并通过官方礼品卡充值购买。'
+  },
+  {
+    q: 'Shadowrocket（小火箭）、Loon、Stash 与 Quantumult X 应该如何选择？',
+    a: '对于百分之八十以上的普通用户，售价仅需 2.99 美元的 Shadowrocket（小火箭）是性价比最高、协议支持最全且操作最简单的工具；如果你习惯了在电脑端使用 Clash 的 YAML 语法并希望在手机端无缝同步策略组与规则分流，售价 3.99 美元的 Stash 是最佳原生选择；如果你热衷于各类去广告插件、复杂 JavaScript 脚本重写与现代化界面视觉，Loon 提供了目前 iOS 端最活跃的插件生态；如果你需要极客级的抓包与高度定制化重写，且熟悉圈叉语法，可以选择 Quantumult X。'
+  },
+  {
+    q: '为什么 iOS 端开启代理后，手机锁屏待机一段时间经常会自动断流或无法接收即时推送？',
+    a: '这是由于 iOS 操作系统极为严苛的电源管理与墓碑后台机制引起的。iOS 为所有基于 NetworkExtension 框架运行的 Packet Tunnel 扩展进程强行施加了大约 15MB 的物理内存上限。如果用户的订阅规则文件过于庞大（例如加载了数十万条未精简的去广告规则）、开启了未关闭的实时请求抓包日志、或者节点并发连接过高，就会瞬间突破 15MB 内存红线，导致系统内核直接强制杀掉代理后台进程。解决办法是精简规则集、关闭无用日志，并确保在 Wi-Fi 下开启按需连接保持通道常驻。'
+  },
+  {
+    q: '如何在没有境外实体双币信用卡的情况下给美区 Apple ID 充值购买正版软件？',
+    a: '可以通过苹果官网或主流正规电商平台（如亚马逊官方自营或获得苹果授权的线上礼品卡销售商）购买美区 Apple Gift Card 电子礼品卡，面额通常支持自定义或最低 2 美元至 10 美元。购买后将兑换代码（通常为十六位字母数字组合）复制到 App Store 账户中心的“兑换礼品卡或代码”中即可完成充值，无需绑定任何境外银行卡。'
+  },
+  {
+    q: '在 Shadowrocket 中，全局路由模式中的配置（Config）、代理（Proxy）和直连（Direct）有什么区别？',
+    a: '配置（Config）模式相当于智能分流，软件会根据导入的规则列表自动判断访问目标：国内网站和局域网 IP 直接走本地网络直连，海外受限网站与流媒体则由指定代理节点转发，这是最省电且最推荐的日常模式；代理（Proxy）模式相当于全局代理，不论访问百度还是海外网站，整台手机的所有网络流量全部强行通过代理服务器转发，容易造成流量浪费并导致国内应用延迟变高甚至弹出风控警告；直连（Direct）模式则完全不经过代理，所有流量直出。'
+  },
+  {
+    q: '为什么有时小火箭节点测速全都是超时或者几千毫秒，但切换手机蜂窝数据后又正常了？',
+    a: '这通常表明你当前连接的家庭宽带或公共 Wi-Fi 路由器的 DNS 设置被篡改或污染，或者路由器内置了针对特定境外端口的流量过滤策略。此外，如果手机连接了带有本地代理冲突的特定 Wi-Fi 热点，也会阻断 TCP 握手包。切换到手机移动蜂窝蜂窝网络后，运营商下发了独立的干净 DNS 和原生路由，因此可恢复正常。遇到此情况可在小火箭中将 DNS 服务器手动指定为 223.5.5.5 或 119.29.29.29。'
+  },
+  {
+    q: '使用小火箭等工具时，如何设置特定家庭或办公室 Wi-Fi 下自动停用代理？',
+    a: '在 Shadowrocket 的“设置”中找到“按需连接 (On Demand)”。在配置列表中添加匹配的 SSID 规则，将家里或公司的 Wi-Fi 名称设置为直连或停用策略。这样当 iPhone 检测到接入特定受信任的局域网时，系统会自动暂停虚拟网卡运行，离开该网络后又会自动无感拉起，实现极致省电与网络自适应。'
+  }
+];
 ---
 
 <BaseLayout
-  title="iOS 苹果手机代理客户端下载教程 (2026) - Shadowrocket 小火箭与 Stash 官方正版获取"
-  description="2026 年最新 iPhone/iPad 代理软件获取指南：通过美区/港区 App Store 下载 Shadowrocket（小火箭）、Stash，免越狱一键导入订阅，实现自动分流与流媒体解锁。"
+  title="iOS 苹果手机代理客户端选型与正版配置深度指南 (2026最新) - Shadowrocket、Loon、Stash 官方正版获取"
+  description="全面解析 iPhone 与 iPad 平台主流网络代理工具：Shadowrocket（小火箭）、Loon、Stash、Quantumult X 的选型对比、美区 Apple ID 正版安全购买教程、iOS 严格后台保活机制与 NetworkExtension 内存防闪退优化手册。"
   breadcrumbs={breadcrumbs}
   schema={articleSchema}
 >
-  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
-    <header class="pb-6 border-b border-brand-border">
-      <div class="flex items-center gap-2 mb-2">
-        <span class="px-2.5 py-0.5 text-xs font-semibold rounded bg-purple-100 text-purple-800">
-          iOS 苹果专栏
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+    <!-- Header -->
+    <header class="pb-8 border-b border-brand-border space-y-4">
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="px-3 py-1 text-xs font-semibold rounded bg-purple-100 text-purple-800">
+          iOS 苹果专题深度指南
         </span>
-        <span class="text-xs text-brand-muted">更新日期：2026-11-24</span>
+        <span class="px-3 py-1 text-xs font-medium rounded bg-blue-100 text-blue-800">
+          iPhone / iPad 全机型适用
+        </span>
+        <span class="text-xs text-brand-muted">更新时间 2026 年 11 月 24 日</span>
       </div>
 
-      <h1 class="text-2xl sm:text-3xl font-extrabold text-brand-dark tracking-tight leading-tight">
-        iPhone / iPad 代理客户端选型与正版获取指南 (2026)
+      <h1 class="text-2xl sm:text-4xl font-extrabold text-brand-dark tracking-tight leading-tight">
+        iPhone 与 iPad 代理客户端选型指南与深度实操：Shadowrocket、Loon、Stash 与正版获取全景
       </h1>
 
-      <p class="text-xs sm:text-sm text-slate-600 mt-3 leading-relaxed">
-        受苹果 App Store 区域政策限制，代理类软件未在中国大陆区 App Store 上架。用户需登录非大陆区（如美区、日区、港区）Apple ID 并在 App Store 购买下载。
+      <p class="text-sm sm:text-base text-slate-600 leading-relaxed max-w-4xl">
+        iOS 凭借其高度封闭与安全的沙盒生态，提供了卓越的系统流畅度，但同时也为网络代理工具的获取与日常运行带来了独特的门槛。受 App Store 区域分发策略限制，中国大陆用户必须掌握外区 Apple ID 安全注册、官方礼品卡正规充值、NetworkExtension 虚拟网络扩展保活机制以及智能分流规则调优。本文系统梳理 iOS 平台四大主流神器的技术选型与避坑全流程。
       </p>
+
+      <div class="p-4 rounded-lg bg-rose-50 border border-rose-200 text-xs text-rose-900 flex items-start gap-3">
+        <span class="text-base">🚨</span>
+        <div class="leading-relaxed">
+          <strong>财产与隐私最高警示：</strong>
+          绝对严禁在 iPhone 或 iPad 的【系统设置 ➔ 最上方头像 (iCloud)】处登录网络上任何来历不明的公共共享 Apple ID！一旦在 iCloud 登录他人账号，不法分子可随时在云端将你的手机远程锁死为“丢失状态”并进行敲诈勒索，且相册与通讯录等隐私数据将被完全同步窃取！正确的做法是仅在【App Store 应用商店】内部登录外区账号。
+        </div>
+      </div>
     </header>
 
-    <!-- Top Pick 1: Shadowrocket -->
-    <section class="p-6 rounded-xl border border-blue-200 bg-white shadow-2xs space-y-4">
-      <div class="flex items-center justify-between">
-        <h2 class="text-xl font-bold text-brand-dark flex items-center gap-2">
-          <span>🚀</span> 首选神器：Shadowrocket (小火箭)
-        </h2>
-        <span class="px-2 py-0.5 rounded bg-blue-100 text-blue-800 text-xs font-semibold">约 2.99 美元</span>
+    <!-- Table of Contents Quick Nav -->
+    <nav class="p-5 rounded-xl border border-slate-200 bg-slate-50 text-xs sm:text-sm space-y-3">
+      <div class="font-bold text-brand-dark text-sm uppercase tracking-wider">本专题深度目录导航</div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 text-brand-link">
+        <a href="#ios-selection-matrix" class="hover:underline">1. iOS 四大主流网络工具横向对比矩阵</a>
+        <a href="#apple-id-guide" class="hover:underline">2. 美区 Apple ID 安全注册与官方正版充值</a>
+        <a href="#shadowrocket-deepdive" class="hover:underline">3. Shadowrocket 小火箭深度实操配置</a>
+        <a href="#stash-loon-advanced" class="hover:underline">4. Stash 与 Loon 进阶生态优势解析</a>
+        <a href="#ios-background-keepalive" class="hover:underline">5. NetworkExtension 15MB 内存限制与防断流</a>
+        <a href="#topic-clusters-ios" class="hover:underline">6. iOS 客户端三级深度衍生选题矩阵</a>
+        <a href="#faq-section-ios" class="hover:underline">7. 高频技术疑问与权威解答</a>
       </div>
+    </nav>
+
+    <!-- Section 1: iOS Selection Matrix -->
+    <section id="ios-selection-matrix" class="space-y-6">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark flex items-center gap-2">
+        <span class="w-2 h-6 bg-purple-600 rounded"></span>
+        iOS 四大主流网络代理工具横向对比与技术决策树
+      </h2>
 
       <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
-        Shadowrocket（小火箭）是 iOS 生态中普及率最高、协议支持最全的工具。支持 Shadowsocks、VMess、VLESS、Trojan、Hysteria 2 全系协议。
+        在 iOS 平台上，所有合法的代理客户端均依托苹果官方提供的 <code class="bg-slate-100 px-1 py-0.5 rounded font-mono text-slate-800">NetworkExtension</code> 框架运行。不同开发者在此基础上构建的协议解析器、规则匹配引擎与脚本自动化能力存在显著梯度：
       </p>
 
-      <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 text-xs space-y-2">
-        <strong class="text-brand-dark block">正版下载与订阅添加流程：</strong>
-        <ol class="list-decimal list-inside space-y-1.5 text-slate-600">
-          <li>打开 App Store，退出国区账号，登录外区 Apple ID（切勿在“设置-iCloud”登录未知账号）。</li>
-          <li>在 App Store 搜索 <strong>Shadowrocket</strong>（认准开发者为 Shadow Launch Technology Limited，图标为白色火箭深色底）。</li>
-          <li>安装完成后打开小火箭，点击右上角 “+” 号，类型选择 “Subscribe”，粘贴订阅 URL 保存即可自动拉取节点。</li>
+      <div class="overflow-x-auto border border-slate-200 rounded-xl shadow-2xs">
+        <table class="w-full text-xs text-left text-slate-600">
+          <thead class="bg-slate-100 text-brand-dark font-semibold border-b border-slate-200">
+            <tr>
+              <th class="p-3">软件名称</th>
+              <th class="p-3">美区官方售价</th>
+              <th class="p-3">主流协议兼容性</th>
+              <th class="p-3">规则分流生态</th>
+              <th class="p-3">高级扩展能力</th>
+              <th class="p-3">核心优势与适用人群</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 bg-white">
+            <tr class="hover:bg-slate-50">
+              <td class="p-3 font-bold text-brand-dark">Shadowrocket (小火箭)</td>
+              <td class="p-3 text-emerald-700 font-semibold">$2.99 一次性买断</td>
+              <td class="p-3">SS、VMess、VLESS、Trojan、Hysteria 2、TUIC</td>
+              <td class="p-3">支持标准 ACL / 域名 / IP-CIDR 规则</td>
+              <td class="p-3 text-slate-500">基础 HTTPS 解密与脚本支持</td>
+              <td class="p-3 font-medium text-brand-dark">性价比之王，全协议通吃，操作最直观，极度推荐新手</td>
+            </tr>
+            <tr class="hover:bg-slate-50">
+              <td class="p-3 font-bold text-brand-dark">Stash</td>
+              <td class="p-3 text-emerald-700 font-semibold">$3.99 一次性买断</td>
+              <td class="p-3">完整支持 Clash 核心协议集</td>
+              <td class="p-3">原生完美兼容 Clash YAML 语法与策略组</td>
+              <td class="p-3 text-blue-700">支持覆写插件、按需连接与自动化</td>
+              <td class="p-3 font-medium text-brand-dark">Clash 忠实粉丝首选，桌面手机多端规则高度同步</td>
+            </tr>
+            <tr class="hover:bg-slate-50">
+              <td class="p-3 font-bold text-brand-dark">Loon</td>
+              <td class="p-3 text-blue-700 font-semibold">$5.99 一次性买断</td>
+              <td class="p-3">主流现代全协议覆盖</td>
+              <td class="p-3">专有 Loon 规则体系与插件生态</td>
+              <td class="p-3 text-purple-700 font-semibold">业界顶尖的插件商店与极客脚本重写</td>
+              <td class="p-3 font-medium text-brand-dark">追求极致美化、广告拦截插件与脚本自动化的资深玩家</td>
+            </tr>
+            <tr class="hover:bg-slate-50">
+              <td class="p-3 font-bold text-brand-dark">Quantumult X (圈叉)</td>
+              <td class="p-3 text-blue-700 font-semibold">$7.99 一次性买断</td>
+              <td class="p-3">常见主流代理协议</td>
+              <td class="p-3">专有高效正则匹配规则</td>
+              <td class="p-3 text-slate-700">深度网络抓包、复杂证书中间人重写</td>
+              <td class="p-3 font-medium text-brand-dark">极客网络分析师，老牌硬核调优爱好者</td>
+            </tr>
+            <tr class="hover:bg-slate-50">
+              <td class="p-3 font-bold text-brand-dark text-slate-400">Surge 5 for iOS</td>
+              <td class="p-3 text-rose-700 font-semibold">$49.99 起 (高昂订阅制)</td>
+              <td class="p-3 text-slate-400">全协议深度优化</td>
+              <td class="p-3 text-slate-400">行业最高规范 Surge 规则语法</td>
+              <td class="p-3 text-rose-700 font-semibold">企业级网络调试、Wi-Fi 代理网关共享</td>
+              <td class="p-3 text-slate-500">专业前端开发工程师与不差钱的极致商务人士</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Section 2: Apple ID Guide -->
+    <section id="apple-id-guide" class="space-y-6">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark flex items-center gap-2">
+        <span class="w-2 h-6 bg-purple-600 rounded"></span>
+        美区 Apple ID 安全注册与官方正版充值避坑指南
+      </h2>
+
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        拥有一个完全属于自己的专属外区 Apple ID（通常首推美区），是长治久安使用 iOS 代理软件的核心基石。很多用户因为贪图省事使用第三方平台售卖的“双改账号”或借用他人账号，最终遭遇账号被封、无法更新软件甚至被恶意勒索的惨痛教训。
+      </p>
+
+      <div class="bg-white p-6 rounded-xl border border-slate-200 space-y-4">
+        <h3 class="text-base font-bold text-brand-dark">三步搞定专属美区 Apple ID</h3>
+        <ol class="space-y-3 text-xs sm:text-sm text-slate-600">
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-full bg-purple-100 text-purple-700 font-bold flex items-center justify-center shrink-0">1</span>
+            <div>
+              <strong>网页端自主注册：</strong>使用电脑或手机浏览器打开苹果官方注册网页（appleid.apple.com），国家或地区选择“美国”。出生日期填写真实大于 18 岁的年份。电话号码可以直接使用中国大陆的 +86 手机号进行短信验证，邮箱建议使用未注册过任何苹果账户的全新 Outlook、Gmail 或 163 邮箱。
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-full bg-purple-100 text-purple-700 font-bold flex items-center justify-center shrink-0">2</span>
+            <div>
+              <strong>首次在 App Store 登录激活并填写免税州账单地址：</strong>打开 iPhone 的 App Store，点击右上角头像滑到最底部点击“退出登录”，随后在弹出的输入框中登录刚注册好的美区账号。系统会提示“此 Apple ID 尚未在 iTunes Store 使用过”，点击“检查”。付款方式直接勾选“无 (None)”，账单地址建议填写美国免税州（如俄勒冈州 Oregon、特拉华州 Delaware 或蒙大拿州 Montana）的真实邮政编码与街道电话，以便免除额外的应用消费税。
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-full bg-purple-100 text-purple-700 font-bold flex items-center justify-center shrink-0">3</span>
+            <div>
+              <strong>购买官方 Apple Gift Card 电子礼品卡充值：</strong>在主流电商平台或美区亚马逊搜索“Apple Gift Card”，购买面额为 3 美元至 10 美元的电子卡密。在 App Store 账户管理界面点击“Redeem Gift Card or Code（兑换礼品卡）”，输入十六位卡密即可实时将余额存入账户，随后搜索“Shadowrocket”点击正版购买即可。
+            </div>
+          </li>
         </ol>
       </div>
     </section>
 
-    <!-- Top Pick 2: Stash -->
-    <section class="p-6 rounded-xl border border-purple-200 bg-purple-50/40 space-y-3">
-      <div class="flex items-center justify-between">
-        <h2 class="text-lg font-bold text-brand-dark flex items-center gap-2">
-          <span>📦</span> Clash 规则首选：Stash
-        </h2>
-        <span class="px-2 py-0.5 rounded bg-purple-100 text-purple-800 text-xs font-semibold">约 3.99 美元</span>
-      </div>
+    <!-- Section 3: Shadowrocket Deep Dive -->
+    <section id="shadowrocket-deepdive" class="space-y-6">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark flex items-center gap-2">
+        <span class="w-2 h-6 bg-purple-600 rounded"></span>
+        Shadowrocket 小火箭深度实操与智能分流配置
+      </h2>
+
       <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
-        如果你在电脑上习惯使用 Clash 策略组和 YAML 规则集，Stash 是 iOS 端体验最贴合 Clash 的原生工具。支持自动按应用、按网络 SSID 切换策略。
+        Shadowrocket 之所以被亲切地称为“小火箭”，不仅在于其图标是一枚辨识度极高的火箭，更在于其在极其紧凑的代码体积下，提供了无与伦比的协议解析鲁棒性与超低电量损耗。
       </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-2">
+          <div class="font-bold text-brand-dark text-sm flex items-center gap-2">
+            <span class="text-blue-600">📥</span>
+            <span>一键导入托管订阅</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            打开小火箭，点击右上角加号“+”。在“类型”下拉菜单中选择“Subscribe”。在“URL”一栏中粘贴机场后台提供的通用订阅链接，备注填入机场名称，点击右上角保存。软件会自动发起加密网络请求，并在首页列表下列出所有节点。
+          </p>
+        </div>
+
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-2">
+          <div class="font-bold text-brand-dark text-sm flex items-center gap-2">
+            <span class="text-purple-600">⚖️</span>
+            <span>严格确认全局路由</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            在小火箭首页下方，务必将“全局路由”保持在“配置 (Config)”模式。严禁在日常状态下设置为“代理 (Proxy)”，否则手机访问国内微信、美团、网银等应用不仅会消耗宝贵的套餐流量，还会引发异地登录风控拦截。
+          </p>
+        </div>
+
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-2">
+          <div class="font-bold text-brand-dark text-sm flex items-center gap-2">
+            <span class="text-emerald-600">📶</span>
+            <span>一键测试节点网络真延迟</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            点击首页底部的“连通性测试”即可快速测试节点延迟。小火箭默认测试的是建立 TCP 连接并完成 HTTP 响应的真实往返延迟（RTT），能够真实客观地反映当前节点在当前移动网络下的可用状态。
+          </p>
+        </div>
+      </div>
     </section>
 
-    <!-- Safety Warning -->
-    <section class="p-4 rounded-xl border border-amber-200 bg-amber-50 text-xs text-amber-900 leading-relaxed">
-      <strong>⚠️ 苹果用户防坑警告：</strong>
-      网上有很多所谓的“免费小火箭共享账号”，切记只能在 <strong>App Store 商店内登录</strong>，绝对不能在 iPhone “系统设置 -> 最上方 Apple ID / iCloud” 中登录！一旦在系统 iCloud 登录他人账号，手机极易被远程锁定勒索！
+    <!-- Section 4: Stash & Loon Advanced -->
+    <section id="stash-loon-advanced" class="space-y-6">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark flex items-center gap-2">
+        <span class="w-2 h-6 bg-purple-600 rounded"></span>
+        Stash 与 Loon 进阶生态优势解析
+      </h2>
+
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        如果你对网络分流有着更加精细化的管理诉求，或者希望在手机端体验桌面级 Clash 的规则组控制力，Stash 与 Loon 展现出了相较于小火箭更加现代化的设计理念。
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="p-5 rounded-xl border border-purple-200 bg-purple-50/30 space-y-3">
+          <div class="text-base font-bold text-brand-dark flex items-center gap-2">
+            <span>📦</span>
+            <span>Stash：iOS 端原生 Clash 体验之巅</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+            Stash 拥有目前 iOS 平台最完善的 Clash 策略组呈现体系。它不仅能够无缝解析机场提供的包含复杂 Proxy Group、URL-Test、Fallback 以及 Load-Balance 的原生 YAML 订阅，还深度集成了对 Apple 原生生态的适配。例如，用户可以通过锁屏小组件直接切换节点策略，或者利用 Siri 捷径联动智能家居自动切换网络模式。
+          </p>
+        </div>
+
+        <div class="p-5 rounded-xl border border-blue-200 bg-blue-50/30 space-y-3">
+          <div class="text-base font-bold text-brand-dark flex items-center gap-2">
+            <span>🧩</span>
+            <span>Loon：无可匹敌的插件生态与脚本中心</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+            Loon 在国内极客圈被誉为“最省心的进阶神器”。其首创的“插件市场 (Plugin)”理念彻底颠覆了以往繁琐的 MITM 证书抓包配置流程。用户只需在界面中一键安装去广告、签到脚本或流媒体解锁检测插件，软件便会自动完成重写配置并保持云端热更新，兼具极致的可玩性与稳定性。
+          </p>
+        </div>
+      </div>
     </section>
+
+    <!-- Section 5: iOS Background Keepalive -->
+    <section id="ios-background-keepalive" class="space-y-6">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark flex items-center gap-2">
+        <span class="w-2 h-6 bg-purple-600 rounded"></span>
+        NetworkExtension 15MB 内存限制与 iOS 后台防断流机制
+      </h2>
+
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        几乎每一个长期在 iPhone 上使用代理工具的用户，都曾遇到过锁屏待机一段时间后微信收不到消息、或者再次点亮屏幕发现小火箭右上角“VPN”图标突然消失的困扰。这并不是手机信号不良，而是触发了 iOS 底层极其严密的内存红线防卫机制。
+      </p>
+
+      <div class="p-5 rounded-xl border border-slate-200 bg-slate-50 space-y-3">
+        <div class="font-bold text-brand-dark text-sm">🍎 揭秘苹果 NetworkExtension 15MB 物理内存上限</div>
+        <p class="text-xs text-slate-600 leading-relaxed">
+          为了确保系统即便在多任务繁重处理时也能维持绝对的省电与平稳，苹果在 iOS 内核中为所有基于 NetworkExtension 机制挂载的虚拟网卡扩展（Packet Tunnel Provider）设定了一个硬性上限：<strong>驻留内存不得超过大约 15MB</strong>。如果代理进程在处理大并发网络连接、加载超大体积规则文件或进行高频日志写入时瞬间超出了这一物理阈值，iOS 内核会在毫无前置警告的情况下直接强制终止（SIGKILL）该扩展进程，导致手机网络彻底脱离代理环境。
+        </p>
+      </div>
+
+      <div class="bg-white p-5 rounded-xl border border-slate-200 space-y-3 text-xs sm:text-sm text-slate-600">
+        <div class="font-bold text-brand-dark">防闪退防断流的四大优化准则：</div>
+        <ul class="list-disc list-inside space-y-2">
+          <li><strong>避免同时挂载数十万条庞大规则集：</strong>不要盲目订阅包含海量长尾域名的全网去广告大合集，这会导致规则字典在内存中膨胀数倍。推荐使用轻量级精简规则集（如 ACL4SSR 精简版）。</li>
+          <li><strong>日常使用务必关闭“抓包日志”功能：</strong>在小火箭或 Stash 中，如果开启了“记录请求”或“HTTPS 解密抓包”，每一个网络包的明文头信息都会暂存在内存缓冲区，极易引发内存泄漏崩溃。排障完成后应立即关闭。</li>
+          <li><strong>开启“按需连接 (On Demand)”：</strong>在小火箭设置中启用该项后，当系统由于短暂网络切换导致虚拟网卡中断时，iOS 会在有新网络数据包发起时自动重新拉起小火箭，实现零感知的快速自愈。</li>
+          <li><strong>定期在小火箭中点击“清理缓存”：</strong>软件长期运行后会在沙盒中积攒历史 DNS 解析缓存与统计记录，定期清理可确保进程常驻内存始终保持在 8MB 至 10MB 的健康安全区间内。</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Section 6: Topic Clusters -->
+    <section id="topic-clusters-ios" class="space-y-6">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark flex items-center gap-2">
+        <span class="w-2 h-6 bg-purple-600 rounded"></span>
+        iOS 客户端三级深度衍生选题矩阵
+      </h2>
+
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        围绕苹果移动生态的网络体验升级，机场 Wiki 知识库体系规划了以下六大高价值三级深度技术选题，以满足从纯小白入门到极客自动化配置的全流程需求：
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
+          <span class="text-xs font-bold text-purple-600">三级选题 01</span>
+          <h3 class="font-bold text-sm text-brand-dark">美区 Apple ID 免信用卡注册 2026 图解</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            手把手图文解析如何避开风控、填写免税州地址与通过国内手机号码验证，零成本建立安全专属美区账号。
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
+          <span class="text-xs font-bold text-purple-600">三级选题 02</span>
+          <h3 class="font-bold text-sm text-brand-dark">iOS 按需连接 On Demand 自动化场景配置</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            配置接入家庭 Wi-Fi 自动关闭、断开 Wi-Fi 接入蜂窝数据自动开启代理的智能自适应省电网络环境。
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
+          <span class="text-xs font-bold text-purple-600">三级选题 03</span>
+          <h3 class="font-bold text-sm text-brand-dark">Shadowrocket 节点测速虚高与实际卡顿排查</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            解析 TCP Ping、ICMP Ping 与 HTTP 真实往返延迟的物理差别，教你一眼识破机场的伪造假延迟节点。
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
+          <span class="text-xs font-bold text-purple-600">三级选题 04</span>
+          <h3 class="font-bold text-sm text-brand-dark">Stash 策略组手把手配置实操</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            如何在 iPhone 上利用 Stash 创建自动测速策略组、故障转移策略组，实现流媒体与海外办公节点的智能分流。
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
+          <span class="text-xs font-bold text-purple-600">三级选题 05</span>
+          <h3 class="font-bold text-sm text-brand-dark">iPhone 个人热点共享代理流量给 Switch/PC</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            通过开启小火箭内置的“允许来自局域网的连接”并配置端口映射，实现手机开热点直接让游戏机畅联外服。
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
+          <span class="text-xs font-bold text-purple-600">三级选题 06</span>
+          <h3 class="font-bold text-sm text-brand-dark">iOS 共享账号防骗与 iCloud 远程锁机解除自救</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            深入揭示灰色产业务工账号勒索套路，提供凭原始购机发票与苹果官方客服申诉解开 Activation Lock 的全流程。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 7: FAQ Section -->
+    <section id="faq-section-ios" class="space-y-6">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark flex items-center gap-2">
+        <span class="w-2 h-6 bg-purple-600 rounded"></span>
+        高频技术疑问与权威解答
+      </h2>
+
+      <div class="space-y-4">
+        {faqs.map((faq) => (
+          <details class="group bg-white p-5 rounded-xl border border-slate-200 [&_summary::-webkit-details-marker]:none">
+            <summary class="flex items-center justify-between cursor-pointer font-bold text-sm sm:text-base text-brand-dark">
+              <span>{faq.q}</span>
+              <span class="ml-4 transition-transform duration-200 group-open:rotate-180 text-purple-600 shrink-0">
+                ▼
+              </span>
+            </summary>
+            <p class="mt-3 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
+              {faq.a}
+            </p>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- Schema FAQ injection -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: faqs.map(f => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: f.a
+        }
+      }))
+    })} />
   </div>
 </BaseLayout>

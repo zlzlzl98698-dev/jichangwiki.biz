@@ -1,0 +1,513 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import publishedBrandsData from '../../data/published-brands.json';
+
+const breadcrumbs = [
+  { name: '推荐比较', href: '/recommend/' },
+  { name: '新手机场入门指南', href: '/recommend/beginners-guide/' },
+];
+
+const beginnerFriendlyBrands = (publishedBrandsData as any[]).filter(b => 
+  b.clientMode === 'CUSTOM_AND_THIRD_PARTY' || ['guangsu', 'feimao', 'weifeng', 'yifan'].includes(b.slug)
+).slice(0, 5);
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: '新手入门机场选购指南 (2026最新) - 从零理解订阅、客户端选择与避坑实操路线图',
+  description: '专为零基础用户编写的系统化入门指南。从节点与订阅的基础概念、专属客户端与开源软件对比、套餐选择避坑原则，到开箱即用的配置与故障自愈技巧。',
+  datePublished: '2026-10-19',
+  dateModified: '2026-11-24',
+  inLanguage: 'zh-CN',
+};
+
+const faqs = [
+  {
+    q: '我是完全零基础的新手，买机场到底需要准备些什么？',
+    a: '整个流程其实非常简单，只需要三样东西：第一是一台常用的手机或电脑设备；第二是在服务商官网注册账号并购买一个月付基础套餐；第三是在设备上安装对应的加速软件（服务商通常提供一键安装包或推荐免费开源软件如 Clash Verge 或 v2rayN）。安装软件后把官网的订阅链接复制进去，点击连接即可开始使用，通常五分钟内即可完成全部配置。'
+  },
+  {
+    q: '服务商提供的一键专属客户端和开源第三方软件有什么本质区别？',
+    a: '专属客户端是服务商针对自家节点专门定制编译的图形软件，通常把登录、节点更新和连接集成在一个界面内，适合完全不想折腾任何配置、需要开箱即用的小白用户；而开源第三方软件（如 Clash Verge Rev、v2rayN、Shadowrocket）是由全球开源社区独立维护的通用工具，代码经过公开安全审计，支持导入任何服务商的通用订阅链接，规则分流更自由、无恶意后台注入风险，是进阶用户的首选。'
+  },
+  {
+    q: '新手第一次购买，推荐买多少流量和多长周期的套餐？',
+    a: '强烈建议首次购买只选“按月付费的基础档套餐”。月度流量通常选择一百吉字节到两百吉字节之间，单月费用一般在十五元至三十元之间。千万不要听信所谓买一年送半年、永久不限时的营销话术一次性支付数百元。先用一个月验证自己日常居住地宽带和手机网络下的连接质量，满意再续费是最稳妥的防踩坑准则。'
+  },
+  {
+    q: '为什么刚连上加速软件，国内的微信、网易云音乐或淘宝就变慢甚至打不开？',
+    a: '这是因为误开了“全局模式（Global）”。全局模式会强制所有流量无论境内境外全走境外中转，导致国内应用访问时产生跨国绕路甚至被国内风控系统拦截。新手切记在软件界面中将路由模式保持为“规则模式（Rule）”。在规则模式下，只有被访问的境外网站才会经过代理，访问国内网站时会自动走本地直连，完全不影响国内日常应用。'
+  },
+  {
+    q: '苹果 iPhone 用户在 App Store 里搜不到小火箭（Shadowrocket）怎么办？',
+    a: '中国大陆地区的 App Store 无法直接上架代理类软件。要下载正版 Shadowrocket，需要注册或借用一个海外地区（如美区或港区）的 Apple ID，在 App Store 中切换账号后进行下载安装。很多正规机场在用户中心会提供详尽的新手图文教程甚至共享临时下载账号，切勿在来路不明的网页上下载被二次打包篡改的描述文件。'
+  },
+  {
+    q: '节点列表里的香港、日本、美国、新加坡，新手日常应该选哪一个？',
+    a: '日常工作查阅资料、观看普通网页或刷推，优先选择“香港节点”，其物理距离最近，网页响应最灵敏；如果是观看 Netflix、Disney+ 等海外流媒体，或者使用需要严格非免区纯净 IP 的 AI 工具（如 ChatGPT、Claude），建议选择“日本或新加坡节点”；如果需要登录特定北美本土学术机构或访问专属美区服务，再切换至“美国节点”。平时切忌盲目开启自动化频繁轮转，固定使用一条延迟较低的优质节点体验更平稳。'
+  },
+  {
+    q: '买完套餐后如果遇到节点全部连接超时，第一反应应该做什么？',
+    a: '先不要慌张或者反复卸载软件。第一步检查电脑或手机的系统时钟是否准确，时间如果慢了两分钟以上，所有安全握手都会失效；第二步在软件中找到订阅管理，点击“更新订阅”拉取最新的节点配置；第三步尝试断开家庭 Wi-Fi，用手机 5G 热点进行测试，排查是否属于本地路由器或光猫故障；若依然无法解决，登录官网查看是否有紧急公告并提交工单反馈。'
+  },
+  {
+    q: '免费节点和花钱购买的付费机场有什么根本差别？',
+    a: '免费节点大多来自公网扫描收集的无防护服务器，不仅成百上千人挤在极小带宽上导致奇卡无比，而且节点服务器搭建者的身份完全未知，所有未加密的访问流量都有被监听、抓包或注入恶意广告的巨大安全隐患；正规付费机场有商业实体维护跨境专线架构，投入巨资租用机房带宽，采用强加密传输，具备完整的售后支持与故障冗余，二者在体验与安全性上完全不可同日而语。'
+  },
+  {
+    q: '为什么开启 TUN 模式时软件会提示安装虚拟网卡驱动？这会有系统安全隐患吗？',
+    a: '完全不会。Wintun 是由知名开源项目 WireGuard 官方团队开发维护的轻量级高性能 Windows 虚拟网卡驱动，完全开源透明且经过微软官方数字签名认证。开启 TUN 模式时安装该驱动，是为了让操作系统将加速软件识别为一个标准的硬件网络适配器，从而能够透明捕获不支持系统代理的软件流量（如命令行终端与游戏客户端）。该驱动不具备任何后台恶意行为或数据泄露风险，主流开源客户端均标配采用。'
+  },
+  {
+    q: '如果不小心把自己的订阅链接误发到了公共微信群或贴吧，应该如何紧急补救？',
+    a: '必须在第一分钟内立即登录服务商官网的用户中心。在控制台的“订阅信息”或“安全设置”中，找到“重置订阅链接（Reset Token）”按钮并确认。点击重置后，你之前的旧链接密钥会在服务商后端瞬间作废失效，其他人即使保存了该链接也无法再拉取节点或盗刷你的流量。重置完成后，复制新生成的全新订阅链接重新导入客户端即可恢复使用。'
+  }
+];
+---
+
+<BaseLayout
+  title="新手机场入门选购指南 (2026) - 从零理解订阅、客户端与避坑实操"
+  description="专为零基础用户编写的系统化入门指南。从节点与订阅的基础概念、专属客户端与开源软件对比、套餐选择避坑原则，到开箱即用的配置与故障自愈技巧。"
+  breadcrumbs={breadcrumbs}
+  schema={schema}
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+    <!-- Header -->
+    <header class="pb-6 border-b border-brand-border">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="px-2.5 py-0.5 text-xs font-semibold rounded bg-amber-100 text-amber-800">
+          零基础新手专栏
+        </span>
+        <span class="text-xs text-brand-muted">更新时间：2026-11-24</span>
+      </div>
+
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-brand-dark tracking-tight leading-tight">
+        新手机场入门选购与避坑实操指南：从零理解节点、订阅与软件配置
+      </h1>
+
+      <p class="text-xs sm:text-sm text-slate-600 mt-3 leading-relaxed">
+        面对琳琅满目的技术黑话、复杂的客户端配置和各类良莠不齐的推广信息，刚接触网络加速的新手往往感到无所适从。本文剥离一切令人头晕的代码和术语，用通俗直白的大白话为你梳理从原理、选购到实操避坑的完整闭环。
+      </p>
+
+      <!-- Answer-First Box -->
+      <div class="mt-6 p-4 rounded-xl border border-amber-200 bg-amber-50/60">
+        <div class="flex items-center gap-2 text-amber-900 font-bold text-sm mb-1">
+          <svg class="w-4 h-4 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <span>新手三大黄金法则（Answer-First）</span>
+        </div>
+        <p class="text-xs text-slate-700 leading-relaxed">
+          新手入门只需牢记三句话：第一，<strong>首单坚决月付</strong>，绝不轻信任何三年优惠，月费二十元左右的基础套餐即可完全满足学习与轻度娱乐；第二，<strong>模式死守规则分流（Rule）</strong>，切勿乱点全局模式，避免国内应用误伤卡顿；第三，<strong>优选支持一键导入或自带专属客户端的服务商</strong>，先快速跑通流程建立正向体验，后续再根据需要逐步进阶开源工具。
+        </p>
+      </div>
+    </header>
+
+    <!-- Chapter 1: Core Concepts -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        一、大白话搞懂核心概念：机场、节点、客户端与订阅链接
+      </h2>
+      <div class="text-xs sm:text-sm text-slate-700 leading-relaxed space-y-3">
+        <p>
+          很多新手刚入圈时常常被各种概念绕晕，甚至以为买了个账号就能直接在浏览器里打开网页。其实整个体系就像在火车站坐高铁，由四个紧密协作的部分组成：
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-3">
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2">
+          <div class="flex items-center gap-2 font-bold text-sm text-brand-dark">
+            <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-mono">1</span>
+            <span>机场（服务提供商）</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            打个比方，机场就像是<strong>铁路运输公司</strong>。他们负责在世界各地（如香港、东京、新加坡、洛杉矶）租用专业的机房服务器和跨境网络专线，为付费用户提供通往全球互联网络的专属数据通道。
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2">
+          <div class="flex items-center gap-2 font-bold text-sm text-brand-dark">
+            <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-mono">2</span>
+            <span>节点（单台服务器中转站）</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            节点就是铁路公司在各地设立的具体<strong>车站站点</strong>。比如“香港 01 IEPL”或者“日本 02 专线”。每个节点代表一台具有独立海外 IP 地址的实际服务器，用户可以根据需要选择不同地区的车站中转。
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2">
+          <div class="flex items-center gap-2 font-bold text-sm text-brand-dark">
+            <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-mono">3</span>
+            <span>客户端（本地运行的软件工具）</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            客户端就是安装在你手机或电脑上的<strong>车票验证机与导航仪</strong>。例如电脑上的 Clash Verge Rev、v2rayN，或者手机上的小火箭。它负责接收你本地的上网请求，根据设定的规则把需要加速的流量打包发给节点。
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2">
+          <div class="flex items-center gap-2 font-bold text-sm text-brand-dark">
+            <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-mono">4</span>
+            <span>订阅链接（通行证与时刻表）</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            订阅链接就是你在服务商官网购买套餐后获得的一串<strong>加密网址凭证</strong>。把这串网址粘贴进客户端，客户端就会自动把服务商所有可用的节点名称、IP 地址、密码密钥和分流规则一次性完整下载到本地。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chapter 2: Beginner Traps -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        二、新手最容易踩坑的五大典型误区与倍率猫腻
+      </h2>
+      <div class="text-xs sm:text-sm text-slate-700 leading-relaxed space-y-3">
+        <p>
+          在各类社群和售后咨询中，每天都能见到大量新手因为缺乏基本认知而蒙受经济损失或产生不良体验。以下五类陷阱务必提前防范：
+        </p>
+
+        <div class="space-y-3 mt-3">
+          <div class="p-4 rounded-xl border border-rose-200 bg-rose-50/40 space-y-1">
+            <h3 class="font-bold text-sm text-rose-900">陷阱一：被折扣诱惑，直接年付甚至一次性买三年</h3>
+            <p class="text-xs text-slate-700 leading-relaxed">
+              很多不正规的小作坊往往会打出“年付仅需三十元”、“买两年送三年永久有效”的夸张口号。很多新手贪图便宜一次性支付大几百元，结果没用两个月服务商就卷款跑路关群，维权无门。记住：代理服务是一项具有持续服务器开销的重度资产运营，不存在天上掉馅饼的终身免费。
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl border border-rose-200 bg-rose-50/40 space-y-1">
+            <h3 class="font-bold text-sm text-rose-900">陷阱二：忽略节点“倍率”概念，导致流量几小时内被扣光</h3>
+            <p class="text-xs text-slate-700 leading-relaxed">
+              很多新手发现自己买了一百吉字节套餐，明明只看了两部高清电影，后台却提示流量用尽。原因在于很多机场在高端节点上设置了高倍率（如三倍或五倍率）。如果你连接了一条三倍率的节点，下载了一吉字节的视频文件，后台账本会实际扣除你三吉字节的配额。新手在节点列表中务必看清名称后缀，日常优先使用一倍率的标准节点。
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl border border-rose-200 bg-rose-50/40 space-y-1">
+            <h3 class="font-bold text-sm text-rose-900">陷阱三：以为流量越大越好，盲目购买 1TB 甚至不限流量</h3>
+            <p class="text-xs text-slate-700 leading-relaxed">
+              普通人日常查阅文献、观看网页、浏览社交媒体，一个月实际消耗的流量通常不会超过五十吉字节；即使经常看高清视频，一百到两百吉字节也完全足够。很多宣称超大流量的低价套餐，由于单价被压得极低，往往挤满了成千上万个重度下载用户，导致晚高峰通道被彻底挤爆，买了大流量却根本跑不动。
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl border border-rose-200 bg-rose-50/40 space-y-1">
+            <h3 class="font-bold text-sm text-rose-900">陷阱四：误把广告落地页博客当成“独立官方测评”</h3>
+            <p class="text-xs text-slate-700 leading-relaxed">
+              搜索引擎中搜索“好用的机场推荐”，前几页常常充斥着大量排版华丽的排名博客。很多博客把佣金提成最高、甚至自己搭建的三无小作坊强行排在所谓“十佳稳定榜首”。新手在参考推荐时，必须认准如实披露商业关系、提供客观多维参数并标注真实数据来源的专业维基。
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl border border-rose-200 bg-rose-50/40 space-y-1">
+            <h3 class="font-bold text-sm text-rose-900">陷阱五：在各大贴吧和公共群随意求免费公共节点</h3>
+            <p class="text-xs text-slate-700 leading-relaxed">
+              网上流传的各类免费节点分享，绝大部分属于恶意蜜罐或被黑客攻破的肉鸡服务器。所有经由这些免费节点传输的未加密信息（甚至包括密码、浏览历史、个人账号信息）都有可能在服务器后台被直接明文抓包记录，为了省下十几元月费而承担极高的隐私泄露风险极其得不偿失。
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Multi-Platform Client Comparison Matrix for Beginners -->
+      <div class="mt-6 space-y-3">
+        <h3 class="font-bold text-sm text-brand-dark">各大操作系统最适合新手的免费开源客户端速查</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border border-brand-border rounded-lg overflow-hidden">
+            <thead class="bg-slate-100 text-brand-dark font-semibold border-b border-brand-border">
+              <tr>
+                <th class="p-3">操作系统平台</th>
+                <th class="p-3">首选推荐软件</th>
+                <th class="p-3">软件核心优势</th>
+                <th class="p-3">上手难度评级</th>
+                <th class="p-3">获取方式说明</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 bg-white">
+              <tr class="hover:bg-slate-50">
+                <td class="p-3 font-bold text-brand-dark">Windows 电脑</td>
+                <td class="p-3 font-mono text-brand-link">Clash Verge Rev</td>
+                <td class="p-3 text-slate-600">界面现代化、内置中文语言包、支持新一代 Mihomo 内核与 TUN 虚拟网卡模式</td>
+                <td class="p-3 text-emerald-600 font-semibold">★☆☆ (极简单)</td>
+                <td class="p-3 text-slate-500">GitHub 官方仓库免费下载开源安装包</td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="p-3 font-bold text-brand-dark">Android 安卓手机</td>
+                <td class="p-3 font-mono text-brand-link">Clash Meta / FlClash</td>
+                <td class="p-3 text-slate-600">完美适配各类折叠屏与高刷屏，后台省电抗系统杀进程能力优异</td>
+                <td class="p-3 text-emerald-600 font-semibold">★☆☆ (极简单)</td>
+                <td class="p-3 text-slate-500">直接下载 APK 安装包并信任安装</td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="p-3 font-bold text-brand-dark">macOS 苹果电脑</td>
+                <td class="p-3 font-mono text-brand-link">Clash Verge Rev (Mac)</td>
+                <td class="p-3 text-slate-600">原生支持 Apple Silicon（M1/M2/M3/M4）芯片，系统菜单栏集成快捷控制</td>
+                <td class="p-3 text-emerald-600 font-semibold">★☆☆ (极简单)</td>
+                <td class="p-3 text-slate-500">下载 DMG 镜像直接拖入应用程序文件夹</td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="p-3 font-bold text-brand-dark">iOS 苹果手机/平板</td>
+                <td class="p-3 font-mono text-brand-link">Shadowrocket (小火箭)</td>
+                <td class="p-3 text-slate-600">生态最成熟的代号软件，扫码秒导配置，支持多策略分流与节点测速</td>
+                <td class="p-3 text-amber-600 font-semibold">★★☆ (需美区ID)</td>
+                <td class="p-3 text-slate-500">登录美区 Apple ID 后在 App Store 购买下载（售价2.99美元）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chapter 3: Beginner-Friendly Brands Showcase -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        三、适合新手起步的代表性服务商参数对照
+      </h2>
+      <p class="text-xs text-slate-600 leading-relaxed">
+        针对新手的特殊需求（如提供直观专属客户端、客服工单响应及时、支持低门槛月付体验），以下挑选了数家经过客观验证的代表性服务商：
+      </p>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs border border-brand-border rounded-lg overflow-hidden">
+          <thead class="bg-slate-100 text-brand-dark font-semibold border-b border-brand-border">
+            <tr>
+              <th class="p-3">品牌名称</th>
+              <th class="p-3">客户端支持形态</th>
+              <th class="p-3">入门月付门槛</th>
+              <th class="p-3">新手友好特性</th>
+              <th class="p-3 text-right">详细档案</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 bg-white">
+            {beginnerFriendlyBrands.map((brand) => (
+              <tr class="hover:bg-slate-50/80 transition-colors">
+                <td class="p-3 font-bold text-brand-dark whitespace-nowrap">
+                  <a href={`/brands/${brand.slug}/`} class="hover:text-brand-link hover:underline">
+                    {brand.name}
+                  </a>
+                </td>
+                <td class="p-3 text-slate-600">
+                  <span class="px-2 py-0.5 rounded bg-amber-50 text-amber-800 font-mono text-[11px]">
+                    {brand.clientMode === 'CUSTOM_AND_THIRD_PARTY' ? '提供定制客户端 + 通用订阅' : '通用开源订阅'}
+                  </span>
+                </td>
+                <td class="p-3 font-semibold text-brand-dark font-mono">
+                  {brand.startingPriceDesc || (brand.startingMonthlyCny ? `¥${brand.startingMonthlyCny}/月` : '待核实')}
+                </td>
+                <td class="p-3 text-slate-600">
+                  {brand.clientMode === 'CUSTOM_AND_THIRD_PARTY' ? '一键登录连接无需导入订阅配置' : '技术文档健全，新手常见问题索引完善'}
+                </td>
+                <td class="p-3 text-right">
+                  <a href={`/brands/${brand.slug}/`} class="text-brand-link hover:underline font-medium">
+                    查看档案 →
+                  </a>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Chapter 4: Standard Five-step Workflow -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        四、新手标准五步配置路线图（以 Clash Verge Rev 为例）
+      </h2>
+      <div class="text-xs sm:text-sm text-slate-700 leading-relaxed space-y-3">
+        <p>
+          如果你选择使用当前最主流的开源跨平台客户端 Clash Verge Rev，只需按照以下标准化五个步骤操作，全程无需敲击任何代码命令：
+        </p>
+
+        <div class="space-y-3 mt-3">
+          <div class="p-4 rounded-xl border border-slate-200 bg-white flex gap-3">
+            <span class="w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs font-mono shrink-0">1</span>
+            <div class="space-y-1">
+              <h3 class="font-bold text-sm text-brand-dark">第一步：注册购买并复制订阅链接</h3>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                在服务商官网注册登录后，购买适合的月付套餐。进入“仪表盘”或“用户中心”，找到“便捷导入”按钮，点击“复制 Clash 订阅链接”（链接通常以 https 开头）。
+              </p>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl border border-slate-200 bg-white flex gap-3">
+            <span class="w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs font-mono shrink-0">2</span>
+            <div class="space-y-1">
+              <h3 class="font-bold text-sm text-brand-dark">第二步：下载并安装 Clash Verge Rev 客户端</h3>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                从本站客户端专题或 GitHub 官方开源仓库下载对应系统的安装包（Windows 选 x64 setup，Mac 选对应芯片版本）。安装完成后打开软件。
+              </p>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl border border-slate-200 bg-white flex gap-3">
+            <span class="w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs font-mono shrink-0">3</span>
+            <div class="space-y-1">
+              <h3 class="font-bold text-sm text-brand-dark">第三步：导入订阅链接并下载节点配置</h3>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                在软件左侧菜单点击“订阅（Profiles）”，在上方输入框中粘贴刚才复制的订阅链接，点击“保存（Save）”。软件会自动下载节点，下载完成后右键点击该配置选择“使用（Select）”。
+              </p>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl border border-slate-200 bg-white flex gap-3">
+            <span class="w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs font-mono shrink-0">4</span>
+            <div class="space-y-1">
+              <h3 class="font-bold text-sm text-brand-dark">第四步：在代理面板选择优选节点</h3>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                在左侧菜单点击“代理（Proxies）”，将上方的模式保持在“规则模式（Rule）”。在策略组中展开节点列表，点击闪电测速图标，挑选一个显示绿色毫秒数字的香港或日本节点。
+              </p>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl border border-slate-200 bg-white flex gap-3">
+            <span class="w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs font-mono shrink-0">5</span>
+            <div class="space-y-1">
+              <h3 class="font-bold text-sm text-brand-dark">第五步：开启系统代理与理解 TUN 虚拟网卡模式</h3>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                在软件左侧菜单点击“设置（Settings）”，在主界面中勾选“系统代理（System Proxy）”开关。此时打开 Chrome 或 Edge 浏览器即可正常畅游全球互联网。<br/>
+                <strong>进阶提示（TUN 模式）：</strong> 普通“系统代理”只能接管支持 HTTP/HTTPS 代理协议的标准网页浏览器和部分桌面软件。如果你需要加速不支持系统代理设置的专业软件、代码终端环境（如 Git clone、npm install、Python requests）或各类外服客户端游戏，可以在设置中开启“服务模式”并勾选“TUN 模式”。TUN 模式会在操作系统底层创建一块虚拟网卡，强制捕获电脑的所有三层网络数据包并进行透明转发，实现无死角的全局接管。
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Common Beginner Troubleshooting Checklist -->
+      <div class="mt-6 space-y-3">
+        <h3 class="font-bold text-sm text-brand-dark">新手高频“翻车”场景与一分钟自愈排错清单</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/70 space-y-1.5">
+            <h4 class="font-bold text-xs text-brand-dark flex items-center gap-1.5">
+              <span class="text-rose-500 font-bold">●</span>
+              <span>故障一：打开网页提示“无法连接到代理服务器”</span>
+            </h4>
+            <p class="text-[11px] text-slate-600 leading-relaxed">
+              <strong>根因排查：</strong> 之前电脑非正常关机或强制退出了代理软件，导致 Windows 系统代理开关仍然处于开启状态，但后台代理端口（通常为 7897）已无软件监听。<br/>
+              <strong>解决方法：</strong> 重新打开 Clash Verge Rev，在设置中先关闭系统代理再重新开启；或者在 Windows 系统设置搜索“代理”，手动关闭“使用代理服务器”开关。
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/70 space-y-1.5">
+            <h4 class="font-bold text-xs text-brand-dark flex items-center gap-1.5">
+              <span class="text-rose-500 font-bold">●</span>
+              <span>故障二：所有节点测速均显示“Timeout”或 -1 毫秒</span>
+            </h4>
+            <p class="text-[11px] text-slate-600 leading-relaxed">
+              <strong>根因排查：</strong> 百分之九十是因为电脑本地系统时钟存在偏差。现代安全协议验证时间戳，误差超过九十秒即直接中断通信。<br/>
+              <strong>解决方法：</strong> 进入电脑控制面板或系统设置，点击“日期与时间”，开启“自动设置时间”并点击“立即同步”按钮，校准北京时间后即可恢复。
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/70 space-y-1.5">
+            <h4 class="font-bold text-xs text-brand-dark flex items-center gap-1.5">
+              <span class="text-rose-500 font-bold">●</span>
+              <span>故障三：能打开 Google 但打不开 ChatGPT，提示 403 阻断</span>
+            </h4>
+            <p class="text-[11px] text-slate-600 leading-relaxed">
+              <strong>根因排查：</strong> OpenAI 对节点 IP 的纯净度和所在地理区域有极严苛要求。香港节点本身不属于官方支持服务区，且机房万人共用 IP 容易被风控标记。<br/>
+              <strong>解决方法：</strong> 在客户端代理面板中将节点切换至具备流媒体与 AI 解锁标注的日本、新加坡或美国本土节点，并开启无痕浏览器窗口访问。
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/70 space-y-1.5">
+            <h4 class="font-bold text-xs text-brand-dark flex items-center gap-1.5">
+              <span class="text-rose-500 font-bold">●</span>
+              <span>故障四：在手机上开启代理后电池掉电飞快且发烫</span>
+            </h4>
+            <p class="text-[11px] text-slate-600 leading-relaxed">
+              <strong>根因排查：</strong> 部分老旧客户端后台保活机制不健全，或者开启了高频轮询健康检查，导致 CPU 无法进入深度睡眠休眠状态。<br/>
+              <strong>解决方法：</strong> 安卓端推荐使用新版 Clash Meta 或 sing-box 客户端，关闭自动测速轮询；iPhone 端关闭后台应用刷新或在小火箭设置中启用按需连接模式。
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chapter 5: Three-Level Topic Cluster Backlog -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        五、本专题延伸三级新手实操文章集群
+      </h2>
+      <p class="text-xs text-slate-600 leading-relaxed">
+        从入门到熟练运用，建议跟随以下细分主题循序渐进深入探索：
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-3">
+        <div class="p-3.5 rounded-xl border border-slate-200 bg-white space-y-1.5 hover:shadow-xs transition-shadow">
+          <span class="text-[10px] font-mono font-bold text-brand-link uppercase tracking-wider">客户端安装</span>
+          <h3 class="font-bold text-xs text-brand-dark">Windows 平台 Clash Verge Rev 纯净安装与汉化配置</h3>
+          <p class="text-[11px] text-slate-500 leading-relaxed">手把手教你完成安装路径选择、防火墙权限放行与界面中文切换。</p>
+        </div>
+
+        <div class="p-3.5 rounded-xl border border-slate-200 bg-white space-y-1.5 hover:shadow-xs transition-shadow">
+          <span class="text-[10px] font-mono font-bold text-emerald-700 uppercase tracking-wider">苹果设备专项</span>
+          <h3 class="font-bold text-xs text-brand-dark">美区 Apple ID 免信用卡注册与 Shadowrocket 下载</h3>
+          <p class="text-[11px] text-slate-500 leading-relaxed">十分钟搞定正版小火箭下载环境，彻底告别来路不明的描述文件。</p>
+        </div>
+
+        <div class="p-3.5 rounded-xl border border-slate-200 bg-white space-y-1.5 hover:shadow-xs transition-shadow">
+          <span class="text-[10px] font-mono font-bold text-amber-700 uppercase tracking-wider">分流进阶</span>
+          <h3 class="font-bold text-xs text-brand-dark">规则模式、全局模式与直连模式的区别与切换技巧</h3>
+          <p class="text-[11px] text-slate-500 leading-relaxed">弄懂 PAC 规则工作原理，让国内应用跑本地高速、国外流量走专线。</p>
+        </div>
+
+        <div class="p-3.5 rounded-xl border border-slate-200 bg-white space-y-1.5 hover:shadow-xs transition-shadow">
+          <span class="text-[10px] font-mono font-bold text-purple-700 uppercase tracking-wider">排障自救</span>
+          <h3 class="font-bold text-xs text-brand-dark">新手开代理后“电脑无法上网但微信能收发”解决指南</h3>
+          <p class="text-[11px] text-slate-500 leading-relaxed">排查系统代理端口未正确还原与 DNS 缓存污染的最简恢复流程。</p>
+        </div>
+
+        <div class="p-3.5 rounded-xl border border-slate-200 bg-white space-y-1.5 hover:shadow-xs transition-shadow">
+          <span class="text-[10px] font-mono font-bold text-cyan-700 uppercase tracking-wider">安全与隐私</span>
+          <h3 class="font-bold text-xs text-brand-dark">订阅链接防泄露秘笈：为什么绝对不能把链接发到公开群</h3>
+          <p class="text-[11px] text-slate-500 leading-relaxed">解析订阅凭证被盗刷的后果，以及如何使用官网的重置功能自救。</p>
+        </div>
+
+        <div class="p-3.5 rounded-xl border border-slate-200 bg-white space-y-1.5 hover:shadow-xs transition-shadow">
+          <span class="text-[10px] font-mono font-bold text-rose-700 uppercase tracking-wider">消费决策</span>
+          <h3 class="font-bold text-xs text-brand-dark">学生党与工薪族首发套餐预算对照表与退款维权常识</h3>
+          <p class="text-[11px] text-slate-500 leading-relaxed">厘清不同阶梯资费的合理区间，学会识别虚标带宽与流量暗扣陷阱。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chapter 6: FAQs -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        六、新手最高频疑问与避坑解答 (FAQ)
+      </h2>
+      <div class="space-y-4">
+        {faqs.map((faq) => (
+          <div class="p-4 rounded-xl border border-brand-border bg-slate-50/50 space-y-1.5">
+            <h3 class="font-bold text-sm text-brand-dark flex items-start gap-2">
+              <span class="text-amber-600 font-mono font-bold shrink-0">Q:</span>
+              <span>{faq.q}</span>
+            </h3>
+            <p class="text-xs text-slate-600 leading-relaxed pl-5">
+              {faq.a}
+            </p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Related Links & Next Steps -->
+    <section class="p-6 rounded-2xl border border-brand-border bg-brand-surface space-y-4">
+      <h3 class="font-bold text-base text-brand-dark">相关新手延伸阅读与专题索引</h3>
+      <p class="text-xs text-slate-600 leading-relaxed">
+        完成了基础认知后，可以进一步阅读以下专业知识，掌握更优雅的上网姿势：
+      </p>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-xs">
+        <a href="/recommend/stable-airports/" class="p-3 bg-white rounded-lg border border-slate-200 hover:border-brand-link transition-colors block">
+          <div class="font-bold text-brand-dark mb-1">稳定机场筛选标准 →</div>
+          <div class="text-slate-500 text-[11px]">学会用晚高峰丢包率与网络抖动判断线路品质</div>
+        </a>
+        <a href="/clients/windows/" class="p-3 bg-white rounded-lg border border-slate-200 hover:border-brand-link transition-colors block">
+          <div class="font-bold text-brand-dark mb-1">Windows 客户端大全 →</div>
+          <div class="text-slate-500 text-[11px]">对比 Clash Verge Rev、v2rayN 与 FlClash 的优劣</div>
+        </a>
+        <a href="/pricing/cheap-airports-comparison/" class="p-3 bg-white rounded-lg border border-slate-200 hover:border-brand-link transition-colors block">
+          <div class="font-bold text-brand-dark mb-1">便宜机场与平价陷阱 →</div>
+          <div class="text-slate-500 text-[11px]">看懂一元机场与超卖套路，合理控制试错成本</div>
+        </a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

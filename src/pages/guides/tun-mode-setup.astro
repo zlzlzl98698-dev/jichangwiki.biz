@@ -1,0 +1,412 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const breadcrumbs = [
+  { name: '教程排障', href: '/guides/' },
+  { name: 'TUN 模式配置指南', href: '/guides/tun-mode-setup/' },
+];
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: 'TUN 模式与虚拟网卡配置深度指南 2026 最新版 Wintun 驱动、系统全局流量接管与终端游戏加速全景实操',
+  description: '全面解析网络代理客户端中的 TUN 虚拟网卡模式：Wintun 驱动底层接管机制、双段路由表覆盖原理、解决终端命令行与外服游戏无法走代理的痛点，以及彻底修复休眠唤醒断网与局域网 NAS 通信死锁实操手册。',
+  datePublished: '2026-10-19',
+  dateModified: '2026-11-24',
+  inLanguage: 'zh-CN',
+};
+
+const faqs = [
+  {
+    q: '什么是 TUN 模式，它与普通代理软件里的“系统代理 (System Proxy)”有什么本质区别？',
+    a: '两者工作在完全不同的计算机网络分层。系统代理（System Proxy）工作在第七层应用层，其实现原理仅仅是向操作系统注册表写入了一个 HTTP/HTTPS 环境变量，只有主动读取该注册表的软件（如主流浏览器）才会将流量转发至 127.0.0.1 本地端口；而 TUN 模式工作在第三层网络层（IP 层），它通过向操作系统底层注册一个虚拟网络适配器（如 Wintun 驱动），并将操作系统的默认网关路由重定向至该虚拟网卡。整台电脑中产生的所有原始 IP 数据包（包含浏览器、终端命令、开发包下载器、外服联机游戏以及各类后台服务）都会被虚拟网卡全量接管并智能分流。'
+  },
+  {
+    q: '为什么现代代理客户端全面淘汰了旧版 TAP 驱动，全面改用 Wintun 驱动？',
+    a: 'TAP 驱动源自早期的 OpenVPN 项目，其模拟的是第二层以太网适配器，存在严重的帧拷贝开销，且在 Windows 10 与 11 的高版本更新中极易引发内核级系统蓝屏（IRQL_NOT_LESS_OR_EQUAL）。而 Wintun 驱动是知名安全 VPN 项目 WireGuard 专为 Windows 内核打造的现代轻量级第三层虚拟网络驱动，直接在内核空间完成 IP 数据包零拷贝转发，吞吐量比旧版 TAP 提升了近四倍，常驻 CPU 与内存开销极低，且从物理底层彻底杜绝了死锁蓝屏。'
+  },
+  {
+    q: '在 Clash Verge Rev 中开启 TUN 模式之后，整台电脑突然所有网页全部打不开怎么排查？',
+    a: '这通常有两个诱发原因：一是系统 DNS 模块发生了死锁，客户端在创建虚拟网卡后未能在本地成功拉起 Fake-IP 监听服务，导致操作系统的所有域名查询在虚拟网卡处被全部丢弃；二是电脑中残留了旧版代理软件遗留的冲突虚拟网卡驱动。解决步骤是：先在客户端中关闭 TUN 模式，进入 Windows“设备管理器”➔ 展开“网络适配器”，查看是否存在带黄色感叹号的旧版 TAP 或虚拟网卡，右键卸载；随后在 Clash Verge Rev 设置中先安装“服务模式 (Service Mode)”，将 DNS 模式配置为 Fake-IP，再次开启 TUN 模式即可恢复。'
+  },
+  {
+    q: '开启 TUN 模式后，为什么我连接本地局域网的打印机、NAS 存储或本地虚拟机打不开了？',
+    a: '这是由于虚拟网卡的全局路由表把私有内网 IP 段（如 192.168.0.0/16、10.0.0.0/8）也一并错误地劫持进了虚拟网卡通道，导致发往本地物理路由器的请求被发往了海外代理服务器。解决办法是：在客户端的 TUN 高级设置中，检查并确保勾选了“严格路由 (Strict Route)”并开启了“绕过私有网络地址 (Bypass Private/Direct IP)”，将 127.0.0.1、192.168.0.0/16 等局域网保留网段显式添加到白名单直连列表中。'
+  },
+  {
+    q: '为什么在终端中运行 Git、npm、Docker pull 等命令时，开启 TUN 模式比配置环境变量更稳妥？',
+    a: '配置命令行环境变量（如 export https_proxy）具有明显的局限性：一是每次打开新的终端窗口都必须重复输入命令，或者需要修改全局 profile；二是部分工具（如旧版 Git、特定 Python 第三方库或 Docker 守护进程）存在不遵循环境变量、或者在面对复杂 SOCKS5 握手协议时发生退出的缺陷。开启 TUN 模式后，网络接管是在操作系统内核网络层静默完成的，任何命令行工具在发起原始 TCP 套接字时就被自动重定向，实现真正的零配置与全系统透明加速。'
+  },
+  {
+    q: 'TUN 模式中的系统协议栈（System）、gVisor 协议栈与 Mixed 协议栈有什么区别？',
+    a: '这是处理虚拟网卡 IP 数据包的三种不同网络栈实现。System 栈直接调用操作系统原生的网络协议栈完成包处理，吞吐性能最高但对系统的内核版本与权限要求苛刻；gVisor 栈是 Google 开源的用户态网络协议栈，在用户空间实现完整的 TCP/IP 状态机，兼容性极佳且完全不依赖系统权限，但处理极大并发下载时 CPU 占用略高；Mixed 栈则是两者的智能结合，UDP 走系统内核提速，复杂 TCP 走用户态稳定处理，是目前最推荐的平衡配置。'
+  },
+  {
+    q: '笔记本电脑休眠唤醒后，TUN 虚拟网卡经常显示无互联网访问怎么办？',
+    a: '这是因为 Windows 笔记本在进入现代待机（Modern Standby）休眠状态时，操作系统电源管理服务会强行切断第三方虚拟网络适配器的供电与驱动心跳。唤醒后，主物理网卡恢复通信，但虚拟适配器未能及时重新建立路由表绑定。解决办法是确保安装了客户端的 Service Mode（常驻服务拥有最高系统电源事件监听权限），并勾选“自动重启网络服务”选项。'
+  },
+  {
+    q: '在 macOS 苹果电脑上配置 TUN 模式，为什么每次都需要输入电脑开机管理员密码？',
+    a: 'macOS 基于严密的 UNIX 权限模型，创建虚拟网络接口（utun 适配器）以及动态修改系统路由表（route add 命令）属于系统底层特权级操作，普通用户进程无法静默执行。为了免除每次启动都要手动输入密码的麻烦，可以在 Clash Verge Rev 设置中一键安装 macOS 特权守护进程（Privileged Helper Tool），由该受信任的本地守护进程在后台静默处理底层网卡挂载。'
+  }
+];
+---
+
+<BaseLayout
+  title="TUN模式与虚拟网卡配置深度指南 (2026最新) - Wintun驱动、全局流量接管与排障全景"
+  description="全面解析网络代理客户端中的 TUN 虚拟网卡模式：Wintun 驱动底层接管机制、双段路由表覆盖原理、解决终端命令行与外服游戏无法走代理的痛点，以及彻底修复休眠唤醒断网与局域网 NAS 通信死锁实操手册。"
+  breadcrumbs={breadcrumbs}
+  schema={articleSchema}
+>
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+    <!-- Header -->
+    <header class="pb-8 border-b border-brand-border space-y-4">
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="px-3 py-1 text-xs font-semibold rounded bg-blue-100 text-blue-800">
+          核心排障实操专栏
+        </span>
+        <span class="px-3 py-1 text-xs font-medium rounded bg-emerald-100 text-emerald-800">
+          OSI 第三层网络虚拟化
+        </span>
+        <span class="text-xs text-brand-muted">更新时间 2026 年 11 月 24 日</span>
+      </div>
+
+      <h1 class="text-2xl sm:text-4xl font-extrabold text-brand-dark tracking-tight leading-tight">
+        TUN 模式与虚拟网卡配置深度指南：Wintun 驱动、系统全局流量接管与终端游戏加速全景实操
+      </h1>
+
+      <p class="text-sm sm:text-base text-slate-600 leading-relaxed max-w-4xl">
+        为什么开启了代理之后，浏览器可以上网，但是在终端运行 Git 代码拉取、Python 模块安装、或者打开外服 Steam 与战网游戏时依然频频超时报错？答案就在于应用层系统代理与底层网络层虚拟网卡的本质差异。<strong>TUN 模式</strong>是彻底打破应用协议壁垒、实现全操作系统无缝加速的终极方案。本文深入剖析其内核驱动机制与工业级避坑指南。
+      </p>
+
+      <div class="p-4 rounded-lg bg-blue-50 border border-blue-200 text-xs text-blue-950 flex items-start gap-3">
+        <span class="text-base">🛠️</span>
+        <div class="leading-relaxed">
+          <strong>架构核心演进：</strong>
+          彻底告别旧版容易引发 Windows 蓝屏死锁的 TAP 驱动。现代客户端（如 Clash Verge Rev、Mihomo Party）全面拥抱基于 WireGuard 项目打造的 <strong>Wintun 驱动</strong>。具备内核态零拷贝特性，吞吐量提升 400%，常驻 CPU 损耗低于 1%。
+        </div>
+      </div>
+    </header>
+
+    <!-- Table of Contents Quick Nav -->
+    <nav class="p-5 rounded-xl border border-slate-200 bg-slate-50 text-xs sm:text-sm space-y-3">
+      <div class="font-bold text-brand-dark text-sm uppercase tracking-wider">本专题深度目录导航</div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 text-brand-link">
+        <a href="#tun-underlying-principles" class="hover:underline">1. TUN 虚拟网卡底层工作原理与路由劫持</a>
+        <a href="#why-developer-needs-tun" class="hover:underline">2. 为什么开发者与游戏玩家必须开启 TUN</a>
+        <a href="#step-by-step-tun-setup" class="hover:underline">3. Clash Verge Rev 标准开启五步实操</a>
+        <a href="#network-stack-comparison" class="hover:underline">4. 三大网络协议栈深度对比：System vs gVisor</a>
+        <a href="#fatal-troubleshooting-tun" class="hover:underline">5. 六大致命故障自救：断网与 NAS 隔离修复</a>
+        <a href="#topic-clusters-tun" class="hover:underline">6. 虚拟网卡三级深度衍生选题矩阵</a>
+        <a href="#faq-section-tun" class="hover:underline">7. 高频技术疑问与权威解答</a>
+      </div>
+    </nav>
+
+    <!-- Section 1: TUN Underlying Principles -->
+    <section id="tun-underlying-principles" class="space-y-6">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark flex items-center gap-2">
+        <span class="w-2 h-6 bg-blue-600 rounded"></span>
+        TUN 虚拟网卡底层工作原理与双段路由表接管机制
+      </h2>
+
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        要理解 TUN 模式为什么能够接管整台电脑的所有网络，必须了解操作系统路由表的工作机制：
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-3">
+          <div class="text-sm font-bold text-brand-dark flex items-center gap-2">
+            <span class="text-amber-600">⚠️</span>
+            <span>传统系统代理（System Proxy）的局限</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            系统代理仅向注册表中写入一个代理监听端口（如 127.0.0.1:7890）。对于不读取该注册表项的非代理感知型应用（如 CMD、PowerShell、Git Bash、游戏 UDP 通信），操作系统依然直接通过物理硬件网卡发出裸包，代理软件完全处于“看不见、管不着”的失灵状态。
+          </p>
+        </div>
+
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-3">
+          <div class="text-sm font-bold text-brand-dark flex items-center gap-2">
+            <span class="text-blue-600">🛡️</span>
+            <span>TUN 模式双段路由（0.0.0.0/1）接管黑科技</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            为了避免直接覆盖操作系统的默认网关导致网络故障，现代客户端在启动 TUN 时，会向系统路由表巧妙地注入两条更长掩码的高优先级路由规则：<code class="bg-slate-100 px-1 py-0.5 rounded font-mono text-slate-800">0.0.0.0/1</code> 与 <code class="bg-slate-100 px-1 py-0.5 rounded font-mono text-slate-800">128.0.0.0/1</code>。根据路由器“最长前缀匹配”原则，整台电脑发往整个 IPv4 互联网的所有数据包都会被无条件送入 Wintun 虚拟网卡，实现全系统透明截获。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Why Developer Needs TUN -->
+    <section id="why-developer-needs-tun" class="space-y-6">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark flex items-center gap-2">
+        <span class="w-2 h-6 bg-blue-600 rounded"></span>
+        为什么开发者与外服游戏玩家必须开启 TUN 模式
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
+          <div class="font-bold text-brand-dark text-sm flex items-center gap-2">
+            <span class="text-purple-600">👨‍💻</span>
+            <span>程序员与技术极客</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            告别繁琐的 <code class="bg-slate-100 px-1 py-0.5 rounded font-mono">export https_proxy</code> 环境变量设置。Git 代码拉取、Python pip 依赖安装、Node.js npm 镜像下载、Docker 镜像拉取以及 WSL2 Linux 子系统均能自适应享受透明加速，零学习成本。
+          </p>
+        </div>
+
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
+          <div class="font-bold text-brand-dark text-sm flex items-center gap-2">
+            <span class="text-emerald-600">🎮</span>
+            <span>外服联机游戏玩家</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            联机游戏均采用底层的 UDP 协议传输实时物理位置与语音数据。系统代理完全不支持 UDP 转发，而 TUN 模式能够原生截获 UDP 数据报文并进行 Full Cone NAT 映射，彻底解决游戏组队跳 Ping 与语音卡顿。
+          </p>
+        </div>
+
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
+          <div class="font-bold text-brand-dark text-sm flex items-center gap-2">
+            <span class="text-blue-600">🏬</span>
+            <span>微软商店与现代应用</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            完美避开 Windows 操作系统严苛的 UWP AppContainer 本地回环隔离拦截。微软官方应用商店（Microsoft Store）、Xbox 登录组件与自带邮件客户端无需配置任何豁免工具即可直接畅联。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: Step by Step Setup -->
+    <section id="step-by-step-tun-setup" class="space-y-6">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark flex items-center gap-2">
+        <span class="w-2 h-6 bg-blue-600 rounded"></span>
+        Clash Verge Rev 标准开启五步实操指南
+      </h2>
+
+      <div class="bg-white p-6 rounded-xl border border-slate-200 space-y-4">
+        <ol class="space-y-3 text-xs sm:text-sm text-slate-600">
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center shrink-0">1</span>
+            <div>
+              <strong>安装系统服务授权 (Service Mode)：</strong>打开 Clash Verge Rev，进入左侧“设置”。在“内核设置”区域找到“服务模式”，点击右侧的“安装”按钮，在 Windows UAC 提权弹窗中点击“允许”。安装完成后，界面会显示服务状态正常。
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center shrink-0">2</span>
+            <div>
+              <strong>开启 TUN 模式核心开关：</strong>在设置面板中，找到“TUN 模式”开关并将其拨动至开启状态。此时查看 Windows 右下角网络适配器列表，会发现新增了一块名为“Mihomo”或“Wintun”的虚拟网卡。
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center shrink-0">3</span>
+            <div>
+              <strong>配置高性能网络栈与 DNS 模式：</strong>在 TUN 设置中，将“协议栈 (Stack)”保持为推荐的 <code class="bg-slate-100 px-1 py-0.5 rounded font-mono">Mixed</code> 或 <code class="bg-slate-100 px-1 py-0.5 rounded font-mono">System</code>；将 DNS 模式设置为 <code class="bg-slate-100 px-1 py-0.5 rounded font-mono">Fake-IP</code>（增强模式）。
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center shrink-0">4</span>
+            <div>
+              <strong>配置局域网与本地地址直连白名单：</strong>确保在高级路由选项中勾选了“严格路由”，并将本机的局域网私有网段（192.168.0.0/16、10.0.0.0/8）添加到直连排除名单中，防止局域网设备断联。
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center shrink-0">5</span>
+            <div>
+              <strong>终端运行测试命令验证：</strong>打开 PowerShell，无需输入任何配置，直接运行 <code class="bg-slate-100 px-1 py-0.5 rounded font-mono">curl cip.cc</code> 或 <code class="bg-slate-100 px-1 py-0.5 rounded font-mono">git clone https://github.com/torvalds/linux.git --depth=1</code>，观察下载速率是否瞬间达到物理带宽峰值。
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Section 4: Network Stack Comparison -->
+    <section id="network-stack-comparison" class="space-y-6">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark flex items-center gap-2">
+        <span class="w-2 h-6 bg-blue-600 rounded"></span>
+        三大网络协议栈深度对比：System vs gVisor vs Mixed
+      </h2>
+
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        虚拟网卡在接收到原始网络数据帧后，必须依托网络协议栈进行数据解析与封装。不同的协议栈选型直接决定了系统的稳定性与 CPU 负载表现：
+      </p>
+
+      <div class="overflow-x-auto border border-slate-200 rounded-xl shadow-2xs">
+        <table class="w-full text-xs text-left text-slate-600">
+          <thead class="bg-slate-100 text-brand-dark font-semibold border-b border-slate-200">
+            <tr>
+              <th class="p-3">协议栈类型</th>
+              <th class="p-3">工作空间级别</th>
+              <th class="p-3">吞吐量性能表现</th>
+              <th class="p-3">系统兼容性与稳定性</th>
+              <th class="p-3">适用场景推荐</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 bg-white">
+            <tr class="hover:bg-slate-50">
+              <td class="p-3 font-bold text-brand-dark">System 协议栈</td>
+              <td class="p-3 text-blue-700 font-semibold">操作系统内核空间</td>
+              <td class="p-3 text-emerald-700 font-semibold">极高（可轻松跑满千兆带宽）</td>
+              <td class="p-3 text-amber-700">对系统驱动版本有严苛要求</td>
+              <td class="p-3">千兆宽带下载大文件、高性能游戏台式机</td>
+            </tr>
+            <tr class="hover:bg-slate-50">
+              <td class="p-3 font-bold text-brand-dark">gVisor 协议栈</td>
+              <td class="p-3 text-purple-700">纯用户态内存空间</td>
+              <td class="p-3 text-slate-500">中等（大并发时 CPU 占用略高）</td>
+              <td class="p-3 text-emerald-700 font-semibold">极高（零驱动崩溃风险）</td>
+              <td class="p-3">低配置老旧电脑、受限权限办公机</td>
+            </tr>
+            <tr class="hover:bg-slate-50">
+              <td class="p-3 font-bold text-brand-dark">Mixed 混合栈</td>
+              <td class="p-3 text-emerald-700 font-semibold">内核态与用户态智能协同</td>
+              <td class="p-3 text-emerald-700 font-semibold">高（UDP 零延迟，TCP 平稳）</td>
+              <td class="p-3 text-emerald-700 font-semibold">极高（自动平滑回退）</td>
+              <td class="p-3 font-medium text-brand-dark">日常首选黄金默认配置</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Section 5: Fatal Troubleshooting -->
+    <section id="fatal-troubleshooting-tun" class="space-y-6">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark flex items-center gap-2">
+        <span class="w-2 h-6 bg-blue-600 rounded"></span>
+        六大致命故障自救：彻底解决断网与 NAS 通信死锁
+      </h2>
+
+      <div class="space-y-4">
+        <div class="p-5 rounded-xl border border-rose-200 bg-rose-50/40 space-y-2">
+          <div class="font-bold text-rose-900 text-sm flex items-center justify-between">
+            <span>🔴 故障一：开启 TUN 模式后电脑全部断网，关闭后立即恢复</span>
+            <span class="text-xs px-2 py-0.5 rounded bg-rose-200 text-rose-900 font-semibold">高危故障</span>
+          </div>
+          <p class="text-xs text-rose-800 leading-relaxed">
+            <strong>核心原因：</strong>客户端未安装服务模式（Service Mode），或者没有以管理员身份运行，导致 Wintun 驱动无权向系统路由表写入默认网关，同时客户端却占用了本地 DNS 拦截，引发域名解析全面瘫痪。<br />
+            <strong>解决办法：</strong>必须在设置中重新点击安装 Service Mode，看到绿色盾牌标志后再行开启。
+          </p>
+        </div>
+
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-2">
+          <div class="font-bold text-brand-dark text-sm">
+            <span>🟠 故障二：局域网打印机、NAS 存储与本地虚拟机通信全部阻断</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            <strong>核心原因：</strong>虚拟网卡的双段路由把私网 IP 段也一并截获了。<br />
+            <strong>解决办法：</strong>在 TUN 设置中开启 <code class="bg-slate-100 px-1 py-0.5 rounded font-mono">auto-route</code> 与 <code class="bg-slate-100 px-1 py-0.5 rounded font-mono">auto-detect-interface</code>，并将内网私有地址（192.168.0.0/16）显式加入绕过列表。
+          </p>
+        </div>
+
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-2">
+          <div class="font-bold text-brand-dark text-sm">
+            <span>🟡 故障三：电脑从休眠唤醒后，网络状态显示为“无 Internet 访问”</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            <strong>核心原因：</strong>Windows 现代待机（Modern Standby）休眠切断了虚拟适配器供电，唤醒后网卡驱动未自动重置。<br />
+            <strong>解决办法：</strong>右键 Clash Verge 托盘图标，先关闭 TUN 模式再重新开启；或者在设备管理器中禁用并重新启用物理以太网卡。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 6: Topic Clusters -->
+    <section id="topic-clusters-tun" class="space-y-6">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark flex items-center gap-2">
+        <span class="w-2 h-6 bg-blue-600 rounded"></span>
+        虚拟网卡三级深度衍生选题矩阵
+      </h2>
+
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        围绕操作系统底层网络虚拟化技术，机场 Wiki 知识体系规划了以下六大高价值三级深度技术选题：
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
+          <span class="text-xs font-bold text-blue-600">三级选题 01</span>
+          <h3 class="font-bold text-sm text-brand-dark">Wintun 驱动源码级架构解析与性能基准</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            深入揭密 WireGuard 官方 Wintun 驱动的环形缓冲区（Ring Buffer）与零拷贝内存设计。
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
+          <span class="text-xs font-bold text-blue-600">三级选题 02</span>
+          <h3 class="font-bold text-sm text-brand-dark">Windows 路由表最长前缀匹配与冲突排查</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            教你使用 <code class="font-mono">route print</code> 命令读懂跃点数（Metric）与网关绑定，解决路由环路死锁。
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
+          <span class="text-xs font-bold text-blue-600">三级选题 03</span>
+          <h3 class="font-bold text-sm text-brand-dark">WSL2 镜像网络模式与 TUN 模式深度协同</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            详解 Windows 11 下 Mirrored Networking 模式如何让 Linux 子系统零配置共享宿主机 TUN 代理。
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
+          <span class="text-xs font-bold text-blue-600">三级选题 04</span>
+          <h3 class="font-bold text-sm text-brand-dark">macOS utun 虚拟网卡与特权守护进程配置</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            针对苹果 Mac 电脑，配置 Privileged Helper 彻底摆脱每次启动手动输入 sudo 开机密码的困扰。
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
+          <span class="text-xs font-bold text-blue-600">三级选题 05</span>
+          <h3 class="font-bold text-sm text-brand-dark">Docker 容器环境无缝走宿主机 TUN 代理实践</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            配置 host 模式与透明网关桥接，彻底解决 Docker 构建镜像时无法拉取外网包的超时难题。
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
+          <span class="text-xs font-bold text-blue-600">三级选题 06</span>
+          <h3 class="font-bold text-sm text-brand-dark">TUN 模式下防止真实物理 IPv6 泄漏全景指南</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            很多用户的 IPv4 走了代理，但 IPv6 却直连裸奔。教你配置完整的 IPv6 TUN 丢弃或代理策略。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 7: FAQ Section -->
+    <section id="faq-section-tun" class="space-y-6">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark flex items-center gap-2">
+        <span class="w-2 h-6 bg-blue-600 rounded"></span>
+        高频技术疑问与权威解答
+      </h2>
+
+      <div class="space-y-4">
+        {faqs.map((faq) => (
+          <details class="group bg-white p-5 rounded-xl border border-slate-200 [&_summary::-webkit-details-marker]:none">
+            <summary class="flex items-center justify-between cursor-pointer font-bold text-sm sm:text-base text-brand-dark">
+              <span>{faq.q}</span>
+              <span class="ml-4 transition-transform duration-200 group-open:rotate-180 text-blue-600 shrink-0">
+                ▼
+              </span>
+            </summary>
+            <p class="mt-3 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
+              {faq.a}
+            </p>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- Schema FAQ injection -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: faqs.map(f => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: f.a
+        }
+      }))
+    })} />
+  </div>
+</BaseLayout>

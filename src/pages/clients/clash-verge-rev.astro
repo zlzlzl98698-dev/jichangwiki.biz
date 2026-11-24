@@ -1,0 +1,411 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const breadcrumbs = [
+  { name: '客户端', href: '/clients/' },
+  { name: 'Clash Verge Rev 专题', href: '/clients/clash-verge-rev/' },
+];
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: 'Clash Verge Rev 官方下载与配置全景教程 2026 最新版 基于 Mihomo 内核的跨平台现代化代理神器完全指南',
+  description: '全面解析新一代开源代理客户端 Clash Verge Rev：Tauri 架构极低资源占用、Mihomo 内核高级协议支持、Wintun 虚拟网卡 TUN 模式深度配置、Merge 规则扩展与脚本持久化进阶指南。',
+  datePublished: '2026-10-19',
+  dateModified: '2026-11-24',
+  inLanguage: 'zh-CN',
+};
+
+const faqs = [
+  {
+    q: 'Clash Verge Rev 与已停止维护的旧版 Clash for Windows 有什么核心技术区别？',
+    a: '两者存在底层架构上的代际差距。旧版 Clash for Windows 采用沉重的 Electron 框架与早已停止更新的开源版 Clash 核心，常驻内存高达数百兆且存在已公开的安全利用漏洞；而 Clash Verge Rev 采用由 Rust 驱动的轻量级 Tauri 框架，常驻内存仅为三四十兆，且底层直接接入目前维护最活跃、功能最强大的 Mihomo（原名 Clash.Meta）内核，原生支持 XTLS Reality、Hysteria 2、TUIC、geosite 规则集与高性能 Wintun 虚拟网卡。'
+  },
+  {
+    q: '在 Clash Verge Rev 中开启 TUN 模式时，为什么提示必须先安装“服务模式 (Service Mode)”？',
+    a: 'TUN 模式工作在操作系统第三层网络层，需要向系统底层注册并接管虚拟网络适配器（如 Wintun 驱动）。普通的桌面应用程序在受限用户权限下无法执行底层的系统驱动挂载与路由表篡改。安装服务模式后，软件会在操作系统中注册一个拥有高权限的独立常驻系统服务，由该服务专门负责虚拟网卡的拉起与全局路由分流，从而确保在无需每次手动右键“以管理员身份运行”的情况下稳定执行全局流量接管，并防止电脑休眠唤醒后网络崩溃。'
+  },
+  {
+    q: '什么是 Fake-IP 模式，它与普通的 Redir-Host 域名解析相比有什么技术优势？',
+    a: '在传统的 Redir-Host 模式下，当操作系统或浏览器发起域名访问时，必须先等待远端代理服务器或本地 DNS 解析出真实的海外公网 IP，这期间会产生一次完整的网络往返延迟（RTT）。而在 Fake-IP 模式下，Clash Verge Rev 会在本地拦截所有的 DNS 查询请求，并在极短的一毫秒内直接从 198.18.0.0/16 私有保留地址池中分配一个虚拟的假 IP 返回给应用程序。应用程序立即以该假 IP 发起连接，内核在收到底层数据包后再反向查表还原原始域名并发往远端代理服务器解析连接。这种机制彻底消除了本地 DNS 往返等待并从物理上杜绝了本地 DNS 污染。'
+  },
+  {
+    q: '每次更新机场订阅后，我之前手动修改的自定义分流规则就会被覆盖消失，该怎么解决？',
+    a: '千万不要直接修改下载后的原始订阅配置文件。在 Clash Verge Rev 中，正确的做法是利用软件内置的“配置扩展 (Merge)”或“脚本扩展 (Script)”机制。在左侧“订阅”界面的右上角点击新建扩展，创建一个合并规则模板，将你自定义的规则（如某个公司内网域名强制走 DIRECT 直连，或特定海外网站强制走特定节点组）写入模板中。Clash Verge Rev 在每次更新远程订阅时，会自动将你的个性化扩展规则动态注入到最新订阅的顶部，实现永不被覆盖的持久化配置。'
+  },
+  {
+    q: '为什么开启了 Clash Verge Rev 之后，访问国内某些网银或政企系统提示网络异常或异地登录？',
+    a: '这是由于你的规则模式被误选为了全局（Global）模式，或者订阅自带的分流规则库未及时更新，导致国内域名被错误地路由发往了海外代理节点。正确的操作是：确保软件主界面左侧处于规则（Rule）模式，并在设置中定期更新 GeoIP 与 GeoSite 数据库，确保中国大陆 IPv4 与 IPv6 地址以及常用国内域名库（如 CN 域名）全部严格匹配 DIRECT 直连策略。'
+  },
+  {
+    q: '在 macOS 苹果电脑上安装 Clash Verge Rev 时，提示“已损坏，无法打开，你应该将它移到废纸篓”如何处理？',
+    a: '这是由于开源软件未向苹果公司缴纳每年高昂的商业开发者签名认证费用，触发了 macOS 系统的 Gatekeeper 安全拦截机制。解决办法非常简单：打开 macOS 自带的“终端 (Terminal)”，粘贴执行命令 `sudo xattr -r -d com.apple.quarantine /Applications/Clash\\ Verge.app` 并按下回车，输入开机密码后即可彻底清除苹果的安全隔离属性，随后即可顺畅启动软件。'
+  },
+  {
+    q: 'Clash Verge Rev 支持多订阅合并或者在一个界面下同时使用多家机场吗？',
+    a: '完全支持。用户可以在“订阅 (Profiles)”面板中导入任意多家不同机场的订阅链接。Clash Verge Rev 支持为不同订阅独立设置自动更新周期，并且用户可以通过配置扩展脚本将多家机场的优质节点聚合到一个自定义的统一策略组中，实现多品牌节点的冗余灾备与自动化负载均衡测速。'
+  },
+  {
+    q: '关闭 Clash Verge Rev 后，电脑突然无法连接任何网页，但微信和 QQ 却能正常收发文字？',
+    a: '这证明底层物理网络是畅通的，根本原因是浏览器的系统代理没有被正确还原。微信和 QQ 使用自有的网络协议直接与腾讯服务器通信，不依赖 Windows 系统代理；而网页浏览器严格遵从系统代理设置。当软件异常退出时，Windows 注册表中的代理开关依然保持开启状态并尝试连接已经关闭的 7890 端口。只需重新打开 Clash Verge Rev，在设置中正常关闭系统代理开关后再退出，或者在 Windows 系统设置中将代理服务器手动关闭即可。'
+  }
+];
+---
+
+<BaseLayout
+  title="Clash Verge Rev 官方下载与配置全景教程 (2026最新) - 基于 Mihomo 内核的跨平台现代化代理完全指南"
+  description="全面解析新一代开源代理客户端 Clash Verge Rev：Tauri 架构极低资源占用、Mihomo 内核高级协议支持、Wintun 虚拟网卡 TUN 模式深度配置、Merge 规则扩展与脚本持久化进阶指南。"
+  breadcrumbs={breadcrumbs}
+  schema={articleSchema}
+>
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+    <!-- Header -->
+    <header class="pb-8 border-b border-brand-border space-y-4">
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="px-3 py-1 text-xs font-semibold rounded bg-blue-100 text-blue-800">
+          客户端专栏 · 社区顶流
+        </span>
+        <span class="px-3 py-1 text-xs font-medium rounded bg-emerald-100 text-emerald-800">
+          基于 Tauri + Rust 高性能架构
+        </span>
+        <span class="text-xs text-brand-muted">更新时间 2026 年 11 月 24 日</span>
+      </div>
+
+      <h1 class="text-2xl sm:text-4xl font-extrabold text-brand-dark tracking-tight leading-tight">
+        Clash Verge Rev 官方下载与配置全景教程：基于 Mihomo 内核的跨平台现代化代理神器完全指南
+      </h1>
+
+      <p class="text-sm sm:text-base text-slate-600 leading-relaxed max-w-4xl">
+        作为旧版 Clash for Windows（CFW）最完美的继承者，<strong>Clash Verge Rev</strong> 凭借基于 Rust 构建的轻量级 Tauri 架构与深度整合的 <strong>Mihomo</strong>（原名 Clash.Meta）内核，彻底革新了现代桌面代理客户端的性能标准与交互体验。本文系统拆解其底层技术架构、全平台官方安全下载渠道、Wintun 虚拟网卡与 Fake-IP 模式深度配置，并提供工业级规则持久化扩展方案。
+      </p>
+
+      <div class="p-4 rounded-lg bg-blue-50 border border-blue-200 text-xs text-blue-900 flex items-start gap-3">
+        <span class="text-base">💎</span>
+        <div class="leading-relaxed">
+          <strong>开源透明：</strong>本项目完全遵循 GPL-3.0 开源许可协议，所有代码公开托管于 GitHub。绝不含任何后门广告与商业收集模块。请务必通过官方 Releases 渠道获取原版可执行文件。
+        </div>
+      </div>
+    </header>
+
+    <!-- Table of Contents Quick Nav -->
+    <nav class="p-5 rounded-xl border border-slate-200 bg-slate-50 text-xs sm:text-sm space-y-3">
+      <div class="font-bold text-brand-dark text-sm uppercase tracking-wider">本专题深度目录导航</div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 text-brand-link">
+        <a href="#why-clash-verge-rev" class="hover:underline">1. 为什么 Clash Verge Rev 是目前公认的最强工具</a>
+        <a href="#download-verification" class="hover:underline">2. 全平台官方正版下载渠道与安全校验</a>
+        <a href="#core-setup-flow" class="hover:underline">3. 核心配置实战：订阅导入与策略组解析</a>
+        <a href="#tun-fake-ip-deepdive" class="hover:underline">4. Wintun 虚拟网卡与 Fake-IP 模式深度配置</a>
+        <a href="#merge-and-scripts" class="hover:underline">5. 配置合并 (Merge) 与脚本扩展进阶玩法</a>
+        <a href="#topic-clusters-cvr" class="hover:underline">6. Clash Verge Rev 三级深度衍生选题矩阵</a>
+        <a href="#faq-section-cvr" class="hover:underline">7. 高频技术疑问与权威解答</a>
+      </div>
+    </nav>
+
+    <!-- Section 1: Why Clash Verge Rev -->
+    <section id="why-clash-verge-rev" class="space-y-6">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark flex items-center gap-2">
+        <span class="w-2 h-6 bg-blue-600 rounded"></span>
+        为什么 Clash Verge Rev 是目前公认的最强 Clash 分支
+      </h2>
+
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        自 2023 年底原版 Clash 核心及其衍生图形客户端陷入停更风波以来，开源社区经历了一次深度的底层重构。Clash Verge Rev 之所以在众多竞争者中脱颖而出成为绝对主流，源于其在两大核心维度的技术革新：
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-3">
+          <div class="text-sm font-bold text-brand-dark flex items-center gap-2">
+            <span class="text-blue-600">🦀</span>
+            <span>Tauri + Rust：终结 Electron 的资源暴食</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            旧版客户端采用 Electron 打包了完整的 Chromium 浏览器环境，导致即使完全不打开界面，后台也要常驻消耗近 400MB 物理内存。而 Clash Verge Rev 采用 Rust 开发底层通信逻辑，前端直接调用操作系统原生自带的 WebView2（Windows）或 WebKit（macOS），将空载内存压缩至惊人的 30MB 至 60MB，启动速度达到毫秒级。
+          </p>
+        </div>
+
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-3">
+          <div class="text-sm font-bold text-brand-dark flex items-center gap-2">
+            <span class="text-emerald-600">🚀</span>
+            <span>Mihomo 核心：全面解锁下一代现代网络协议</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            原生深度集成维护极其活跃的 Mihomo（开源社区原名 Clash.Meta）内核。不仅支持传统的 Shadowsocks 与 VMess，更原生完美支持具备极高抗封锁能力的 VLESS Reality、基于 UDP 高吞吐拥塞控制的 Hysteria 2、TUIC 协议，以及高效的域名嗅探（Sniffer）和规则集（Rule Provider）热重载功能。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Download & Verification -->
+    <section id="download-verification" class="space-y-6">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark flex items-center gap-2">
+        <span class="w-2 h-6 bg-blue-600 rounded"></span>
+        全平台官方正版下载渠道与安全校验规范
+      </h2>
+
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        由于代理软件涉及系统网络层的所有原始数据转发，绝不能从任何第三方网盘、个人博客或盗版下载站获取安装包。官方正版发布渠道唯一下载地址为官方 GitHub Releases 页面：
+      </p>
+
+      <div class="p-5 rounded-xl border border-slate-200 bg-slate-50 space-y-4">
+        <div class="font-bold text-brand-dark text-sm">官方跨平台安装包选型对照表：</div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+          <div class="p-3 bg-white rounded-lg border border-slate-200 space-y-1">
+            <strong class="text-brand-dark block">Windows 用户</strong>
+            <span class="text-slate-500 block">Intel / AMD 64位主流电脑：</span>
+            <code class="text-blue-600 font-mono block">Clash.Verge_x.x.x_x64-setup.exe</code>
+            <span class="text-slate-500 block mt-1">ARM 架构设备（如 Surface Pro X）：</span>
+            <code class="text-blue-600 font-mono block">Clash.Verge_x.x.x_arm64-setup.exe</code>
+          </div>
+
+          <div class="p-3 bg-white rounded-lg border border-slate-200 space-y-1">
+            <strong class="text-brand-dark block">macOS 苹果电脑</strong>
+            <span class="text-slate-500 block">Apple Silicon (M1/M2/M3/M4 系列芯片)：</span>
+            <code class="text-blue-600 font-mono block">Clash.Verge_x.x.x_aarch64.dmg</code>
+            <span class="text-slate-500 block mt-1">早期 Intel 处理器芯片机型：</span>
+            <code class="text-blue-600 font-mono block">Clash.Verge_x.x.x_x64.dmg</code>
+          </div>
+
+          <div class="p-3 bg-white rounded-lg border border-slate-200 space-y-1">
+            <strong class="text-brand-dark block">Linux 平台</strong>
+            <span class="text-slate-500 block">Ubuntu / Debian 系列发型版：</span>
+            <code class="text-blue-600 font-mono block">clash-verge_x.x.x_amd64.deb</code>
+            <span class="text-slate-500 block mt-1">通用免安装可移植格式：</span>
+            <code class="text-blue-600 font-mono block">clash-verge_x.x.x_amd64.AppImage</code>
+          </div>
+        </div>
+
+        <div class="text-xs pt-2 flex items-center justify-between border-t border-slate-200">
+          <span class="text-slate-500">官方仓库：clash-verge-rev/clash-verge-rev</span>
+          <a
+            href="https://github.com/clash-verge-rev/clash-verge-rev/releases"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-blue-600 font-bold hover:underline inline-flex items-center gap-1"
+          >
+            <span>访问官方 GitHub Releases 页面</span>
+            <span>↗</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: Core Setup Flow -->
+    <section id="core-setup-flow" class="space-y-6">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark flex items-center gap-2">
+        <span class="w-2 h-6 bg-blue-600 rounded"></span>
+        核心配置实战：订阅导入与策略组解析
+      </h2>
+
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        安装完成后，正确配置托管订阅是开启高速低延迟浏览体验的第一步。Clash 的核心魅力在于其高度智能的策略组机制：
+      </p>
+
+      <div class="bg-white p-6 rounded-xl border border-slate-200 space-y-4">
+        <h3 class="text-base font-bold text-brand-dark">四大核心策略组的工作逻辑</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm text-slate-600">
+          <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
+            <strong class="text-brand-dark block text-sm">1. 节点选择 (PROXY / Select)</strong>
+            <p class="leading-relaxed">
+              这是最基础的手动控制组。用户可以在此处手动钦定某个特定地区的特定节点（例如“香港 01 专线”）。适合对访问出口地区有极度严格要求的场景（如海外网银登录、固定 IP 协同办公）。
+            </p>
+          </div>
+
+          <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
+            <strong class="text-brand-dark block text-sm">2. 自动选择 (Auto / URL-Test)</strong>
+            <p class="leading-relaxed">
+              客户端会在后台定期（通常每 300 秒至 600 秒）向 Google 或 Cloudflare 的测试接口发起探测，自动评估延迟并在毫秒级内将流量切换至延迟最低的节点，实现无人值守的平滑自适应。
+            </p>
+          </div>
+
+          <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
+            <strong class="text-brand-dark block text-sm">3. 故障转移 (Fallback)</strong>
+            <p class="leading-relaxed">
+              策略组内部按照既定优先级顺序维护节点列表。首选节点保持常驻通信，一旦检测到首选节点发生丢包超时，系统立即将流量无感漂移到备用次级节点，当主节点恢复后再次切回。
+            </p>
+          </div>
+
+          <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
+            <strong class="text-brand-dark block text-sm">4. 负载均衡 (Load-Balance)</strong>
+            <p class="leading-relaxed">
+              在多个对等节点之间以轮询或源哈希的方式并发分摊网络请求。适合需要大并发下载大文件或爬虫并发抓取的特殊场景，日常浏览不建议使用以免导致目标网站频繁弹出异地风控。
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: TUN & Fake-IP -->
+    <section id="tun-fake-ip-deepdive" class="space-y-6">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark flex items-center gap-2">
+        <span class="w-2 h-6 bg-blue-600 rounded"></span>
+        Wintun 虚拟网卡与 Fake-IP 模式深度配置
+      </h2>
+
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        常规代理往往只能让浏览器上网，无法让终端命令、开发包管理器或游戏通信走代理。Clash Verge Rev 的灵魂功能在于其极致稳定的 TUN 模式与高效的 Fake-IP 域名拦截技术：
+      </p>
+
+      <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-3">
+        <div class="font-bold text-brand-dark text-sm">🚀 Fake-IP 模式与传统 Redir-Host 模式延迟物理对比</div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left text-slate-600 mt-2">
+            <thead class="bg-slate-100 text-brand-dark font-semibold">
+              <tr>
+                <th class="p-2.5">解析机制</th>
+                <th class="p-2.5">本地 DNS 往返耗时</th>
+                <th class="p-2.5">DNS 污染抵抗力</th>
+                <th class="p-2.5">首包建立握手总耗时</th>
+                <th class="p-2.5">适用场景</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              <tr>
+                <td class="p-2.5 font-bold text-brand-dark">Fake-IP 模式</td>
+                <td class="p-2.5 text-emerald-700 font-semibold">&lt; 1ms (本地直接分配)</td>
+                <td class="p-2.5 text-emerald-700 font-semibold">百分之百免疫本地污染</td>
+                <td class="p-2.5 text-emerald-700 font-semibold">单次 RTT 立即建立连接</td>
+                <td class="p-2.5">绝大多数日常网络浏览与游戏加速</td>
+              </tr>
+              <tr>
+                <td class="p-2.5 font-bold text-brand-dark">Redir-Host 模式</td>
+                <td class="p-2.5 text-rose-700">100ms 至 300ms (远端查询)</td>
+                <td class="p-2.5 text-amber-700">容易受本地 ISP 劫持影响</td>
+                <td class="p-2.5 text-rose-700">两次甚至多次网络往返</td>
+                <td class="p-2.5">特殊旧版网络应用兼容调试</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 5: Merge and Scripts -->
+    <section id="merge-and-scripts" class="space-y-6">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark flex items-center gap-2">
+        <span class="w-2 h-6 bg-blue-600 rounded"></span>
+        配置合并 (Merge) 与脚本扩展进阶玩法
+      </h2>
+
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        许多高级用户经常面临一个两难困境：希望自定义一些域名的分流规则（例如让公司的专属内网域名或自建网盘强制走直连），但每次机场更新订阅时，本地修改都会被瞬间冲刷消失。Clash Verge Rev 提供的 Merge 配置合并功能完美解决了这一痛点：
+      </p>
+
+      <div class="bg-slate-900 text-slate-100 p-5 rounded-xl space-y-3 font-mono text-xs overflow-x-auto">
+        <div class="text-slate-400 text-xs">// 在 Clash Verge Rev 订阅扩展中新建 Merge 模板示例：</div>
+        <pre class="leading-relaxed">prepend-rules:
+  # 强制公司内部域名或私人自建网盘走直连
+  - DOMAIN-SUFFIX,internal-company.com,DIRECT
+  - DOMAIN-SUFFIX,my-private-nas.net,DIRECT
+  # 强制特定开发学术平台走指定节点组
+  - DOMAIN-SUFFIX,huggingface.co,PROXY
+  - DOMAIN-SUFFIX,openai.com,AI-SERVICES
+  # 拦截常见广告追踪
+  - DOMAIN-KEYWORD,adservice,REJECT</pre>
+      </div>
+
+      <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-200 text-xs text-emerald-900 leading-relaxed">
+        <strong>技术原理：</strong>利用 <code class="bg-emerald-100 px-1 py-0.5 rounded font-mono text-emerald-950">prepend-rules</code> 语法，软件会在每次从机场服务器下载最新配置后，自动将你的自定义规则插入到所有规则的最顶端。由于分流匹配采用“自上而下、命中即退出”的原则，你的规则永远拥有最高的判定优先级，真正做到了一劳永逸。
+      </div>
+    </section>
+
+    <!-- Section 6: Topic Clusters -->
+    <section id="topic-clusters-cvr" class="space-y-6">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark flex items-center gap-2">
+        <span class="w-2 h-6 bg-blue-600 rounded"></span>
+        Clash Verge Rev 三级深度衍生选题矩阵
+      </h2>
+
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        围绕 Clash Verge Rev 这一新一代社区核心利器，机场 Wiki 知识体系规划了以下六大高价值三级深度技术选题：
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
+          <span class="text-xs font-bold text-blue-600">三级选题 01</span>
+          <h3 class="font-bold text-sm text-brand-dark">Clash Verge Rev Service Mode 原理解析</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            深入解构 Windows 提权服务与系统服务守护进程的工作流程，彻底解决休眠断网与驱动加载报错。
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
+          <span class="text-xs font-bold text-blue-600">三级选题 02</span>
+          <h3 class="font-bold text-sm text-brand-dark">JavaScript 扩展脚本编写进阶实战</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            使用纯 JavaScript 动态修改配置节点，实现按国家地区自动正则重命名节点与策略组动态装配。
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
+          <span class="text-xs font-bold text-blue-600">三级选题 03</span>
+          <h3 class="font-bold text-sm text-brand-dark">Mihomo 内核与原版 Clash 核心深度对决</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            从 VLESS Reality 支持、QUIC 握手加速到内存消耗，实测验证为何原版 Clash 已经彻底落后于时代。
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
+          <span class="text-xs font-bold text-blue-600">三级选题 04</span>
+          <h3 class="font-bold text-sm text-brand-dark">Clash Verge Rev 局域网共享代理全攻略</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            如何在局域网开启允许连接，并通过防火墙规则配置为同网段的手机、平板与电视盒子提供无缝代理网关。
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
+          <span class="text-xs font-bold text-blue-600">三级选题 05</span>
+          <h3 class="font-bold text-sm text-brand-dark">DNS Fake-IP 缓存刷新与特定域名异常自救</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            解决特定游戏或特定登录接口在 Fake-IP 模式下报错 403 的疑难杂症，掌握 fake-ip-filter 白名单配置。
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
+          <span class="text-xs font-bold text-blue-600">三级选题 06</span>
+          <h3 class="font-bold text-sm text-brand-dark">macOS 端 Clash Verge Rev 权限放行与优化</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            解决 Mac 苹果系统升级后虚拟网卡无法创建、钥匙串证书警告与 Rosetta 转译等常见故障手册。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 7: FAQ Section -->
+    <section id="faq-section-cvr" class="space-y-6">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark flex items-center gap-2">
+        <span class="w-2 h-6 bg-blue-600 rounded"></span>
+        高频技术疑问与权威解答
+      </h2>
+
+      <div class="space-y-4">
+        {faqs.map((faq) => (
+          <details class="group bg-white p-5 rounded-xl border border-slate-200 [&_summary::-webkit-details-marker]:none">
+            <summary class="flex items-center justify-between cursor-pointer font-bold text-sm sm:text-base text-brand-dark">
+              <span>{faq.q}</span>
+              <span class="ml-4 transition-transform duration-200 group-open:rotate-180 text-blue-600 shrink-0">
+                ▼
+              </span>
+            </summary>
+            <p class="mt-3 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
+              {faq.a}
+            </p>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- Schema FAQ injection -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: faqs.map(f => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: f.a
+        }
+      }))
+    })} />
+  </div>
+</BaseLayout>
