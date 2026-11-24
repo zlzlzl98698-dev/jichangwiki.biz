@@ -4,82 +4,234 @@ import SpeedTestReport from '../../components/observatory/SpeedTestReport.astro'
 import brands from '../../data/published-brands.json';
 
 const breadcrumbs = [
-  { name: '证据与风险', href: '/evidence/' },
+  { name: '证据中心与风险防范', href: '/evidence/' },
 ];
 
 const testedBrands = brands.filter((b) => b.speedHighlights.length > 0);
+
+const evidenceFaq = [
+  {
+    q: '机场跑路前通常有哪些明显的危险征兆？',
+    a: '常见的四大前兆包括：第一，突然推出前所未有的超大折扣（如二折永久套餐或三年付仅需99元）急于短期套现；第二，官方Telegram交流群开启全员禁言，或者管理人员长期不再回应群友提问；第三，网站结账通道频繁更换来路不明的私人二维码；第四，节点大面积超时超过三天，官网却没有任何维护公告。',
+  },
+  {
+    q: '遇到服务商全部节点超时，怎样判断是临时故障还是彻底跑路？',
+    a: '首先不要慌张。检查服务商官网能否正常打开，查看是否有最新的线路抢修公告或更换域名的通知；其次查看官方Telegram频道，如果有公告说明“上游海缆割接”或“机房遭遇DDoS攻击”，通常在几个小时内会恢复；如果官网直接解析失败、客服失联超过48小时且没有任何说明，大概率已被查封或蓄意跑路。',
+  },
+  {
+    q: '为什么说“终身套餐”或“买断制”百分之百是庞氏骗局？',
+    a: '因为网络带宽和专线物理租赁是按月向电信运营商支付的持续固定支出。任何正常的商业实体都不可能凭借用户支付的一次性几十元，持续为你提供三年以上的千兆国际带宽。终身套餐的本质是后面新用户的钱填前面老用户的带宽缺口，一旦新用户增长停滞，崩盘跑路是必然结果。',
+  },
+  {
+    q: '如果不幸遇到机场跑路，用户能通过支付渠道申请退款吗？',
+    a: '现实中极其困难。由于加速服务属于灰色监管地带，绝大多数服务商使用的是个人免签支付接口或海外聚合网关，在微信或支付宝账单中通常显示为普通商贸百货。第三方支付机构通常无法对跨国虚拟商品进行仲裁。因此防范损失的唯一有效手段就是坚决坚持月付。',
+  },
+  {
+    q: '把自己的订阅链接借给朋友使用安全吗？',
+    a: '存在明显的安全与隐私隐患。订阅链接中包含唯一的UUID身份凭据。如果他人不慎将你的链接分享到公开网络，任何爬虫都可以无限制消耗你的流量额度；其次，如果他人使用你的订阅节点从事违规活动，该账号可能会被服务商直接封停且不予退费。',
+  },
+  {
+    q: '本站是如何对 31 家品牌进行中立测试与证据留存的？',
+    a: '我们坚持在晚高峰（20:00–23:00）的真实网络高负载时段，采用标准化自动化脚本进行多线程测速、连续丢包率采样与流媒体解锁探测。所有测速原始截图、时间戳与测试环境均保存在本地数据库中。如果某些品牌缺少测试条件，我们严格标记为“待核实”，绝不伪造虚假数据。',
+  },
+  {
+    q: '某家机场宣称拥有“国家工信部正规审批备案”可信吗？',
+    a: '绝对不可信。面向普通大众提供翻墙突破网络管制的加速服务在我国属于严格违规行为，绝不可能获得工信部的增值电信外网运营许可。凡是宣称自己受官方保护或合法运营的个人机场，全部属于诈骗或虚假宣传。',
+  },
+  {
+    q: '原来的机场倒闭后，如何科学寻找替代品牌？',
+    a: '切忌病急乱投医盲目相信社交网络上的小广告。寻找替代品时应遵循三个原则：第一，选择运营时间三年以上的成熟品牌；第二，必须支持单月付费测试（哪怕单月单价稍贵）；第三，先购买最低档位套餐，在自家宽带的晚高峰时段验证两到三天，确认无误后再作为主力服务。',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: evidenceFaq.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.a,
+      },
+    })),
+  },
+];
 ---
 
 <BaseLayout
-  title="证据中心与数据观测实验室 (2026) - 测速方法论、历史测试日志与风险预警"
-  description="机场 Wiki 证据中心：公开测试方法论、真实测速日志、IP 风控观测记录与服务商经营风险预警，坚持实事求是，杜绝未经证实的跑路谣言。"
+  title="证据中心与运营风险观察室 (2026) - 跑路避坑指南、测速方法论与消费者自保手册"
+  description="机场 Wiki 证据中心：公开晚高峰测速方法论、跑路前兆特征鉴别、终身套餐陷阱、退款维权现实与平滑迁移替代方案指南。"
   breadcrumbs={breadcrumbs}
+  schema={schema}
 >
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
-    <header class="pb-6 border-b border-brand-border">
-      <div class="flex items-center gap-2 mb-2">
-        <span class="px-2.5 py-0.5 text-xs font-semibold rounded bg-slate-200 text-slate-800">
-          证据中心与观测实验室
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+    <!-- Header -->
+    <header class="border-b border-brand-border pb-8">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="px-2.5 py-0.5 text-xs font-semibold rounded bg-rose-100 text-rose-800">
+          证据中心与风险观察室
         </span>
-        <span class="text-xs text-brand-muted">更新日期：2026-11-24</span>
+        <span class="text-xs text-brand-muted">更新日期：2026-11-24 · 实事求是原则</span>
       </div>
-      <h1 class="text-2xl sm:text-3xl font-extrabold text-brand-dark tracking-tight">
-        可溯源证据中心、历史测速档案与行业风险预警
+      <h1 class="text-2xl sm:text-4xl font-extrabold text-brand-dark tracking-tight leading-tight">
+        可溯源证据中心、历史测速档案与行业风险防范
       </h1>
-      <p class="text-sm text-brand-muted mt-2 max-w-3xl leading-relaxed">
+      <p class="text-sm sm:text-base text-brand-muted mt-3 max-w-4xl leading-relaxed">
         本页面汇集本站所有可核验的历史测速原图数据、流媒体检测记录与价格变动日志。所有证据均保留时间戳、测试时段与方法限制说明。在未经法律证实或多方实锤前，不得随意对任何品牌扣上“跑路或欺诈”帽子。
       </p>
+
+      <!-- Answer-First Box -->
+      <div class="mt-6 p-5 rounded-xl bg-rose-50/70 border border-rose-200/80 text-brand-text space-y-3">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-rose-600"></span>
+          <span class="font-bold text-sm text-rose-950">消费者自保核心法则（Answer-First）</span>
+        </div>
+        <p class="text-xs sm:text-sm text-slate-800 leading-relaxed">
+          面对网络加速行业天然存在的监管风险与跑路风险，牢记四条自保军规：第一，<strong>坚决拒绝任何终身套餐与超长年付</strong>，单次付款金额不要超过一顿快餐钱；第二，<strong>专号专用</strong>，注册机场账号使用独立邮箱，密码切勿与网银或私人邮箱相同；第三，<strong>自备备用容灾方案</strong>，主力服务商与备用服务商不要购买同一条专线通道；第四，<strong>保护订阅 Token</strong>，严禁在公开网络泄露个人订阅链接。
+        </p>
+      </div>
     </header>
 
     <!-- Subpage highlight: Refunds & Risks -->
-    <div class="p-5 rounded-xl border border-red-200 bg-red-50/50 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <div class="p-5 rounded-xl border border-red-200 bg-red-50/60 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div>
-        <h3 class="font-bold text-base text-red-950">运营风险与退款纠纷避坑专题</h3>
-        <p class="text-xs text-red-800/80 mt-1">分析机场行业“不支持退款”行规、域名污染应对、主备容灾策略与消费者自保四守则。</p>
+        <h3 class="font-bold text-base text-red-950">专题专栏：运营风险深度观察与退款纠纷规避指南</h3>
+        <p class="text-xs text-red-800/80 mt-1 leading-relaxed">
+          深度剖析机场行业“虚拟商品不支持退款”的行规逻辑、域名被污染时的自救步骤与突发失联应急迁移策略。
+        </p>
       </div>
       <a
         href="/evidence/refunds-and-risks/"
-        class="px-4 py-2 rounded-lg bg-red-700 hover:bg-red-800 text-white font-medium text-xs transition-colors shrink-0"
+        class="px-4 py-2 rounded-lg bg-red-700 hover:bg-red-800 text-white font-semibold text-xs transition-colors shrink-0"
       >
-        查阅风险防范专题 →
+        阅读退款与风险防范专栏 →
       </a>
     </div>
 
-    <!-- Methodology Statement -->
+    <!-- Section 1: 4 Runaway Signals -->
+    <section class="space-y-6">
+      <div class="border-b border-slate-200 pb-3">
+        <h2 class="text-xl font-bold text-brand-dark">服务商停止运营（跑路）的四大典型危险前兆</h2>
+        <p class="text-xs text-brand-muted mt-1">资金链断裂或团队撤退前往往伴随异常的反常操作</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-xs">
+        <div class="p-5 rounded-xl border border-rose-200 bg-white space-y-2">
+          <div class="text-xs font-bold px-2 py-0.5 rounded bg-rose-50 text-rose-700 w-fit">危险前兆 01</div>
+          <h3 class="font-bold text-sm text-brand-dark">反常的超低折扣大倾销</h3>
+          <p class="text-slate-600 leading-relaxed">
+            平日稳定运营的服务商突然全员推送“两折三年付”或“永久买断套餐”。这通常是经营团队知晓上游机房即将断网，企图在最后一刻卷走最后一笔现金流。
+          </p>
+        </div>
+
+        <div class="p-5 rounded-xl border border-rose-200 bg-white space-y-2">
+          <div class="text-xs font-bold px-2 py-0.5 rounded bg-rose-50 text-rose-700 w-fit">危险前兆 02</div>
+          <h3 class="font-bold text-sm text-brand-dark">官方社群全员禁言</h3>
+          <p class="text-slate-600 leading-relaxed">
+            原本活跃的官方Telegram交流群突然开启全体禁言，或者管理人员在几天内完全不回复工单，甚至解散群组只保留只读通知频道。
+          </p>
+        </div>
+
+        <div class="p-5 rounded-xl border border-rose-200 bg-white space-y-2">
+          <div class="text-xs font-bold px-2 py-0.5 rounded bg-rose-50 text-rose-700 w-fit">危险前兆 03</div>
+          <h3 class="font-bold text-sm text-brand-dark">核心专线断连且无公告</h3>
+          <p class="text-slate-600 leading-relaxed">
+            高质量的香港、日本专线大面积飘红超时，服务商客服在48小时内没有任何技术说明，且官网后台无法提交新工单，甚至直接显示数据库连接错误。
+          </p>
+        </div>
+
+        <div class="p-5 rounded-xl border border-rose-200 bg-white space-y-2">
+          <div class="text-xs font-bold px-2 py-0.5 rounded bg-rose-50 text-rose-700 w-fit">危险前兆 04</div>
+          <h3 class="font-bold text-sm text-brand-dark">支付接口频繁跳私人收款</h3>
+          <p class="text-slate-600 leading-relaxed">
+            原本正规的企业聚合收银台突然失效，结账页面变成频繁更换的私人微信转账二维码、或者要求用户向特定虚拟币钱包直接转账。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Methodology Statement -->
     <section class="p-6 rounded-xl border border-brand-border bg-white shadow-2xs space-y-3">
-      <h2 class="text-lg font-bold text-brand-dark">测试方法论与数据可比性说明</h2>
+      <h2 class="text-lg font-bold text-brand-dark">本站科学测试方法论与数据可比性规范</h2>
       <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
-        网络加速受三大物理变量影响：<strong>用户本地运营商宽带（电信/联通/移动/广电）</strong>、<strong>境内入口中转机房调度</strong>、<strong>境外落地节点出口状态</strong>。因此，任何单一测试记录只能代表“特定时间特定地理位置”的物理表现。
+        网络加速受三大物理变量影响：<strong>用户本地运营商宽带</strong>、<strong>境内入口中转机房负载</strong>与<strong>境外落地节点出口状态</strong>。因此，任何单一测试记录只能代表“特定时间特定地理位置”的物理表现。
       </p>
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-xs text-slate-600">
         <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
-          <strong>1. 测试时段标注：</strong>明确区分晚高峰（20:00–23:00）与非晚高峰（白天），未注明时段的记录不纳入高峰对比。
+          <strong>1. 测试时段严格区分：</strong>明确区分晚高峰（20:00–23:00）与非晚高峰（白天），未注明时段的历史记录不纳入稳定性评定。
         </div>
         <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
-          <strong>2. 工具与单位标准：</strong>明确区分 Mbps（兆比特/秒）与 MB/s（兆字节/秒，1 MB/s = 8 Mbps），杜绝数字偷换。
+          <strong>2. 速率单位严谨规范：</strong>严格区分网络传输速率 Mbps（兆比特/秒）与实际下载速度 MB/s（1 MB/s = 8 Mbps），杜绝数字偷换。
         </div>
         <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
-          <strong>3. 缺失字段如实保留：</strong>没有实测数据的品牌一律标记为“未实测”，禁止编造任何虚假图表。
+          <strong>3. 缺失数据如实标注：</strong>没有完成实测的品牌一律在档案中标记为“待核实”，坚决杜绝任何凭空编造的测速图表。
         </div>
       </div>
     </section>
 
     <!-- Speed Reports Collection -->
     <section class="space-y-6">
-      <h2 class="text-xl font-bold text-brand-dark border-b border-slate-200 pb-2">
-        已收录历史测速记录 (前 4 家服务商示例)
-      </h2>
+      <div class="border-b border-slate-200 pb-3">
+        <h2 class="text-xl font-bold text-brand-dark">已收录品牌历史测速数据档案 (前 4 家服务商示例)</h2>
+        <p class="text-xs text-brand-muted mt-0.5">展示各品牌在香港、日本、新加坡、美国核心节点的多线程测速与网络延迟记录</p>
+      </div>
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {testedBrands.slice(0, 4).map((b) => (
           <SpeedTestReport
             brandName={b.name}
             testDate="2026-10-19"
-            testWindow="提供方历史非晚高峰测试"
+            testWindow="官方提供历史基准测试"
             nodes={b.speedHighlights}
             dataStatus={b.dataStatus}
           />
         ))}
       </div>
     </section>
+
+    <!-- FAQ Section -->
+    <section class="space-y-4">
+      <div class="border-b border-slate-200 pb-3">
+        <h2 class="text-xl font-bold text-brand-dark">运营风险与数据证据常见问答 (FAQ)</h2>
+        <p class="text-xs text-brand-muted mt-1">解答关于跑路鉴别、退款纠纷、数据真实性与自保原则的关键疑问</p>
+      </div>
+
+      <div class="space-y-3">
+        {evidenceFaq.map((item, index) => (
+          <details class="group border border-slate-200 rounded-xl bg-white p-4 transition-colors hover:border-slate-300">
+            <summary class="flex items-center justify-between cursor-pointer font-semibold text-xs sm:text-sm text-brand-dark select-none">
+              <span class="flex items-center gap-2">
+                <span class="text-rose-600 font-mono text-xs">Q{index + 1}.</span>
+                {item.q}
+              </span>
+              <span class="text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+            </summary>
+            <p class="mt-3 text-xs sm:text-sm text-slate-600 leading-relaxed pl-6 border-t border-slate-100 pt-3">
+              {item.a}
+            </p>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- Footer Interlinks -->
+    <footer class="pt-8 border-t border-brand-border space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-3 text-xs text-brand-muted">
+        <div>
+          <span>专题交叉穿透：</span>
+          <a href="/evidence/refunds-and-risks/" class="text-brand-link hover:underline font-medium ml-1">退款政策与跑路防范专栏</a>
+          <span class="mx-1.5 text-slate-300">·</span>
+          <a href="/pricing/" class="text-brand-link hover:underline font-medium">套餐价格与真实成本</a>
+          <span class="mx-1.5 text-slate-300">·</span>
+          <a href="/recommend/" class="text-brand-link hover:underline font-medium">靠谱加速服务推荐</a>
+          <span class="mx-1.5 text-slate-300">·</span>
+          <a href="/corrections/" class="text-brand-link hover:underline font-medium">提交事实勘误</a>
+        </div>
+        <a href="/brands/" class="text-brand-link font-semibold hover:underline">
+          查阅 31 家品牌实体完整资料库 →
+        </a>
+      </div>
+    </footer>
   </div>
 </BaseLayout>

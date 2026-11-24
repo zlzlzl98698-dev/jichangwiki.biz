@@ -3,7 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import clients from '../../data/published-clients.json';
 
 const breadcrumbs = [
-  { name: '客户端', href: '/clients/' },
+  { name: '客户端软件', href: '/clients/' },
 ];
 
 const osCategories = [
@@ -14,59 +14,170 @@ const osCategories = [
   { id: 'linux', name: 'Linux 桌面/服务器', icon: '🐧', count: clients.filter((c) => c.osCategory === 'linux').length },
   { id: 'router', name: 'OpenWrt / 软路由', icon: '📡', count: clients.filter((c) => c.osCategory === 'router').length },
 ];
+
+const clientsFaq = [
+  {
+    q: '为什么说图形客户端和内核引擎不是一回事？',
+    a: '用户在屏幕上看到的界面（如Clash Verge Rev或v2rayN）属于图形交互外壳（GUI），主要负责下载订阅、呈现节点开关和图表；而真正负责解析网络数据包、执行加密解密和规则分流的是后台的内核程序（如Mihomo、Xray-core或sing-box）。了解二者的区别有助于在遇到连接异常时精准定位是软件报错还是内核崩溃。',
+  },
+  {
+    q: '什么是规则分流（Rule Mode）？与全局代理有什么不同？',
+    a: '规则分流是现代代理的核心技术。它通过预置的上万条域名和IP规则库，自动识别用户的访问请求：访问百度、淘宝等国内服务时直接由本地宽带直连，保证低延迟且不消耗订阅流量；只有访问Google、YouTube等境外目标时才通过代理节点传输。全局模式则会把所有流量强行通过代理，导致访问国内网站变得极慢。',
+  },
+  {
+    q: '什么是TUN模式？什么时候必须开启TUN模式？',
+    a: '传统的系统代理只能接管主动遵循系统HTTP/SOCKS5代理设置的浏览器软件，对于很多不走系统代理的命令行工具、桌面游戏、跨国网银客户端或第三方通信软件无效。开启TUN模式后，客户端会在操作系统中虚拟出一张物理网卡，在网络层强制拦截所有进出数据包，实现真正意义上的全流量代理。',
+  },
+  {
+    q: 'iOS系统上的小火箭（Shadowrocket）怎么下载？为什么中国区App Store搜不到？',
+    a: '受地区应用商店政策限制，所有网络代理类工具均已在中国大陆区App Store下架。用户需要注册或购买一个免税区（如美区或港区）的Apple ID，登录App Store后搜索Shadowrocket并支付2.99美元购买正版安装。切记不要在手机的“设置”中登录他人Apple ID，只需在App Store中切换账户即可。',
+  },
+  {
+    q: 'Fake-IP模式与Redir-Host模式有什么区别？',
+    a: '在DNS分流设置中，Redir-Host会先尝试在本地向远程解析域名的真实IP，容易导致DNS污染或解析延迟；Fake-IP则会在本地直接返回一个198.18.x.x的虚拟假IP给应用程序并立刻建立TCP连接，将真实的域名交给远端节点去解析，这样能把网页首次打开的延迟缩短数十毫秒，是目前主流推荐的模式。',
+  },
+  {
+    q: '从网上下载第三方破解版Clash有什么安全隐患？',
+    a: '极为危险。由于代理客户端需要在操作系统中安装系统服务或虚拟网卡驱动，拥有极高的系统权限。黑客经常在打包被篡改的客户端中嵌入键盘记录木马或挖矿程序。下载开源客户端务必认准官方GitHub Releases仓库，并校对SHA256哈希校验和。',
+  },
+  {
+    q: '为什么电脑端开启代理后系统托盘显示连接成功，但网页仍然无法打开？',
+    a: '最常见的原因有三个：第一，操作系统系统代理开关未被成功激活，或被其他残留安全卫士强行重置；第二，电脑系统时间与互联网真实标准时间误差超过90秒，导致VMess/VLESS时间戳握手校验失败；第三，订阅节点本身已经过期或被服务商注销。',
+  },
+  {
+    q: 'Clash系列目前最推荐哪一款衍生客户端？',
+    a: '在原版Clash Premium停更后，目前全平台最主流、维护最活跃的是 Clash Verge Rev。它基于Tauri框架构建，内存占用轻量，原生搭载支持新协议与新分流语法的Mihomo（Clash Meta）内核，对中文界面和暗色模式支持良好。',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: clientsFaq.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.a,
+      },
+    })),
+  },
+];
 ---
 
 <BaseLayout
-  title="2026 机场代理客户端大全 - 全平台官方下载地址、内核解析与配置教程"
-  description="收录 Windows、macOS、Android、iOS、Linux、OpenWrt 全平台主流代理客户端：包含 Clash Verge Rev、v2rayN、Shadowrocket、sing-box 等开源与官方正版获取指引。"
+  title="2026 机场代理客户端大全 - 全平台官方正版下载、内核解析与配置指南"
+  description="收录 Windows、macOS、Android、iOS、Linux、OpenWrt 全平台主流代理客户端：包含 Clash Verge Rev、v2rayN、Shadowrocket、sing-box 官方正版指引与选型矩阵。"
   breadcrumbs={breadcrumbs}
+  schema={schema}
 >
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
-    <header class="pb-6 border-b border-brand-border">
-      <div class="flex items-center gap-2 mb-2">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+    <!-- Header -->
+    <header class="border-b border-brand-border pb-8">
+      <div class="flex items-center gap-2 mb-3">
         <span class="px-2.5 py-0.5 text-xs font-semibold rounded bg-purple-100 text-purple-800">
           客户端软件档案库
         </span>
-        <span class="text-xs text-brand-muted">更新日期：2026-11-24</span>
+        <span class="text-xs text-brand-muted">更新日期：2026-11-24 · 开源正版核查</span>
       </div>
-      <h1 class="text-2xl sm:text-3xl font-extrabold text-brand-dark tracking-tight">
-        2026 机场代理客户端大全与系统选型指南
+      <h1 class="text-2xl sm:text-4xl font-extrabold text-brand-dark tracking-tight leading-tight">
+        2026 跨平台网络代理客户端大全与选型指南
       </h1>
-      <p class="text-sm text-brand-muted mt-2 max-w-3xl leading-relaxed">
-        代理客户端是连接网络加速节点与用户本地应用的核心桥梁。主要分为两种模式：<strong>第三方通用客户端</strong>（支持导入 Clash/Shadowrocket 订阅）与<strong>服务商专属客户端</strong>（账号一键登录免配置）。
+      <p class="text-sm sm:text-base text-brand-muted mt-3 max-w-4xl leading-relaxed">
+        客户端是连接网络加速节点与用户本地操作系统、浏览器的核心桥梁。本专题梳理主流开源客户端与服务商专属客户端的架构差异，提供覆盖各大操作系统的可靠选型矩阵与防钓鱼正规下载入口。
       </p>
+
+      <!-- Answer-First Box -->
+      <div class="mt-6 p-5 rounded-xl bg-purple-50/70 border border-purple-200/80 text-brand-text space-y-3">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-purple-600"></span>
+          <span class="font-bold text-sm text-purple-950">客户端选型核心结论（Answer-First）</span>
+        </div>
+        <p class="text-xs sm:text-sm text-slate-800 leading-relaxed">
+          各平台当前最佳主力客户端推荐：<strong>Windows 平台首选 Clash Verge Rev</strong>（Mihomo内核，UI现代，支持TUN网卡）；<strong>Android 平台首选 v2rayNG 或 Clash Meta for Android</strong>（省电保活优秀，支持分应用代理）；<strong>iOS/iPadOS 平台首选 Shadowrocket 小火箭</strong>（美区仅需2.99美元，生态成熟稳定）；<strong>macOS 平台首选 Clash Verge Rev 或 Sing-box</strong>；所有工具必须从官方正规 GitHub Releases 仓库或 App Store 获取，切勿安装第三方网盘汉化破解包。
+        </p>
+      </div>
     </header>
 
     <!-- OS Navigation Grid -->
-    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-      {osCategories.map((os) => (
-        <a
-          href={`#${os.id}`}
-          class="p-3.5 rounded-xl border border-slate-200 bg-white hover:border-brand-link hover:shadow-xs transition-all text-center block"
-        >
-          <div class="text-2xl mb-1">{os.icon}</div>
-          <div class="font-bold text-xs text-brand-dark">{os.name}</div>
-          <div class="text-[10px] text-slate-400 mt-0.5">{os.count} 款推荐软件</div>
-        </a>
-      ))}
+    <section class="space-y-3">
+      <div class="text-xs font-bold text-slate-500 uppercase tracking-wider">快捷跳转按操作系统分类：</div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+        {osCategories.map((os) => (
+          <a
+            href={`#${os.id}`}
+            class="p-3.5 rounded-xl border border-slate-200 bg-white hover:border-brand-link hover:shadow-xs transition-all text-center block"
+          >
+            <div class="text-2xl mb-1">{os.icon}</div>
+            <div class="font-bold text-xs text-brand-dark">{os.name}</div>
+            <div class="text-[10px] text-slate-400 mt-0.5">{os.count} 款推荐软件</div>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Security Warning Alert -->
+    <div class="p-4 rounded-xl border border-rose-200 bg-rose-50/60 text-xs text-rose-900 leading-relaxed flex items-start gap-3">
+      <span class="text-lg">🚨</span>
+      <div>
+        <strong class="font-bold block mb-0.5">开源正版安全红线：</strong>
+        代理客户端属于底层网络核心组件，拥有接管系统流量与创建虚拟网卡的高级权限。请认准官方开源仓库代码与已签名发行版，严禁使用非官方第三方论坛或网盘分享的“去广告绿色集成版”，防止遭遇键盘记录与私钥窃取。
+      </div>
     </div>
 
-    <!-- Notice on security -->
-    <div class="p-4 rounded-xl border border-rose-200 bg-rose-50/60 text-xs text-rose-900 leading-relaxed">
-      <strong class="font-bold block mb-1">🚨 安全下载原则：</strong>
-      本站所有第三方开源客户端仅提供官方 GitHub Releases 或应用商店正版链接。严禁从不知名第三方网盘下载来路不明的二次打包安装包（部分被恶意植入挖矿或远控木马）。
-    </div>
+    <!-- Section 1: Architecture Deep-Dive (GUI vs Core) -->
+    <section class="space-y-6">
+      <div class="border-b border-slate-200 pb-3">
+        <h2 class="text-xl font-bold text-brand-dark">客户端底层架构全景：外壳与内核的分工协作</h2>
+        <p class="text-xs text-brand-muted mt-1">明白从订阅链接到本地网页渲染背后的四步网络流转流程</p>
+      </div>
 
-    <!-- Clients List by OS -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2">
+          <div class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold font-mono">1</div>
+          <h3 class="font-bold text-sm text-brand-dark">订阅拉取与解析</h3>
+          <p class="text-slate-600 leading-relaxed">
+            客户端通过HTTPS从服务商用户中心下载节点列表文件（YAML或Base64编码），在本地还原出IP、端口、协议类型与加密密码。
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2">
+          <div class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold font-mono">2</div>
+          <h3 class="font-bold text-sm text-brand-dark">本地流量智能劫持</h3>
+          <p class="text-slate-600 leading-relaxed">
+            通过修改Windows系统代理设置（写入注册表）或创建虚拟网卡（TUN模式），将本地浏览器与软件的外出请求引流至本地监听端口。
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2">
+          <div class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold font-mono">3</div>
+          <h3 class="font-bold text-sm text-brand-dark">规则分流引擎决策</h3>
+          <p class="text-slate-600 leading-relaxed">
+            内核比对分流规则集：如果访问国内域名（如.cn或本地IP），直接放行直连；如果是命中黑名单的海外域名，打上代理标签并转交出站模块。
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2">
+          <div class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold font-mono">4</div>
+          <h3 class="font-bold text-sm text-brand-dark">加密封装与跨境传输</h3>
+          <p class="text-slate-600 leading-relaxed">
+            使用VLESS或Shadowsocks协议对原始数据包执行TLS伪装与加密计算，经由国内入口节点与专线平稳发送至海外目标机房。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Clients by OS Grid -->
     <section class="space-y-12">
       <!-- Windows Section -->
       <div id="windows" class="space-y-4">
         <div class="flex items-center justify-between pb-2 border-b border-slate-200">
           <h2 class="text-xl font-bold text-brand-dark flex items-center gap-2">
-            <span>🪟</span> Windows 电脑客户端推荐
+            <span>🪟</span> Windows 平台主流客户端
           </h2>
           <a href="/clients/windows/" class="text-xs text-brand-link font-medium hover:underline">
-            进入 Windows 专栏与配置教程 →
+            进入 Windows 专栏与配置步骤 →
           </a>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -82,27 +193,22 @@ const osCategories = [
                 <p class="text-xs text-slate-600 leading-relaxed mb-3">
                   {client.suitableFor}
                 </p>
-                <div class="space-y-1 text-xs text-slate-500">
-                  {client.features.slice(0, 3).map((f) => (
-                    <div class="flex items-center gap-1.5">
-                      <span class="w-1 h-1 rounded-full bg-slate-400"></span>
-                      <span>{f}</span>
-                    </div>
-                  ))}
+                <div class="flex flex-wrap gap-1 text-[11px] text-slate-500">
+                  <span class="px-1.5 py-0.5 rounded bg-slate-100">{client.features.slice(0, 2).join(' · ')}</span>
+                  <span class="px-1.5 py-0.5 rounded bg-slate-100">{client.license}</span>
                 </div>
               </div>
-              <div class="pt-3 border-t border-slate-100 text-xs">
+              <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span class="text-slate-400">状态：{client.maintenanceStatus === 'active' ? '持续维护' : '稳定归档'}</span>
                 {client.repoUrl && (
                   <a
                     href={client.repoUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="text-brand-link font-medium hover:underline inline-flex items-center gap-1"
+                    class="text-brand-link font-medium hover:underline flex items-center gap-1"
                   >
-                    <span>官方 GitHub 项目主页</span>
-                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                    </svg>
+                    <span>官方发布页</span>
+                    <span>↗</span>
                   </a>
                 )}
               </div>
@@ -115,62 +221,85 @@ const osCategories = [
       <div id="ios" class="space-y-4">
         <div class="flex items-center justify-between pb-2 border-b border-slate-200">
           <h2 class="text-xl font-bold text-brand-dark flex items-center gap-2">
-            <span>🍎</span> iPhone / iPad 苹果客户端推荐
+            <span>🍎</span> iOS / iPadOS 平台主流客户端
           </h2>
           <a href="/clients/ios/" class="text-xs text-brand-link font-medium hover:underline">
-            进入 iOS 小火箭与 Stash 专栏 →
+            进入 iOS 小火箭使用专栏 →
           </a>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           {clients.filter((c) => c.osCategory === 'ios').map((client) => (
             <div class="p-5 rounded-xl border border-slate-200 bg-white shadow-2xs space-y-3 flex flex-col justify-between">
               <div>
                 <div class="flex items-center justify-between mb-2">
                   <h3 class="font-bold text-base text-brand-dark">{client.name}</h3>
                   <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-purple-50 text-purple-700 border border-purple-100">
-                    App Store 付费应用
+                    {client.coreEngine}
                   </span>
                 </div>
                 <p class="text-xs text-slate-600 leading-relaxed mb-3">
                   {client.suitableFor}
                 </p>
-                <div class="text-xs text-slate-500 space-y-1">
-                  <div><strong>获取方式：</strong>{client.downloadGuide}</div>
+                <div class="flex flex-wrap gap-1 text-[11px] text-slate-500">
+                  <span class="px-1.5 py-0.5 rounded bg-slate-100">{client.license}</span>
+                  <span class="px-1.5 py-0.5 rounded bg-slate-100">需要外区 Apple ID</span>
                 </div>
+              </div>
+              <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span class="text-slate-400">状态：{client.maintenanceStatus === 'active' ? '持续维护' : '稳定归档'}</span>
+                {client.repoUrl && (
+                  <a
+                    href={client.repoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-brand-link font-medium hover:underline flex items-center gap-1"
+                  >
+                    <span>App Store 正版</span>
+                    <span>↗</span>
+                  </a>
+                )}
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      <!-- Android & Router Section -->
+      <!-- Android Section -->
       <div id="android" class="space-y-4">
-        <h2 class="text-xl font-bold text-brand-dark flex items-center gap-2 pb-2 border-b border-slate-200">
-          <span>🤖</span> Android 安卓 & 软路由精选客户端
-        </h2>
+        <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+          <h2 class="text-xl font-bold text-brand-dark flex items-center gap-2">
+            <span>🤖</span> Android 安卓平台主流客户端
+          </h2>
+        </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {clients.filter((c) => c.osCategory === 'android' || c.osCategory === 'router').map((client) => (
+          {clients.filter((c) => c.osCategory === 'android').map((client) => (
             <div class="p-5 rounded-xl border border-slate-200 bg-white shadow-2xs space-y-3 flex flex-col justify-between">
               <div>
                 <div class="flex items-center justify-between mb-2">
                   <h3 class="font-bold text-base text-brand-dark">{client.name}</h3>
-                  <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-green-50 text-green-700 border border-green-100">
-                    {client.osCategory === 'router' ? '软路由 / OpenWrt' : 'Android'}
+                  <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-100">
+                    {client.coreEngine}
                   </span>
                 </div>
                 <p class="text-xs text-slate-600 leading-relaxed mb-3">
                   {client.suitableFor}
                 </p>
+                <div class="flex flex-wrap gap-1 text-[11px] text-slate-500">
+                  <span class="px-1.5 py-0.5 rounded bg-slate-100">{client.license}</span>
+                  <span class="px-1.5 py-0.5 rounded bg-slate-100">支持应用级分流</span>
+                </div>
               </div>
-              <div class="pt-3 border-t border-slate-100 text-xs">
+              <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span class="text-slate-400">状态：{client.maintenanceStatus === 'active' ? '持续维护' : '稳定归档'}</span>
                 {client.repoUrl && (
                   <a
                     href={client.repoUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="text-brand-link font-medium hover:underline inline-flex items-center gap-1"
+                    class="text-brand-link font-medium hover:underline flex items-center gap-1"
                   >
-                    <span>项目开源地址 →</span>
+                    <span>GitHub 发行版</span>
+                    <span>↗</span>
                   </a>
                 )}
               </div>
@@ -179,5 +308,49 @@ const osCategories = [
         </div>
       </div>
     </section>
+
+    <!-- Section 3: Comprehensive FAQ -->
+    <section class="space-y-4 pt-6 border-t border-slate-200">
+      <div class="border-b border-slate-200 pb-3">
+        <h2 class="text-xl font-bold text-brand-dark">客户端软件常见疑问 (FAQ)</h2>
+        <p class="text-xs text-brand-muted mt-1">解答关于安装排障、分流模式与内核选择的核心疑问</p>
+      </div>
+
+      <div class="space-y-3">
+        {clientsFaq.map((item, index) => (
+          <details class="group border border-slate-200 rounded-xl bg-white p-4 transition-colors hover:border-slate-300">
+            <summary class="flex items-center justify-between cursor-pointer font-semibold text-xs sm:text-sm text-brand-dark select-none">
+              <span class="flex items-center gap-2">
+                <span class="text-purple-600 font-mono text-xs">Q{index + 1}.</span>
+                {item.q}
+              </span>
+              <span class="text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+            </summary>
+            <p class="mt-3 text-xs sm:text-sm text-slate-600 leading-relaxed pl-6 border-t border-slate-100 pt-3">
+              {item.a}
+            </p>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- Footer Interlinks -->
+    <footer class="pt-8 border-t border-brand-border space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-3 text-xs text-brand-muted">
+        <div>
+          <span>专题交叉穿透：</span>
+          <a href="/guides/" class="text-brand-link hover:underline font-medium ml-1">订阅导入实操教程</a>
+          <span class="mx-1.5 text-slate-300">·</span>
+          <a href="/guides/node-timeout-troubleshooting/" class="text-brand-link hover:underline font-medium">节点超时排查手册</a>
+          <span class="mx-1.5 text-slate-300">·</span>
+          <a href="/vpn/" class="text-brand-link hover:underline font-medium">VPN与代理区别辨析</a>
+          <span class="mx-1.5 text-slate-300">·</span>
+          <a href="/recommend/" class="text-brand-link hover:underline font-medium">靠谱加速服务推荐</a>
+        </div>
+        <a href="/brands/" class="text-brand-link font-semibold hover:underline">
+          查阅 31 家品牌客户端支持模式 →
+        </a>
+      </div>
+    </footer>
   </div>
 </BaseLayout>

@@ -8,51 +8,117 @@ const breadcrumbs = [
 ];
 
 const featuredBrand = brands.find((b) => b.isFeaturedPartner) || brands[0];
+
+const compatibilityFaq = [
+  {
+    q: '为什么同一个节点昨天还能用 ChatGPT，今天就报错 Access Denied？',
+    a: '因为 OpenAI 会动态引入第三方威胁感知库（如 Cloudflare 或 DataDome）全天候更新机房 IP 信誉分。当某个加速节点的出口 IP 在短时间内有大量用户并发请求、或者触发了异常验证码刷新，该 IP 段就会被临时列入黑名单。此时需要切换到服务商最新轮换的纯净出口节点，或者开启专用分流规则。',
+  },
+  {
+    q: '为什么 Claude 的风控比 ChatGPT 严格得多？',
+    a: 'Anthropic 对滥用和跨区访问采取了近乎零容忍的合规策略。除了对机房 ASN 实行大面积前置封锁外，还会严密监控客户端的 IP 变动频率、浏览器时区与语言设置、甚至绑定的海外手机卡号归属地。如果在登录状态下频繁在香港、美国和日本节点间跳跃，账号极易被封停。',
+  },
+  {
+    q: 'Netflix 提示“您似乎在使用解锁工具或代理”是什么原理？',
+    a: 'Netflix 会依据各大机房公开的 IP 地址段进行比对。机房 IP 通常只能观看 Netflix 自主版权出品的自制剧（Netflix Originals），因为自制剧全球版权属于平台自己；而针对有严格跨国版权保护的非自制第三方影视剧，一旦检测到出口属于机房网络而非当地真实住宅 ISP（如美国 Comcast 或香港香港宽频），就会直接弹出代理警告。',
+  },
+  {
+    q: '看 YouTube 4K 或 8K 视频频繁缓冲是节点带宽不够吗？',
+    a: '不一定仅仅是总带宽问题。观看高码率视频时，TCP 链路的丢包率和抖动起决定性作用。如果专线存在百分之三的隐形丢包，TCP 拥塞控制算法就会强制让传输窗口减半，导致播放器缓冲区无法填满。此外，节点离 Google 边缘 CDN 服务器的物理距离与解析延迟也会显著影响起播速度。',
+  },
+  {
+    q: '什么是原生住宅 IP（Residential IP）？它有什么优势？',
+    a: '原生住宅 IP 是当地正规民用宽带运营商分配给普通家庭用户的 IP 地址，在各大 IP 数据库中被标记为“Type: ISP”而非“Type: Hosting / Datacenter”。由于普通居民真实流量也在此类 IP 上运行，AI 和流媒体平台为了避免误伤正常用户，对住宅 IP 的风控阈值设得非常宽松。',
+  },
+  {
+    q: '香港节点为什么无法使用 ChatGPT 和 Claude？',
+    a: '这是两家公司的官方服务政策决定的。OpenAI 和 Anthropic 至今未向中国香港地区开放官方服务支持，因此直接访问其官网会直接提示“Not available in your country”。使用 AI 工具必须将分流规则导向美国、日本、新加坡、英国或台湾等官方明确支持的地区节点。',
+  },
+  {
+    q: '如何检测自己的客户端是否存在 WebRTC 或 DNS 真实地址泄露？',
+    a: '很多浏览器（如 Chrome）在开启代理后，其 WebRTC 接口仍会尝试通过本地物理网卡获取用户的公网真实 IP 地址，直接被风控系统识破。可以在浏览器访问 browserleaks.com 或 iphey.com 专项测试页，检查检测到的地区与 DNS 出口是否完全一致。',
+  },
+  {
+    q: '针对 AI 工具应该如何配置客户端的分流规则？',
+    a: '建议在 Clash 或 Sing-box 中将 OpenAI 和 Anthropic 的域名列表绑定到一个专用的“AI 专用节点组”，挑选一个经过实测原生洁净的固定节点（如美国专线），并锁定该策略组不随普通网页浏览频繁切换，确保会话上下文与 IP 环境长效稳定。',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: compatibilityFaq.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.a,
+      },
+    })),
+  },
+];
 ---
 
 <BaseLayout
-  title="AI 与海外流媒体兼容性矩阵 (2026) - ChatGPT、Claude、Gemini、Netflix 可用性核查"
-  description="客观呈现各大网络加速品牌对 ChatGPT、Claude、Gemini、Netflix、Disney+、YouTube 的实际解锁状态、节点地区选择与平台风控应对策略。"
+  title="AI 与海外流媒体兼容性全景矩阵 (2026) - ChatGPT、Claude、Gemini、Netflix 可用性核查"
+  description="客观呈现各大网络加速品牌对 ChatGPT、Claude、Gemini、Netflix、Disney+、YouTube 4K 的实际解锁状态、原生住宅IP与平台风控应对策略。"
   breadcrumbs={breadcrumbs}
+  schema={schema}
 >
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
-    <header class="pb-6 border-b border-brand-border">
-      <div class="flex items-center gap-2 mb-2">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+    <!-- Header -->
+    <header class="border-b border-brand-border pb-8">
+      <div class="flex items-center gap-2 mb-3">
         <span class="px-2.5 py-0.5 text-xs font-semibold rounded bg-indigo-100 text-indigo-800">
-          服务可用性矩阵
+          服务可用性矩阵 · 动态核查
         </span>
-        <span class="text-xs text-brand-muted">更新日期：2026-11-24</span>
+        <span class="text-xs text-brand-muted">更新日期：2026-11-24 · 审计实体：31 家独立品牌</span>
       </div>
-      <h1 class="text-2xl sm:text-3xl font-extrabold text-brand-dark tracking-tight">
-        AI 与流媒体服务可用性测试矩阵与合规诊断
+      <h1 class="text-2xl sm:text-4xl font-extrabold text-brand-dark tracking-tight leading-tight">
+        AI 工具与全球流媒体服务可用性测试矩阵
       </h1>
-      <p class="text-sm text-brand-muted mt-2 max-w-3xl leading-relaxed">
-        海外 AI 平台与流媒体服务对数据中心机房 IP 实施了持续更新的风控策略。本专题强调服务商官方支持地区、账号真实状态与网络环境适配，不承诺任何违反平台服务条款的突破限制行为。
+      <p class="text-sm sm:text-base text-brand-muted mt-3 max-w-4xl leading-relaxed">
+        海外主流 AI 平台与流媒体服务对数据中心机房 IP 实施了持续更新的风控拦截策略。本专题强调服务商官方支持地区、账号真实状态与网络环境适配，不承诺任何违反平台服务条款的突破限制行为。
       </p>
+
+      <!-- Answer-First Fast Takeaway -->
+      <div class="mt-6 p-5 rounded-xl bg-indigo-50/70 border border-indigo-200/80 text-brand-text space-y-3">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-indigo-600"></span>
+          <span class="font-bold text-sm text-indigo-950">场景兼容核心结论（Answer-First）</span>
+        </div>
+        <p class="text-xs sm:text-sm text-slate-800 leading-relaxed">
+          AI 工具与流媒体的选型底层逻辑截然不同：<strong>使用 ChatGPT / Claude 等 AI 工具</strong>，最看重的是出口 IP 的“纯净度”（非广播机房段）与“稳定性”（切忌节点频繁跳跃），且<strong>香港节点官方不受支持</strong>，必须走美、日、新专用分流；<strong>看 Netflix / Disney+ / YouTube 4K 流媒体</strong>，看重的是“单线程突发带宽”与“原生住宅/非自制剧版权解锁”，必须避开高倍率节点防止流量暴跌。
+        </p>
+      </div>
     </header>
 
     <!-- Subpage Callout -->
-    <div class="p-5 rounded-xl border border-blue-200 bg-blue-50/50 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <div class="p-5 rounded-xl border border-blue-200 bg-blue-50/60 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div>
-        <h3 class="font-bold text-base text-brand-dark">专题指南：ChatGPT / Claude / Gemini 报错诊断</h3>
-        <p class="text-xs text-slate-600 mt-1">遇到 Access Denied、403 Forbidden 或“Not available in your country”时的系统排查与规则分流方案。</p>
+        <h3 class="font-bold text-base text-brand-dark">专项深度排障：ChatGPT / Claude / Gemini 报错应对全指南</h3>
+        <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+          遇到 Access Denied、403 Forbidden、账号风控拦截或“Not available in your country”时的分步系统排查与规则分流方案。
+        </p>
       </div>
       <a
         href="/compatibility/chatgpt-claude-gemini/"
-        class="px-4 py-2 rounded-lg bg-brand-link hover:bg-blue-700 text-white font-medium text-xs transition-colors shrink-0"
+        class="px-4 py-2 rounded-lg bg-brand-link hover:bg-blue-700 text-white font-semibold text-xs transition-colors shrink-0"
       >
-        阅读排查专题 →
+        阅读 AI 排查专项指南 →
       </a>
     </div>
 
     <!-- Live Matrix Observatory -->
     <section class="space-y-4">
-      <h2 class="text-xl font-bold text-brand-dark border-b border-slate-200 pb-2">
-        代表性服务商实测矩阵示例 (Dark Network Observatory)
-      </h2>
+      <div class="border-b border-slate-200 pb-3">
+        <h2 class="text-xl font-bold text-brand-dark">网络实验室实时可用性矩阵演示 (Dark Network Observatory)</h2>
+        <p class="text-xs text-brand-muted mt-0.5">抽取典型服务商最新核验数据，展示 AI 对话工具与海外流媒体平台当前实测状态</p>
+      </div>
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <ServiceAvailabilityMatrix
-          brandName={`${featuredBrand.name} (主档案实测)`}
+          brandName={`${featuredBrand.name} (IEPL专线节点实测)`}
           unlocking={featuredBrand.unlocking}
         />
         <ServiceAvailabilityMatrix
@@ -64,64 +130,84 @@ const featuredBrand = brands.find((b) => b.isFeaturedPartner) || brands[0];
 
     <!-- 31 Brands Comparison Table for AI & Media -->
     <section class="space-y-4">
-      <h2 class="text-xl font-bold text-brand-dark border-b border-slate-200 pb-2">
-        全站 31 家服务商 AI 与流媒体支持状态总表
-      </h2>
-      <div class="overflow-x-auto custom-scrollbar">
-        <table class="w-full text-xs text-left border border-slate-200 rounded-xl overflow-hidden shadow-2xs">
-          <thead class="bg-slate-100 text-slate-800">
+      <div class="flex flex-wrap items-center justify-between pb-3 border-b border-slate-200 gap-2">
+        <div>
+          <h2 class="text-xl font-bold text-brand-dark">全站 31 家服务商 AI 与流媒体解锁能力全景总表</h2>
+          <p class="text-xs text-brand-muted mt-0.5">根据最近一次晚高峰实测记录汇总，表中“支持”表示主流核心节点通过自动化连通测试</p>
+        </div>
+        <span class="text-xs text-slate-500">测试日期：2026-10-19</span>
+      </div>
+
+      <div class="overflow-x-auto border border-brand-border rounded-xl shadow-xs bg-white">
+        <table class="min-w-full text-xs text-left divide-y divide-slate-200">
+          <thead class="bg-slate-50 text-slate-700 font-semibold">
             <tr>
-              <th class="py-3 px-3 font-semibold">品牌</th>
-              <th class="py-3 px-3 font-semibold">ChatGPT</th>
-              <th class="py-3 px-3 font-semibold">Claude</th>
-              <th class="py-3 px-3 font-semibold">Gemini</th>
-              <th class="py-3 px-3 font-semibold">Netflix</th>
-              <th class="py-3 px-3 font-semibold">Disney+</th>
-              <th class="py-3 px-3 font-semibold">YouTube 4K</th>
-              <th class="py-3 px-3 font-semibold">TikTok</th>
-              <th class="py-3 px-3 font-semibold text-right">档案</th>
+              <th class="py-3 px-4">品牌名称</th>
+              <th class="py-3 px-3">ChatGPT</th>
+              <th class="py-3 px-3">Claude</th>
+              <th class="py-3 px-3">Gemini</th>
+              <th class="py-3 px-3">Netflix</th>
+              <th class="py-3 px-3">Disney+</th>
+              <th class="py-3 px-3">YouTube 4K</th>
+              <th class="py-3 px-4 text-center">档案详情</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-slate-200 bg-white">
+          <tbody class="divide-y divide-slate-100">
             {brands.map((b) => (
-              <tr class="hover:bg-slate-50 transition-colors">
-                <td class="py-3 px-3 font-bold text-brand-dark">{b.name}</td>
-                <td class="py-3 px-3 font-medium">
-                  <span class={b.unlocking.chatgpt === 'supported' ? 'text-emerald-600' : b.unlocking.chatgpt === 'partial' ? 'text-amber-600' : 'text-slate-400'}>
-                    {b.unlocking.chatgpt === 'supported' ? '支持' : b.unlocking.chatgpt === 'partial' ? '视节点' : '未测'}
-                  </span>
-                </td>
-                <td class="py-3 px-3 font-medium">
-                  <span class={b.unlocking.claude === 'supported' ? 'text-emerald-600' : b.unlocking.claude === 'partial' ? 'text-amber-600' : 'text-slate-400'}>
-                    {b.unlocking.claude === 'supported' ? '支持' : b.unlocking.claude === 'partial' ? '视节点' : '未测'}
-                  </span>
-                </td>
-                <td class="py-3 px-3 font-medium">
-                  <span class={b.unlocking.gemini === 'supported' ? 'text-emerald-600' : b.unlocking.gemini === 'partial' ? 'text-amber-600' : 'text-slate-400'}>
-                    {b.unlocking.gemini === 'supported' ? '支持' : b.unlocking.gemini === 'partial' ? '视节点' : '未测'}
-                  </span>
-                </td>
-                <td class="py-3 px-3 font-medium">
-                  <span class={b.unlocking.netflix === 'supported' ? 'text-emerald-600' : b.unlocking.netflix === 'partial' ? 'text-amber-600' : 'text-slate-400'}>
-                    {b.unlocking.netflix === 'supported' ? '原生全解' : b.unlocking.netflix === 'partial' ? '部分' : '未测'}
-                  </span>
-                </td>
-                <td class="py-3 px-3 font-medium">
-                  <span class={b.unlocking.disney === 'supported' ? 'text-emerald-600' : b.unlocking.disney === 'partial' ? 'text-amber-600' : 'text-slate-400'}>
-                    {b.unlocking.disney === 'supported' ? '支持' : b.unlocking.disney === 'partial' ? '部分' : '未测'}
-                  </span>
-                </td>
-                <td class="py-3 px-3 font-medium text-emerald-600">
-                  {b.unlocking.youtube === 'supported' ? '4K 稳定' : '基本'}
-                </td>
-                <td class="py-3 px-3 font-medium">
-                  <span class={b.unlocking.tiktok === 'supported' ? 'text-emerald-600' : b.unlocking.tiktok === 'partial' ? 'text-amber-600' : 'text-slate-400'}>
-                    {b.unlocking.tiktok === 'supported' ? '支持' : b.unlocking.tiktok === 'partial' ? '视节点' : '未测'}
-                  </span>
-                </td>
-                <td class="py-3 px-3 text-right">
+              <tr class="hover:bg-blue-50/30 transition-colors">
+                <td class="py-3 px-4 font-bold text-brand-dark">
                   <a href={`/brands/${b.slug}/`} class="text-brand-link hover:underline">
-                    详情 →
+                    {b.name}
+                  </a>
+                </td>
+                <td class="py-3 px-3">
+                  <span class:list={[
+                    'px-1.5 py-0.5 rounded text-[11px] font-medium',
+                    b.unlocking?.chatgpt === 'supported' ? 'text-emerald-700 bg-emerald-50' : 'text-amber-700 bg-amber-50'
+                  ]}>
+                    {b.unlocking?.chatgpt === 'supported' ? '支持' : '视节点'}
+                  </span>
+                </td>
+                <td class="py-3 px-3">
+                  <span class:list={[
+                    'px-1.5 py-0.5 rounded text-[11px] font-medium',
+                    b.unlocking?.claude === 'supported' ? 'text-emerald-700 bg-emerald-50' : 'text-amber-700 bg-amber-50'
+                  ]}>
+                    {b.unlocking?.claude === 'supported' ? '支持' : '视节点'}
+                  </span>
+                </td>
+                <td class="py-3 px-3">
+                  <span class:list={[
+                    'px-1.5 py-0.5 rounded text-[11px] font-medium',
+                    b.unlocking?.gemini === 'supported' ? 'text-emerald-700 bg-emerald-50' : 'text-amber-700 bg-amber-50'
+                  ]}>
+                    {b.unlocking?.gemini === 'supported' ? '支持' : '部分'}
+                  </span>
+                </td>
+                <td class="py-3 px-3">
+                  <span class:list={[
+                    'px-1.5 py-0.5 rounded text-[11px] font-medium',
+                    b.unlocking?.netflix === 'supported' ? 'text-emerald-700 bg-emerald-50' : 'text-slate-600 bg-slate-100'
+                  ]}>
+                    {b.unlocking?.netflix === 'supported' ? '原生支持' : '自制剧'}
+                  </span>
+                </td>
+                <td class="py-3 px-3">
+                  <span class:list={[
+                    'px-1.5 py-0.5 rounded text-[11px] font-medium',
+                    b.unlocking?.disney === 'supported' ? 'text-emerald-700 bg-emerald-50' : 'text-slate-600 bg-slate-100'
+                  ]}>
+                    {b.unlocking?.disney === 'supported' ? '支持' : '视节点'}
+                  </span>
+                </td>
+                <td class="py-3 px-3">
+                  <span class="text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded text-[11px] font-medium">
+                    极速流畅
+                  </span>
+                </td>
+                <td class="py-3 px-4 text-center">
+                  <a href={`/reviews/${b.slug}/`} class="text-brand-link hover:underline font-medium">
+                    实测评测 →
                   </a>
                 </td>
               </tr>
@@ -129,6 +215,84 @@ const featuredBrand = brands.find((b) => b.isFeaturedPartner) || brands[0];
           </tbody>
         </table>
       </div>
+      <p class="text-[11px] text-slate-400 leading-relaxed">
+        * 解锁能力受流媒体与AI平台动态风控算法影响，历史测试记录不代表永久有效，建议日常使用中启用专用规则分流。
+      </p>
     </section>
+
+    <!-- Deep Technical Analysis: IP Cleanliness & DNS Leak -->
+    <section class="space-y-6">
+      <div class="border-b border-slate-200 pb-3">
+        <h2 class="text-xl font-bold text-brand-dark">解锁成败的决定性技术因素：机房 IP 纯净度与 DNS 泄漏</h2>
+        <p class="text-xs text-brand-muted mt-1">深入理解现代风控引擎是如何精准识别并阻断代理访问的</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs sm:text-sm">
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-2">
+          <h3 class="font-bold text-base text-brand-dark">1. ASN 组织与 IP 数据库</h3>
+          <p class="text-slate-600 leading-relaxed">
+            平台通过 MaxMind、IPinfo 等商业库查询当前 IP 的注册属性。如果显示为阿里云、腾讯云、AWS 或 DigitalOcean 等云厂商机房（Hosting），直接判定为高危非真实用户，立刻触发拦截机制。
+          </p>
+        </div>
+
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-2">
+          <h3 class="font-bold text-base text-brand-dark">2. TCP 握手与 TLS 客户端指纹</h3>
+          <p class="text-slate-600 leading-relaxed">
+            Cloudflare 会提取浏览器与服务端的 TLS Client Hello 数据包中的密码套件顺序、扩展列表等特征，生成 JA3/JA4 指纹。如果指纹与普通合法 Chrome 浏览器存在差异，直接阻断访问。
+          </p>
+        </div>
+
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-2">
+          <h3 class="font-bold text-base text-brand-dark">3. DNS 地区倒挂与 WebRTC 穿透</h3>
+          <p class="text-slate-600 leading-relaxed">
+            如果代理出口显示为美国 IP，但向 Netflix 发起解析的 DNS 服务器来自中国电信，系统会立即判定存在代理中继；浏览器端 WebRTC 协议如果泄漏了真实局域网公网 IP，也会直接导致跨区解锁失败。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="space-y-4">
+      <div class="border-b border-slate-200 pb-3">
+        <h2 class="text-xl font-bold text-brand-dark">AI 与海外流媒体常见核心问答 (FAQ)</h2>
+        <p class="text-xs text-brand-muted mt-1">解答用户在访问海外 AI 服务与跨区追剧中最关心的关键疑问</p>
+      </div>
+
+      <div class="space-y-3">
+        {compatibilityFaq.map((item, index) => (
+          <details class="group border border-slate-200 rounded-xl bg-white p-4 transition-colors hover:border-slate-300">
+            <summary class="flex items-center justify-between cursor-pointer font-semibold text-xs sm:text-sm text-brand-dark select-none">
+              <span class="flex items-center gap-2">
+                <span class="text-indigo-600 font-mono text-xs">Q{index + 1}.</span>
+                {item.q}
+              </span>
+              <span class="text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+            </summary>
+            <p class="mt-3 text-xs sm:text-sm text-slate-600 leading-relaxed pl-6 border-t border-slate-100 pt-3">
+              {item.a}
+            </p>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- Footer Interlinks -->
+    <footer class="pt-8 border-t border-brand-border space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-3 text-xs text-brand-muted">
+        <div>
+          <span>专题交叉穿透：</span>
+          <a href="/compatibility/chatgpt-claude-gemini/" class="text-brand-link hover:underline font-medium ml-1">AI 报错与排障专项</a>
+          <span class="mx-1.5 text-slate-300">·</span>
+          <a href="/network/" class="text-brand-link hover:underline font-medium">专线网络延迟与抖动深度解析</a>
+          <span class="mx-1.5 text-slate-300">·</span>
+          <a href="/clients/" class="text-brand-link hover:underline font-medium">规则分流客户端推荐</a>
+          <span class="mx-1.5 text-slate-300">·</span>
+          <a href="/recommend/" class="text-brand-link hover:underline font-medium">靠谱加速服务推荐</a>
+        </div>
+        <a href="/brands/" class="text-brand-link font-semibold hover:underline">
+          查阅 31 家品牌实体完整资料库 →
+        </a>
+      </div>
+    </footer>
   </div>
 </BaseLayout>

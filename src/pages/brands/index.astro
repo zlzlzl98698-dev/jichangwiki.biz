@@ -5,7 +5,42 @@ import BrandFilter from '../../components/BrandFilter.astro';
 import brands from '../../data/published-brands.json';
 
 const breadcrumbs = [
-  { name: '品牌百科', href: '/brands/' },
+  { name: '机场品牌百科', href: '/brands/' },
+];
+
+const brandFaq = [
+  {
+    q: '本站收录的 31 家品牌是如何进行去重与审计的？',
+    a: '我们对原始公开资料中流传的32份清单进行了全面实体对齐与交叉验证。发现清单中存在的“Firefly”与“萤火虫”实质上是同一品牌的不同别名，因此执行了合并去重；同时对灵动云、浪网、边缘节点等新晋品牌进行了独立建档，最终确立了 31 个具有唯一持久ID的真实实体档案。',
+  },
+  {
+    q: '为什么部分品牌（如浪网、EdgeNova）被标注为“待核实”？',
+    a: '本站坚守严谨中立的数据真实性底线。如果某个品牌在审计期间尚未完成公开测速验证，或者其官方背景与运营团队资料尚未完全明朗，我们绝不编造虚假数据填充表格，而是明确标注为“待核实 / untested”，并在实体档案中提示用户按需自行甄别。',
+  },
+  {
+    q: '如何防范仿冒的山寨钓鱼机场官网？',
+    a: '许多知名老牌服务商长期遭受黑产团队制作克隆仿冒网站，这些山寨站点通过投放搜索引擎竞价广告诱导用户充值。鉴别正品官方的方法包括：核对官方发布的唯一防失联发布页、检查官方Telegram频道的创建时间与订阅者数量、核对本站品牌档案中的验证标记。',
+  },
+  {
+    q: '老牌机场和新上线机场在选择时有什么区别？',
+    a: '运营三年以上的老牌机场通常拥有更稳定的上游IDC合作关系和成熟的运维应急机制，在特殊时期抗封锁和恢复速度更快，但价格通常较高且优惠较少；新上线机场为了争夺市场往往价格更低、带宽冗余充足，但其长期运营能力尚未经过检验，建议优先采用月付尝试。',
+  },
+  {
+    q: '自研客户端的机场适合哪些用户？',
+    a: '自研客户端（如部分品牌提供的一键式Windows/Mac/Android安装包）将协议分流、节点下载和账户登录高度封装，用户无需学习Clash的配置文件语法，开箱即用，特别适合对网络技术不熟悉的小白或长辈；但若需要深度定制分流规则或使用软路由，支持通用第三方订阅的品牌更适合。',
+  },
+  {
+    q: '如果我正在使用的品牌突然失联，应该如何寻找替代品？',
+    a: '寻找替代品时应遵循同等线路级别对齐原则。如果原本使用的是IEPL专线服务，切忌盲目换成廉价直连服务，以免体验落差过大。可在本站“推荐比较”或“线路技术”专题中，挑选同一专线档位、支持单月购买的成熟品牌作为平滑替代。',
+  },
+  {
+    q: '本站与部分品牌（如光速云）的商业关系是如何披露的？',
+    a: '我们在全站每一页顶部与独立评测中均执行严格的合规商业披露。本站部分展示位可能包含经过验证的服务商推广链接，但本站绝不因为商业合作而伪造实测测速数据或给予绝对化排名。所有品牌卡片与档案均基于审计事实平等展示。',
+  },
+  {
+    q: '如何参与本站品牌百科的勘误与数据补充？',
+    a: '如果您发现某家品牌的套餐价格发生变动、节点出现重大调整或运营状态发生变化，可通过本站底部的“事实更正（/corrections/）”页面提交工单与截图凭据。编辑团队将在核实后更新原子化快照并记录修订日志。',
+  },
 ];
 
 const itemListSchema = {
@@ -24,15 +59,15 @@ const itemListSchema = {
 ---
 
 <BaseLayout
-  title="品牌百科库 (31家) - 机场品牌实体档案与综合参数索引"
+  title="品牌百科库 (31家) - 机场品牌实体档案与综合参数全景索引"
   description="机场 Wiki 品牌百科库收录 31 家经过去重审计的加速服务商实体档案，包含光速云、暮光加速、飞猫云、微风网络等，提供线路、价格、客户端模式及真实数据状态。"
   breadcrumbs={breadcrumbs}
   schema={itemListSchema}
 >
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
     <!-- Page Header -->
-    <div class="mb-8 pb-4 border-b border-brand-border">
-      <div class="flex items-center gap-2 mb-2">
+    <header class="border-b border-brand-border pb-8">
+      <div class="flex items-center gap-2 mb-3">
         <span class="px-2.5 py-0.5 text-xs font-semibold bg-blue-100 text-blue-800 rounded">
           权威实体库 · 31 家已建档
         </span>
@@ -40,16 +75,27 @@ const itemListSchema = {
           数据核验时间：2026-11-24 · 包含审计冲突提示
         </span>
       </div>
-      <h1 class="text-2xl sm:text-3xl font-extrabold text-brand-dark tracking-tight">
-        网络加速服务品牌百科索引
+      <h1 class="text-2xl sm:text-4xl font-extrabold text-brand-dark tracking-tight leading-tight">
+        网络加速服务品牌百科与实体全景数据库
       </h1>
-      <p class="text-sm text-brand-muted mt-2 max-w-3xl leading-relaxed">
+      <p class="text-sm sm:text-base text-brand-muted mt-3 max-w-4xl leading-relaxed">
         本页面汇集本站收录的全部 31 家机场服务商实体。所有参数均依据官方公开文档、经过核实的测速记录与原始资料审计，并明确标注价格折算逻辑与数据完整度状态。拒绝通过虚构测速排名误导消费者。
       </p>
-    </div>
+
+      <!-- Answer-First Box -->
+      <div class="mt-6 p-5 rounded-xl bg-blue-50/70 border border-blue-200/80 text-brand-text space-y-3">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+          <span class="font-bold text-sm text-blue-900">品牌资料库核心使用指南（Answer-First）</span>
+        </div>
+        <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+          查询与核验品牌时，请务必关注三个关键维度：第一，<strong>核验运营状态与建立年份</strong>，成立三年以上的老牌服务商经历过多次网络波动洗礼，稳定性显著优于刚上线的新站点；第二，<strong>看清线路架构</strong>，确认其采用的是纯IEPL专线还是混合公网中转；第三，<strong>注意官网真伪</strong>，山寨钓鱼站点频发，认准本站品牌档案中的唯一官方入口与防失联渠道。
+        </p>
+      </div>
+    </header>
 
     <!-- Data Quality & Risk Notice -->
-    <div class="mb-8 p-4 rounded-xl border border-amber-200 bg-amber-50/60 text-xs text-amber-900 leading-relaxed">
+    <div class="p-4 rounded-xl border border-amber-200 bg-amber-50/60 text-xs text-amber-900 leading-relaxed">
       <div class="flex items-start gap-2.5">
         <svg class="w-4 h-4 text-amber-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -61,14 +107,99 @@ const itemListSchema = {
       </div>
     </div>
 
-    <!-- Search & Filter Bar -->
-    <BrandFilter />
+    <!-- Search & Filter Bar Component -->
+    <section class="space-y-4">
+      <div class="border-b border-slate-200 pb-2">
+        <h2 class="text-xl font-bold text-brand-dark">交互式品牌检索与多维筛选</h2>
+        <p class="text-xs text-brand-muted mt-0.5">支持按品牌名称拼音、专线类型、起步预算与客户端模式实时过滤</p>
+      </div>
+      <BrandFilter />
+    </section>
 
     <!-- Brand Cards Grid -->
-    <div id="brand-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {brands.map((b) => (
-        <BrandCard brand={b} />
-      ))}
-    </div>
+    <section class="space-y-4">
+      <div class="flex items-center justify-between pb-2">
+        <h2 class="text-lg font-bold text-brand-dark">全部收录品牌实体档案 (共 31 家)</h2>
+        <span class="text-xs text-slate-500">展示中：全部已发布实体</span>
+      </div>
+      <div id="brand-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {brands.map((b) => (
+          <BrandCard brand={b} />
+        ))}
+      </div>
+    </section>
+
+    <!-- Brand Selection & Evaluation Methodology -->
+    <section class="space-y-6 pt-6 border-t border-slate-200">
+      <div class="border-b border-slate-200 pb-3">
+        <h2 class="text-xl font-bold text-brand-dark">品牌建档与客观评测方法论</h2>
+        <p class="text-xs text-brand-muted mt-1">本站如何通过技术审计、实测抓包与持续跟踪建立可验证知识库</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs sm:text-sm">
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-2">
+          <h3 class="font-bold text-base text-brand-dark">1. 实体对齐与去重审计</h3>
+          <p class="text-slate-600 leading-relaxed">
+            中文互联网加速服务存在大量“贴牌代工”或“换皮马甲”。我们深入挖掘服务器证书、入口中转IP归属及支付通道特征，合并重复实体（如Firefly与萤火虫），确保每个收录品牌对应真实独立的运营团队。
+          </p>
+        </div>
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-2">
+          <h3 class="font-bold text-base text-brand-dark">2. 晚高峰性能实测验证</h3>
+          <p class="text-slate-600 leading-relaxed">
+            严格杜绝在清晨或凌晨截取虚假满速图。全部测速样本均取自每晚20:00至23:00的网络拥堵高峰期，重点记录多线程测速、连续丢包率与TCP连接延迟抖动，如实反映真实使用感受。
+          </p>
+        </div>
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-2">
+          <h3 class="font-bold text-base text-brand-dark">3. 动态状态与失联预警</h3>
+          <p class="text-slate-600 leading-relaxed">
+            定期对已收录品牌进行可用性探测，追踪官网解析记录、客服响应速度与支付接口变动。一旦发现频繁更换收款账户或突然推出异常超低折扣，立即在品牌档案顶部添加预警提示。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="space-y-4">
+      <div class="border-b border-slate-200 pb-3">
+        <h2 class="text-xl font-bold text-brand-dark">品牌百科与档案查询问答 (FAQ)</h2>
+        <p class="text-xs text-brand-muted mt-1">解答关于品牌收录、资料真伪与防钓鱼辨别的常见疑问</p>
+      </div>
+
+      <div class="space-y-3">
+        {brandFaq.map((item, index) => (
+          <details class="group border border-slate-200 rounded-xl bg-white p-4 transition-colors hover:border-slate-300">
+            <summary class="flex items-center justify-between cursor-pointer font-semibold text-xs sm:text-sm text-brand-dark select-none">
+              <span class="flex items-center gap-2">
+                <span class="text-blue-600 font-mono text-xs">Q{index + 1}.</span>
+                {item.q}
+              </span>
+              <span class="text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+            </summary>
+            <p class="mt-3 text-xs sm:text-sm text-slate-600 leading-relaxed pl-6 border-t border-slate-100 pt-3">
+              {item.a}
+            </p>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- Footer Interlinks -->
+    <footer class="pt-8 border-t border-brand-border space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-3 text-xs text-brand-muted">
+        <div>
+          <span>专题交叉链接：</span>
+          <a href="/recommend/" class="text-brand-link hover:underline font-medium ml-1">推荐与选型指南</a>
+          <span class="mx-1.5 text-slate-300">·</span>
+          <a href="/pricing/" class="text-brand-link hover:underline font-medium">套餐价格横向核查</a>
+          <span class="mx-1.5 text-slate-300">·</span>
+          <a href="/evidence/" class="text-brand-link hover:underline font-medium">证据中心与跑路防范</a>
+          <span class="mx-1.5 text-slate-300">·</span>
+          <a href="/clients/" class="text-brand-link hover:underline font-medium">客户端适配指南</a>
+        </div>
+        <a href="/data/" class="text-brand-link font-semibold hover:underline">
+          获取公开数据集与数据字典 →
+        </a>
+      </div>
+    </footer>
   </div>
 </BaseLayout>

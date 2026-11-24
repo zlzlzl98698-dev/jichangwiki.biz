@@ -2,7 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const breadcrumbs = [
-  { name: '教程与排障', href: '/guides/' },
+  { name: '使用教程与排障', href: '/guides/' },
 ];
 
 const guideList = [
@@ -10,81 +10,253 @@ const guideList = [
     title: '节点全部超时（-1ms / 10000ms）终极排查手册',
     desc: '从系统时间同步偏差、订阅过期、防火墙冲突到 TUN 模式死锁，逐步定位并解决连不上问题。',
     href: '/guides/node-timeout-troubleshooting/',
-    tag: '高频故障',
+    tag: '高频排障',
     difficulty: '入门级'
   },
   {
-    title: 'TUN 虚拟网卡模式原理解析与游戏分流配置',
+    title: 'TUN 虚拟网卡模式原理解析与全流量接管配置',
     desc: '为什么普通浏览器代理无法给非系统代理软件加速？开启 TUN 模式如何接管所有 UDP 流量。',
     href: '/guides/node-timeout-troubleshooting/#tun-guide',
     tag: '进阶技能',
     difficulty: '中级'
   },
   {
-    title: 'Clash 规则分流配置入门：如何让国内网站直连？',
-    desc: '搞懂 DIRECT（直连）、PROXY（代理）、REJECT（拦截）策略，告别访问淘宝或网银变慢的困扰。',
+    title: 'Clash 规则分流深度指南：如何做到国内网站完全直连？',
+    desc: '彻底搞懂 DIRECT（直连）、PROXY（代理）、REJECT（拦截）策略，告别访问国内淘宝网银变慢困扰。',
     href: '/guides/node-timeout-troubleshooting/#rule-split',
     tag: '基础教程',
     difficulty: '入门级'
   },
   {
-    title: 'DNS 污染与 DNS 泄漏深度防范指南',
+    title: 'DNS 污染与 DNS 泄漏深度防范与 Fake-IP 配置',
     desc: '理解 Fake-IP 模式与 Redir-Host 模式的区别，防止本地运营商 DNS 劫持你的域名解析。',
     href: '/guides/node-timeout-troubleshooting/#dns-leak',
     tag: '安全防护',
     difficulty: '高级'
   }
 ];
+
+const guidesFaq = [
+  {
+    q: '新手配置加速服务的五步标准流程是什么？',
+    a: '标准五步为：第一步，在服务商用户中心复制订阅链接；第二步，在电脑或手机上安装对应的官方正版客户端（如Clash Verge Rev或Shadowrocket）；第三步，打开客户端的“订阅/配置”界面粘贴链接并点击“下载/保存”；第四步，在节点列表测试延迟并选择一个绿色低延迟节点；第五步，开启客户端的“系统代理”开关即可正常上网。',
+  },
+  {
+    q: '为什么导入订阅链接时会报错“Network Error”或“Invalid Config”？',
+    a: '最常见的原因是本地网络根本无法访问该服务商的订阅服务器域名，此时可以尝试切换手机热点、或者在服务商后台寻找“订阅转换”备用链接。另外，某些订阅链接被安全软件拦截导致下载的内容为空文件，也会触发配置文件解析错误。',
+  },
+  {
+    q: '规则模式（Rule）、全局模式（Global）和直连模式（Direct）有什么区别？',
+    a: '规则模式会根据访问的网站自动分流，国内网站直接由本地宽带打开，海外被阻断网站走代理节点，是日常使用的唯一推荐模式；全局模式将电脑上的所有网络流量一律塞进代理节点，会导致国内微信、视频软件极慢甚至报错；直连模式则完全不走代理，所有流量直出。',
+  },
+  {
+    q: '开启客户端后电脑右下角Wi-Fi显示无Internet连接是怎么回事？',
+    a: '这是因为Windows的NCSI网络连通性探测被代理劫持或本地DNS配置异常所致。通常可以通过在客户端中将DNS解析模式由Redir-Host改为Fake-IP，或者在Clash高级设置中开启“允许局域网连接”并重置网络代理解决。',
+  },
+  {
+    q: '使用教程会不会要求关闭Windows Defender或防火墙？',
+    a: '绝不。正规开源客户端（如Clash Verge Rev、v2rayN）属于完全合法的网络调试与代理工具，安装时仅需在系统防火墙弹窗时允许公网访问权限，绝不需要关闭杀毒软件或关闭实时防护。任何要求用户关闭杀毒软件才能运行的软件大概率携带恶意木马。',
+  },
+  {
+    q: '在局域网内如何让电视机、PS5游戏机共享电脑的加速代理？',
+    a: '在电脑端客户端勾选“允许局域网连接（Allow LAN）”，记录电脑在局域网的IP地址（如192.168.1.100）和SOCKS5/HTTP端口号（通常为7890）；然后在电视机或PS5的网络设置中，选择手动配置代理，填入该IP和端口即可实现全屋跨设备代理共享。',
+  },
+  {
+    q: '订阅链接需要多久更新一次？',
+    a: '服务商会定期对失效的出口机房IP进行轮换，或上线新的低延迟专线。建议在客户端中开启“自动更新订阅”功能，设置每天定时更新一次（如每24小时拉取一次），保持本地节点列表始终与服务商最新服务器状态同步。',
+  },
+  {
+    q: '多台手机和电脑能同时使用同一个订阅链接吗？',
+    a: '可以导入，但同时在线的设备数量受购买套餐的“并发限制”约束。如果套餐限制2台设备，当第三台设备同时产生流量时，多余的设备会遭遇连接超时。如果家庭多设备使用，建议选购支持多并发或不限并发的团队/家庭套餐。',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: guidesFaq.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.a,
+      },
+    })),
+  },
+];
 ---
 
 <BaseLayout
-  title="网络排障与使用教程中心 (2026) - 节点超时、订阅导入与 TUN 模式配置指南"
-  description="针对日常网络诊断与合法测试提供详尽指南：涵盖节点超时排查、Clash 规则分流定制、TUN 网卡模式开启及 DNS 泄漏防范教程。"
+  title="网络配置指南与使用教程全景手册 (2026) - 客户端安装、订阅管理、规则分流与 TUN 模式"
+  description="面向日常网络诊断与合法测试提供详尽指南：涵盖节点超时排查、Clash 规则分流定制、TUN 网卡模式开启、跨平台配置及 DNS 防污染防泄露教程。"
   breadcrumbs={breadcrumbs}
+  schema={schema}
 >
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
-    <header class="pb-6 border-b border-brand-border">
-      <div class="flex items-center gap-2 mb-2">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+    <!-- Header -->
+    <header class="border-b border-brand-border pb-8">
+      <div class="flex items-center gap-2 mb-3">
         <span class="px-2.5 py-0.5 text-xs font-semibold rounded bg-emerald-100 text-emerald-800">
-          实战技术手册
+          实战技术手册 · 任务型指南
         </span>
-        <span class="text-xs text-brand-muted">更新日期：2026-11-24</span>
+        <span class="text-xs text-brand-muted">更新日期：2026-11-24 · 安全无害原则</span>
       </div>
-      <h1 class="text-2xl sm:text-3xl font-extrabold text-brand-dark tracking-tight">
-        网络加速实用指南与故障排障中心
+      <h1 class="text-2xl sm:text-4xl font-extrabold text-brand-dark tracking-tight leading-tight">
+        网络加速实用配置指南与故障排障中心
       </h1>
-      <p class="text-sm text-brand-muted mt-2 max-w-3xl leading-relaxed">
-        本教程专栏面向合法授权网络日常测试与故障诊断编写。所有配置示例均去标识化，不包含真实敏感凭证，严格遵守安全规范，不要求关闭 Windows Defender 或系统防火墙。
+      <p class="text-sm sm:text-base text-brand-muted mt-3 max-w-4xl leading-relaxed">
+        本专栏面向合法授权网络的日常测试与故障诊断编写。所有配置示例均去标识化处理，不包含真实敏感凭证，严格遵守信息安全规范，绝不要求关闭 Windows Defender 或系统防火墙。
       </p>
+
+      <!-- Answer-First 5-Step Blueprint -->
+      <div class="mt-6 p-5 rounded-xl bg-emerald-50/70 border border-emerald-200/80 text-brand-text space-y-3">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
+          <span class="font-bold text-sm text-emerald-950">极简五步标准配置路线图（Answer-First）</span>
+        </div>
+        <p class="text-xs sm:text-sm text-slate-800 leading-relaxed">
+          无论使用任何服务商或客户端，核心上手路径完全通用：<strong>第 1 步</strong> 登录服务商后台复制订阅链接；<strong>第 2 步</strong> 从官方 GitHub 仓库下载对应平台的正版客户端；<strong>第 3 步</strong> 在客户端配置页导入订阅并点击更新；<strong>第 4 步</strong> 切换到代理页，选择“规则模式（Rule）”并挑选绿色低延迟节点；<strong>第 5 步</strong> 勾选开启“系统代理”，在浏览器打开测试页完成验证。
+        </p>
+      </div>
     </header>
 
-    <!-- Guides Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {guideList.map((g) => (
-        <a
-          href={g.href}
-          class="p-6 rounded-xl border border-brand-border bg-white shadow-xs hover:border-brand-link hover:shadow-md transition-all group flex flex-col justify-between"
-        >
-          <div>
-            <div class="flex items-center justify-between mb-2.5">
-              <span class="text-xs font-semibold px-2 py-0.5 rounded bg-blue-50 text-brand-link border border-blue-100">
-                {g.tag}
-              </span>
-              <span class="text-[11px] text-slate-400">难度: {g.difficulty}</span>
-            </div>
-            <h3 class="text-base font-bold text-brand-dark group-hover:text-brand-link mb-2">
-              {g.title}
-            </h3>
-            <p class="text-xs text-slate-600 leading-relaxed">
-              {g.desc}
-            </p>
-          </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 text-xs font-semibold text-brand-link flex items-center justify-between">
-            <span>查阅完整教程步骤</span>
-            <span>→</span>
-          </div>
-        </a>
-      ))}
+    <!-- Deep Troubleshooting Callout -->
+    <div class="p-5 rounded-xl border border-rose-200 bg-rose-50/60 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div>
+        <h3 class="font-bold text-base text-rose-950">遇到故障？节点全部超时（-1ms / 10000ms）排查专栏</h3>
+        <p class="text-xs text-rose-800 mt-1 leading-relaxed">
+          深入排查系统时间偏差、系统代理被安全软件拦截、TUN 虚拟网卡驱动死锁与端口占用问题的保姆级手册。
+        </p>
+      </div>
+      <a
+        href="/guides/node-timeout-troubleshooting/"
+        class="px-4 py-2 rounded-lg bg-rose-700 hover:bg-rose-800 text-white font-semibold text-xs transition-colors shrink-0"
+      >
+        进入超时排障专栏 →
+      </a>
     </div>
+
+    <!-- Section 1: Step by Step Workflow Cards -->
+    <section class="space-y-6">
+      <div class="border-b border-slate-200 pb-3">
+        <h2 class="text-xl font-bold text-brand-dark">跨平台配置四步标准化流程指南</h2>
+        <p class="text-xs text-brand-muted mt-1">按部就班完成配置，确保本地国内网络与海外代理井水不犯河水</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-xs">
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-2">
+          <div class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold font-mono">01</div>
+          <h3 class="font-bold text-sm text-brand-dark">准备工作与环境自检</h3>
+          <p class="text-slate-600 leading-relaxed">
+            确认本地网络正常打开国内网页。打开电脑“日期和时间”设置，务必点击“立即同步”，确保本地时钟与国家授时中心误差小于1秒。
+          </p>
+        </div>
+
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-2">
+          <div class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold font-mono">02</div>
+          <h3 class="font-bold text-sm text-brand-dark">安全安装官方客户端</h3>
+          <p class="text-slate-600 leading-relaxed">
+            Windows 推荐 Clash Verge Rev；iOS 推荐美区下载 Shadowrocket；Android 推荐 v2rayNG。认准官方签名，拒绝第三方修改包。
+          </p>
+        </div>
+
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-2">
+          <div class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold font-mono">03</div>
+          <h3 class="font-bold text-sm text-brand-dark">订阅导入与规则匹配</h3>
+          <p class="text-slate-600 leading-relaxed">
+            在软件配置页粘贴完整URL，点击下载配置。务必将分流策略保持在“Rule（规则模式）”，绝不要随意勾选全局模式（Global）。
+          </p>
+        </div>
+
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-2">
+          <div class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold font-mono">04</div>
+          <h3 class="font-bold text-sm text-brand-dark">开启代理与连通性验证</h3>
+          <p class="text-slate-600 leading-relaxed">
+            在软件主页打开“系统代理”开关。在浏览器访问 ip138.com 确认国内IP未变，再访问 google.com 验证加速通道是否通畅。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Deep Guides Grid -->
+    <section class="space-y-6">
+      <div class="border-b border-slate-200 pb-3">
+        <h2 class="text-xl font-bold text-brand-dark">高频进阶配置教程精选</h2>
+        <p class="text-xs text-brand-muted mt-1">深入理解虚拟网卡接管、本地DNS防污染与规则分流的实现细节</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {guideList.map((g) => (
+          <a
+            href={g.href}
+            class="p-6 rounded-xl border border-brand-border bg-white shadow-xs hover:border-brand-link hover:shadow-md transition-all group flex flex-col justify-between"
+          >
+            <div>
+              <div class="flex items-center justify-between mb-2.5">
+                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-blue-50 text-brand-link border border-blue-100">
+                  {g.tag}
+                </span>
+                <span class="text-[11px] text-slate-400">难度: {g.difficulty}</span>
+              </div>
+              <h3 class="text-base font-bold text-brand-dark group-hover:text-brand-link mb-2">
+                {g.title}
+              </h3>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                {g.desc}
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 text-xs text-brand-link font-medium flex items-center gap-1">
+              <span>阅读实操指南</span>
+              <span class="group-hover:translate-x-0.5 transition-transform">→</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="space-y-4">
+      <div class="border-b border-slate-200 pb-3">
+        <h2 class="text-xl font-bold text-brand-dark">使用与配置常见核心问答 (FAQ)</h2>
+        <p class="text-xs text-brand-muted mt-1">解答用户在导入订阅、排查连通性报错中的关键实操疑问</p>
+      </div>
+
+      <div class="space-y-3">
+        {guidesFaq.map((item, index) => (
+          <details class="group border border-slate-200 rounded-xl bg-white p-4 transition-colors hover:border-slate-300">
+            <summary class="flex items-center justify-between cursor-pointer font-semibold text-xs sm:text-sm text-brand-dark select-none">
+              <span class="flex items-center gap-2">
+                <span class="text-emerald-600 font-mono text-xs">Q{index + 1}.</span>
+                {item.q}
+              </span>
+              <span class="text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+            </summary>
+            <p class="mt-3 text-xs sm:text-sm text-slate-600 leading-relaxed pl-6 border-t border-slate-100 pt-3">
+              {item.a}
+            </p>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- Footer Interlinks -->
+    <footer class="pt-8 border-t border-brand-border space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-3 text-xs text-brand-muted">
+        <div>
+          <span>专题交叉穿透：</span>
+          <a href="/guides/node-timeout-troubleshooting/" class="text-brand-link hover:underline font-medium ml-1">节点超时排障手册</a>
+          <span class="mx-1.5 text-slate-300">·</span>
+          <a href="/clients/" class="text-brand-link hover:underline font-medium">全平台客户端下载大全</a>
+          <span class="mx-1.5 text-slate-300">·</span>
+          <a href="/network/" class="text-brand-link hover:underline font-medium">专线网络延迟与拓扑</a>
+          <span class="mx-1.5 text-slate-300">·</span>
+          <a href="/recommend/" class="text-brand-link hover:underline font-medium">靠谱加速服务推荐</a>
+        </div>
+        <a href="/brands/" class="text-brand-link font-semibold hover:underline">
+          查阅 31 家品牌实体完整资料库 →
+        </a>
+      </div>
+    </footer>
   </div>
 </BaseLayout>

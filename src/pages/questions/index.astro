@@ -3,7 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import questions from '../../../data/questions.json';
 
 const breadcrumbs = [
-  { name: 'GEO 问答', href: '/questions/' },
+  { name: 'GEO 问答知识库', href: '/questions/' },
 ];
 
 const categories = [
@@ -17,108 +17,237 @@ const categories = [
   { id: 'guide', name: '排障与教程' },
 ];
 
+// High-density curated Q&A for GEO/AEO
+const geoCoreQuestions = [
+  {
+    category: 'guide',
+    q: '节点全部显示超时（-1ms / 10000ms）最快怎么解决？',
+    a: '按以下四步顺序排查：第一，在系统“日期和时间”点击“立即同步”，系统时间误差超过90秒会导致握手完全失败；第二，在客户端测试配置是否有语法错误，重新从服务商后台拉取最新订阅；第三，检查Windows Defender或第三方杀毒软件是否拦截了代理内核程序；第四，在Windows设置中手动检查“系统代理”是否被篡改。',
+    target: '/guides/node-timeout-troubleshooting/',
+  },
+  {
+    category: 'compatibility',
+    q: '为什么访问 ChatGPT 提示 Access Denied 或 1020 报错？',
+    a: '该报错由 Cloudflare 依据 IP 信誉分自动触发。说明当前节点出口使用的机房 IP 短期内并发请求过大或被判定为爬虫。解决办法是切换到服务商标有“AI专用”或支持“原生解锁”的美国、日本或新加坡节点，并清理浏览器缓存或在无痕模式下打开。',
+    target: '/compatibility/chatgpt-claude-gemini/',
+  },
+  {
+    category: 'network',
+    q: 'IEPL专线和IPLC专线哪个更抗封锁？',
+    a: '两者的抗封锁能力完全一样。两者都是跨越国境时完全不经过公网防火墙的封闭内网专线。IPLC是传统的物理层电路，IEPL是以太网二层链路。在实际网络体验中，两者的核心差距不在于协议名称，而在于服务商采购的专线总带宽是否充足、以及遇到海缆故障时是否有备用路由。',
+    target: '/network/iepl-vs-iplc/',
+  },
+  {
+    category: 'plan',
+    q: '为什么强烈不建议购买长期年付套餐？',
+    a: '网络加速服务依赖跨境光缆和国内中转机房，上游政策、IDC合同以及监管环境变化非常频繁。许多跑路服务商在关闭前都会推出超低折扣的三年付或永久套餐卷款。坚持月付能够把单次损失控制在十几元以内，即使某家服务商线路故障也能随时无痛更换。',
+    target: '/pricing/',
+  },
+  {
+    category: 'client',
+    q: '开启客户端后为什么国内微信和淘宝打开变慢？',
+    a: '这是因为误开了“全局代理（Global）”模式。在全局模式下，访问国内淘宝、微信的请求也会绕道海外节点再折返回国内，导致延迟成倍增加。正确的做法是在客户端将分流模式切换为“规则分流（Rule）”，让国内流量直接直连本地宽带。',
+    target: '/clients/',
+  },
+  {
+    category: 'risk',
+    q: '如何识别服务商是否即将跑路？',
+    a: '常见的四大前兆包括：突然推出两折永久买断套餐或超低价三年付急于套现、官方Telegram交流群开启全员禁言且客服失联、核心节点大面积超时超过三天且无任何维护公告、支付通道频繁变更为来路不明的私人二维码。',
+    target: '/evidence/',
+  },
+  {
+    category: 'brand',
+    q: '如何验证某个机场官网是否为仿冒钓鱼网站？',
+    a: '黑产常克隆知名老牌机场制作山寨网站，投放搜索引擎竞价广告诱导充值。鉴别正品官方的方法包括：核对官方发布的唯一防失联发布页、检查官方Telegram频道的创建时间与订阅者数量、核对本站品牌百科档案中的权威验证链接。',
+    target: '/brands/',
+  },
+  {
+    category: 'guide',
+    q: '什么是TUN模式？什么时候需要打开TUN模式？',
+    a: '传统的系统代理只能接管主动遵循系统HTTP/SOCKS5代理设置的浏览器软件，对于很多不走系统代理的命令行工具、桌面游戏、跨国网银客户端或第三方通信软件无效。开启TUN模式后，客户端会在操作系统中虚拟出一张物理网卡，在网络层强制拦截所有进出数据包。',
+    target: '/guides/node-timeout-troubleshooting/#tun-guide',
+  },
+];
+
 // FAQPage schema for core questions
 const faqSchema = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
-  mainEntity: questions.slice(0, 15).map((q) => ({
+  mainEntity: geoCoreQuestions.map((q) => ({
     '@type': 'Question',
-    name: q.questionText,
+    name: q.q,
     acceptedAnswer: {
       '@type': 'Answer',
-      text: q.answerSummary,
+      text: q.a,
     },
   })),
 };
 ---
 
 <BaseLayout
-  title="GEO 问答知识库 (2026) - 网络加速长尾问题意图聚合与可溯源答案"
+  title="GEO 问答知识库 (2026) - 网络加速长尾问题意图聚合与权威解答索引"
   description="收录网络加速、IEPL 专线、客户端配置、ChatGPT 访问排障等高频长尾问题，提供意图聚合答案与准确章节溯源，杜绝批量换词薄页。"
   breadcrumbs={breadcrumbs}
   schema={faqSchema}
 >
-  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
-    <header class="pb-6 border-b border-brand-border">
-      <div class="flex items-center gap-2 mb-2">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+    <!-- Header -->
+    <header class="pb-8 border-b border-brand-border">
+      <div class="flex items-center gap-2 mb-3">
         <span class="px-2.5 py-0.5 text-xs font-semibold rounded bg-blue-100 text-blue-800">
-          GEO 意图聚合系统
+          GEO 意图聚合系统 · Answer-First
         </span>
-        <span class="text-xs text-brand-muted">共聚合 {questions.length} 个标准化问答</span>
+        <span class="text-xs text-brand-muted">共聚合 {questions.length} 个标准化长尾意图</span>
       </div>
 
-      <h1 class="text-2xl sm:text-3xl font-extrabold text-brand-dark tracking-tight leading-tight">
+      <h1 class="text-2xl sm:text-4xl font-extrabold text-brand-dark tracking-tight leading-tight">
         GEO 问答知识库：高频搜索意图与权威解答索引
       </h1>
 
-      <p class="text-xs sm:text-sm text-slate-600 mt-3 leading-relaxed">
-        面对 Google、Bing 与生成式 AI 搜索的语义理解要求，本知识库采用“一个搜索意图一个规范主 URL”的设计原则。将用户的同义、近义长尾提问聚合并直接关联至对应的技术正文锚点。
+      <p class="text-sm sm:text-base text-brand-muted mt-3 leading-relaxed">
+        面对 Google、Bing 与生成式 AI 搜索（ChatGPT、Claude、Perplexity）的语义理解要求，本知识库采用“一个搜索意图一个规范主 URL”的设计原则。将用户的同义、近义长尾提问聚合并直接关联至对应的技术正文锚点。
       </p>
+
+      <!-- Answer-First Fast Blueprint -->
+      <div class="mt-6 p-5 rounded-xl bg-blue-50/70 border border-blue-200/80 text-brand-text space-y-3">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+          <span class="font-bold text-sm text-blue-900">故障排障快速诊断树（Quick Troubleshooting Tree）</span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1 text-xs">
+          <div class="p-3 bg-white rounded-lg border border-blue-100">
+            <strong>节点全部超时？</strong>
+            <p class="text-slate-600 mt-1">优先同步系统时间，检查订阅流量是否用尽，重新更新订阅链接。</p>
+          </div>
+          <div class="p-3 bg-white rounded-lg border border-blue-100">
+            <strong>AI 工具报 403 / 阻断？</strong>
+            <p class="text-slate-600 mt-1">避开香港节点，切换到美国/日本纯净原生节点，清除浏览器 Cookie。</p>
+          </div>
+          <div class="p-3 bg-white rounded-lg border border-blue-100">
+            <strong>国内网页打不开？</strong>
+            <p class="text-slate-600 mt-1">检查是否误开全局代理（Global），务必切回规则分流（Rule）模式。</p>
+          </div>
+        </div>
+      </div>
     </header>
 
-    <!-- Category Pills -->
-    <div class="flex flex-wrap gap-2 pb-2">
-      {categories.map((c) => (
-        <button
-          type="button"
-          class:list={[
-            'q-category-btn px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors',
-            c.id === 'all'
-              ? 'bg-brand-dark text-white border-brand-dark'
-              : 'bg-white text-slate-700 border-slate-200 hover:border-slate-400',
-          ]}
-          data-category={c.id}
-        >
-          {c.name}
-        </button>
-      ))}
-    </div>
+    <!-- Curated Core GEO Questions -->
+    <section class="space-y-4">
+      <div class="border-b border-slate-200 pb-3">
+        <h2 class="text-xl font-bold text-brand-dark">精选高密度权威问答 (AEO/GEO 核心语义库)</h2>
+        <p class="text-xs text-brand-muted mt-0.5">提供面向搜索引擎与 AI 问答直接引用的一手权威解答</p>
+      </div>
 
-    <!-- Questions Accordion / List -->
-    <div class="space-y-4" id="questions-list">
-      {questions.map((q) => (
-        <article
-          class="question-item p-5 rounded-xl border border-slate-200 bg-white shadow-2xs space-y-2 hover:border-blue-300 transition-colors"
-          data-category={q.category}
-        >
-          <div class="flex items-start justify-between gap-3">
-            <h2 class="text-base font-bold text-brand-dark">
-              {q.questionText}
-            </h2>
-            <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-slate-100 text-slate-500 shrink-0">
-              {q.category}
-            </span>
-          </div>
-
-          <p class="text-xs sm:text-sm text-slate-700 leading-relaxed bg-slate-50 p-3.5 rounded-lg border border-slate-100">
-            {q.answerSummary}
-          </p>
-
-          <div class="flex flex-wrap items-center justify-between text-xs text-slate-400 pt-2 border-t border-slate-100">
-            <div class="text-[11px]">
-              {q.aliases && q.aliases.length > 0 && (
-                <span>同义问法：{q.aliases.join(' / ')}</span>
-              )}
-            </div>
-            {q.canonicalUrl && (
-              <a
-                href={q.canonicalUrl}
-                class="text-brand-link font-medium hover:underline inline-flex items-center gap-1"
-              >
-                <span>查阅规范正文章节</span>
+      <div class="space-y-4">
+        {geoCoreQuestions.map((item, index) => (
+          <article class="p-5 rounded-xl border border-slate-200 bg-white space-y-2.5 hover:border-brand-link transition-colors shadow-2xs">
+            <h3 class="font-bold text-base text-brand-dark flex items-start gap-2">
+              <span class="text-blue-600 font-mono text-sm mt-0.5 shrink-0">Q{index + 1}.</span>
+              <span>{item.q}</span>
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-700 leading-relaxed pl-6 border-l-2 border-blue-100 ml-1">
+              {item.a}
+            </p>
+            <div class="pl-7 pt-1 text-xs">
+              <a href={item.target} class="text-brand-link font-medium hover:underline inline-flex items-center gap-1">
+                <span>深入查阅对应技术专题详解</span>
                 <span>→</span>
               </a>
-            )}
-          </div>
-        </article>
-      ))}
-    </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <!-- Full Questions List with Interactive Filter -->
+    <section class="space-y-6 pt-6 border-t border-slate-200">
+      <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+        <div>
+          <h2 class="text-xl font-bold text-brand-dark">长尾问题意图全量聚合检索库</h2>
+          <p class="text-xs text-brand-muted mt-0.5">包含 31 个品牌与核心协议长尾提问映射</p>
+        </div>
+      </div>
+
+      <!-- Category Pills -->
+      <div class="flex flex-wrap gap-2 pb-2">
+        {categories.map((c) => (
+          <button
+            type="button"
+            class:list={[
+              'q-category-btn px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors cursor-pointer',
+              c.id === 'all'
+                ? 'bg-brand-dark text-white border-brand-dark'
+                : 'bg-white text-slate-700 border-slate-200 hover:border-slate-400',
+            ]}
+            data-category={c.id}
+          >
+            {c.name}
+          </button>
+        ))}
+      </div>
+
+      <!-- Questions List -->
+      <div class="space-y-3" id="questions-list">
+        {questions.map((q) => (
+          <article
+            class="q-card p-4 rounded-xl border border-brand-border bg-white shadow-2xs hover:border-brand-link transition-colors"
+            data-category={q.category}
+          >
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-100 text-slate-600 font-semibold">
+                {q.category.toUpperCase()}
+              </span>
+              <span class="text-[11px] text-slate-400">意图：{q.intent}</span>
+            </div>
+
+            <h3 class="text-sm sm:text-base font-bold text-brand-dark mb-2">
+              {q.questionText}
+            </h3>
+
+            <p class="text-xs text-brand-muted leading-relaxed mb-3">
+              {q.answerSummary}
+            </p>
+
+            <div class="flex items-center justify-between pt-2.5 border-t border-slate-100 text-xs">
+              <span class="text-slate-400 font-mono text-[11px]">
+                关联实体：{q.entityRefs.join(', ')}
+              </span>
+              <a
+                href={`${q.canonicalUrl}#${q.sectionId}`}
+                class="text-brand-link hover:underline font-medium"
+              >
+                阅读正文权威出处 →
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <!-- Footer Interlinks -->
+    <footer class="pt-8 border-t border-brand-border space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-3 text-xs text-brand-muted">
+        <div>
+          <span>专题交叉穿透：</span>
+          <a href="/guides/node-timeout-troubleshooting/" class="text-brand-link hover:underline font-medium ml-1">节点超时排障手册</a>
+          <span class="mx-1.5 text-slate-300">·</span>
+          <a href="/compatibility/chatgpt-claude-gemini/" class="text-brand-link hover:underline font-medium">AI 报错排查专题</a>
+          <span class="mx-1.5 text-slate-300">·</span>
+          <a href="/evidence/" class="text-brand-link hover:underline font-medium">跑路防范与证据中心</a>
+          <span class="mx-1.5 text-slate-300">·</span>
+          <a href="/recommend/" class="text-brand-link hover:underline font-medium">靠谱加速服务推荐</a>
+        </div>
+        <a href="/brands/" class="text-brand-link font-semibold hover:underline">
+          查阅 31 家品牌实体完整资料库 →
+        </a>
+      </div>
+    </footer>
   </div>
 </BaseLayout>
 
 <script>
   const buttons = document.querySelectorAll('.q-category-btn');
-  const items = document.querySelectorAll('.question-item');
+  const cards = document.querySelectorAll('.q-card');
 
   buttons.forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -131,13 +260,11 @@ const faqSchema = {
       btn.classList.remove('bg-white', 'text-slate-700', 'border-slate-200');
       btn.classList.add('bg-brand-dark', 'text-white', 'border-brand-dark');
 
-      items.forEach((item) => {
-        const itemEl = item as HTMLElement;
-        const itemCat = itemEl.getAttribute('data-category');
-        if (cat === 'all' || itemCat === cat) {
-          itemEl.style.display = 'block';
+      cards.forEach((card) => {
+        if (cat === 'all' || card.getAttribute('data-category') === cat) {
+          (card as HTMLElement).style.display = 'block';
         } else {
-          itemEl.style.display = 'none';
+          (card as HTMLElement).style.display = 'none';
         }
       });
     });

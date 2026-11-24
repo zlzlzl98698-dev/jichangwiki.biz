@@ -3,117 +3,255 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import NetworkPathObservatory from '../../components/observatory/NetworkPathObservatory.astro';
 
 const breadcrumbs = [
-  { name: '网络技术', href: '/network/' },
+  { name: '网络技术与专线架构', href: '/network/' },
 ];
 
-const topics = [
+const networkFaq = [
   {
-    title: 'IEPL vs IPLC 专线全面对比',
-    slug: 'iepl-vs-iplc',
-    desc: '解析以太网二层专线与纯物理租用线路的技术差异、成本结构与防封锁能力。',
-    href: '/network/iepl-vs-iplc/',
-    badge: '核心技术'
+    q: '为什么说IEPL和IPLC在日常使用中几乎感觉不出差别？',
+    a: '在底层物理介质上，IPLC是传统的专用物理电路，IEPL是以太网二层虚拟专线。两者的数据在跨越国境时都走封闭内网光缆，完全不经过公网防火墙，因此两者的抗封锁能力和网络延迟在理论上高度一致。用户端体验的好坏，主要取决于服务商在专线上购买的有效带宽是否充裕、以及中转入口机房的网络性能。',
   },
   {
-    title: 'BGP 智能调度与多线接入原理',
-    slug: 'bgp-transit',
-    desc: '国内入口如何通过 Border Gateway Protocol 识别电信/联通/移动并动态切至最优中转。',
-    href: '/network/iepl-vs-iplc/#bgp-concept',
-    badge: '入口优化'
+    q: '为什么香港节点的延迟最低，但晚高峰有时反而会卡？',
+    a: '国内沿海城市到香港的物理直线距离最近（深圳到香港光纤传输仅需1至3毫秒），因此香港节点的Ping值通常低至20到40毫秒。但正因为延迟低，几乎所有用户在刷网页或玩游戏时都会首选香港节点，导致晚高峰期间香港专线带宽最容易被塞满。遇到这种情况，切换到负载较轻的日本或新加坡节点体验往往更平稳。',
   },
   {
-    title: '流量倍率陷阱与计量机制',
-    slug: 'bandwidth-multipliers',
-    desc: '揭秘为什么 0.5x、1.0x、3.0x 倍率会对真实流量消耗产生决定性影响。',
-    href: '/network/iepl-vs-iplc/#multipliers',
-    badge: '避坑指南'
+    q: '高倍率节点（如3.0x或5.0x）到底是不是智商税？',
+    a: '不一定。服务商设置高倍率通常是因为该节点的上游采购成本极其昂贵，例如原生香港商宽、日本家宽或独享大带宽IPLC专线。如果用来处理关键的跨国视频会议、大额交易或AI核心任务，高倍率节点能提供更高的抗拥塞优先级；但如果用来下载大文件或看4K电影，高倍率节点会极速耗尽套餐，属于不必要的浪费。',
   },
   {
-    title: '网络延迟 (RTT) 与抖动 (Jitter) 指标',
-    slug: 'latency-and-jitter',
-    desc: '为什么 20ms 的 ping 值依然可能出现卡顿？理解丢包率与 TCP 拥塞控制。',
-    href: '/network/iepl-vs-iplc/#jitter',
-    badge: '性能指标'
-  }
+    q: '网络丢包率和延迟，哪个对实际使用影响更大？',
+    a: '丢包率对日常使用的破坏性远大于延迟。在TCP协议下，一旦出现百分之三的丢包，传输拥塞控制机制就会强制降速并要求重传，导致网页卡住或视频缓冲；如果丢包率能稳定压制在千分之一以下，哪怕物理延迟达到150毫秒（如美国节点），浏览网页和观看4K视频依然能够做到秒开。',
+  },
+  {
+    q: '公网直连、公网中转与内网专线有什么根本区别？',
+    a: '公网直连是用户本地直接通过国际公网路由连接境外服务器，晚高峰国际出口拥堵严重且极易被干扰；公网中转是国内服务器先在境内接收请求，再通过公网隧道转发给境外落地机，入口稳定但跨界依然走公网；内网专线则是从国内机房通过租用的封闭海缆直接将数据送达境外机房，彻底脱离公网。',
+  },
+  {
+    q: '为什么光纤测速有物理极限，不可能做到零延迟？',
+    a: '光在真空中的传播速度约为每秒30万公里，但在通信石英光纤中由于折射率影响，光信号的实际传输速度大约为每秒20万公里。加上光缆铺设并非绝对直线、沿途需要经过光放大器、交换机路由转发，往返两千公里的物理距离至少需要20毫秒以上的物理极限时延。',
+  },
+  {
+    q: 'BGP多线入口是如何优化本地宽带访问的？',
+    a: '不同用户的本地宽带分属电信、联通、移动或教育网。传统单线入口如果遇到跨运营商互联互通就会产生高延迟。BGP机房同时接入多家运营商的骨干网，能够根据用户的来路IP自动分配最匹配的就近入口，从根本上解决“移动宽带连电信入口卡顿”的问题。',
+  },
+  {
+    q: '如何识别服务商是否拿普通中转假冒真实IEPL专线？',
+    a: '在晚高峰（21:00-22:30）进行持续MTR链路追踪测试。真实专线由于在内网光纤中传输，境内入口到境外出口之间的跳数非常少，且不会出现公网国际出口处的周期性严重丢包；如果晚高峰Ping值剧烈波动、跳数暴增且伴随百分之二十以上的丢包，大概率属于廉价公网中转伪装。',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: networkFaq.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.a,
+      },
+    })),
+  },
 ];
 ---
 
 <BaseLayout
-  title="网络技术知识库 - IEPL、IPLC、BGP 与跨境网络加速架构解析"
-  description="深入了解跨境网络技术：解析 IEPL 国际以太网专线、IPLC 私有租用线路、BGP 智能入口调度、原生住宅 IP 识别与晚高峰抗封锁机制。"
+  title="网络技术知识库 (2026) - IEPL、IPLC 专线架构、BGP 调度与节点拓扑全景解析"
+  description="深入了解跨境网络底层工程：解析 IEPL 国际以太网专线、IPLC 私有租用线路、BGP 智能入口调度、骨干海缆传输与晚高峰抗封锁机制。"
   breadcrumbs={breadcrumbs}
+  schema={schema}
 >
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
-    <header class="pb-6 border-b border-brand-border">
-      <div class="flex items-center gap-2 mb-2">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+    <!-- Header -->
+    <header class="border-b border-brand-border pb-8">
+      <div class="flex items-center gap-2 mb-3">
         <span class="px-2.5 py-0.5 text-xs font-semibold rounded bg-cyan-100 text-cyan-800">
           底层技术与基础设施
         </span>
-        <span class="text-xs text-brand-muted">更新日期：2026-11-24</span>
+        <span class="text-xs text-brand-muted">更新日期：2026-11-24 · 网络工程解析</span>
       </div>
-      <h1 class="text-2xl sm:text-3xl font-extrabold text-brand-dark tracking-tight">
-        网络加速技术知识库：专线架构、BGP 调度与拓扑原理解析
+      <h1 class="text-2xl sm:text-4xl font-extrabold text-brand-dark tracking-tight leading-tight">
+        跨境专线架构、BGP 调度与网络传输技术全景
       </h1>
-      <p class="text-sm text-brand-muted mt-2 max-w-3xl leading-relaxed">
-        了解网络背后的工作机制，是避开虚假营销宣传、选择适合自己网络环境服务商的前提。本专题以客观工程视角，拆解常见网络概念与链路工作原理。
+      <p class="text-sm sm:text-base text-brand-muted mt-3 max-w-4xl leading-relaxed">
+        了解网络背后的工作机制，是避开虚假营销宣传、选择适合自己网络环境服务商的前提。本专题以客观工程视角，拆解常见网络架构、骨干物理海缆传输与晚高峰抗拥塞原理。
       </p>
+
+      <!-- Answer-First Box -->
+      <div class="mt-6 p-5 rounded-xl bg-cyan-50/70 border border-cyan-200/80 text-brand-text space-y-3">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-cyan-600"></span>
+          <span class="font-bold text-sm text-cyan-950">网络技术核心结论先行（Answer-First）</span>
+        </div>
+        <p class="text-xs sm:text-sm text-slate-800 leading-relaxed">
+          判断网络线路优劣的三条铁律：第一，<strong>传输质量层级为：IPLC/IEPL 物理专线 &gt; BGP 公网中转 &gt; 普通单线中转 &gt; 直连</strong>；第二，<strong>低延迟不等于不卡顿</strong>，晚高峰丢包率低于百分之一且抖动低于五毫秒才是丝滑播放4K视频的先决条件；第三，<strong>根据物理地理法则选节点</strong>，日常主力选香港/日本节点保证极低交互延迟，AI与官方限制业务选美/新节点规避风控。
+        </p>
+      </div>
     </header>
 
     <!-- Visual Observatory Diagram -->
-    <NetworkPathObservatory
-      brandName="典型跨境专线拓扑 (标准工程实现)"
-      networkType="IEPL / IPLC 物理专线"
-      protocol="VLESS / Shadowsocks / Hysteria 2"
-      transitBGP="上海/广州 BGP 多线接入入口"
-      overseasEgress="香港/东京/洛杉矶原生住宅落地"
-    />
+    <section class="space-y-4">
+      <div class="border-b border-slate-200 pb-3">
+        <h2 class="text-xl font-bold text-brand-dark">端到端跨境专线数据流转拓扑图 (Dark Network Observatory)</h2>
+        <p class="text-xs text-brand-muted mt-0.5">展示本地客户端如何经由 BGP 入口与封闭专线直达境外原生出口</p>
+      </div>
+      <NetworkPathObservatory
+        brandName="标准企业级专线拓扑 (标准工程实现)"
+        networkType="IEPL / IPLC 物理专线"
+        protocol="VLESS / Shadowsocks / Hysteria 2"
+        transitBGP="上海/广州 BGP 多线接入入口"
+        overseasEgress="香港/东京/洛杉矶原生住宅落地"
+      />
+    </section>
 
-    <!-- Topics Grid -->
+    <!-- Deep-dive Subpage Link -->
+    <div class="p-5 rounded-xl border border-blue-200 bg-blue-50/60 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div>
+        <h3 class="font-bold text-base text-brand-dark">技术深研：IEPL 专线与 IPLC 专线全面横向技术对比</h3>
+        <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+          解析以太网二层专线与纯物理租用线路的技术差异、成本结构、海缆路由与晚高峰抗封锁性能。
+        </p>
+      </div>
+      <a
+        href="/network/iepl-vs-iplc/"
+        class="px-4 py-2 rounded-lg bg-brand-link hover:bg-blue-700 text-white font-semibold text-xs transition-colors shrink-0"
+      >
+        阅读专线深度技术解析 →
+      </a>
+    </div>
+
+    <!-- Section 1: 4 Tiers of Network Transit -->
     <section class="space-y-6">
-      <h2 class="text-xl font-bold text-brand-dark pb-2 border-b border-slate-200">
-        核心网络技术专题
-      </h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {topics.map((t) => (
-          <a
-            href={t.href}
-            class="p-5 rounded-xl border border-brand-border hover:border-brand-link bg-white shadow-xs hover:shadow-md transition-all group flex flex-col justify-between"
-          >
-            <div>
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-blue-50 text-brand-link border border-blue-100">
-                  {t.badge}
-                </span>
-                <span class="text-xs text-slate-400 group-hover:translate-x-1 transition-transform">→</span>
-              </div>
-              <h3 class="text-base font-bold text-brand-dark group-hover:text-brand-link mb-1.5">
-                {t.title}
-              </h3>
-              <p class="text-xs text-slate-600 leading-relaxed">
-                {t.desc}
-              </p>
-            </div>
-            <div class="mt-4 pt-3 border-t border-slate-100 text-xs font-semibold text-brand-link">
-              阅读完整解析 →
-            </div>
-          </a>
+      <div class="border-b border-slate-200 pb-3">
+        <h2 class="text-xl font-bold text-brand-dark">四大网络传输架构层级与体验阶梯</h2>
+        <p class="text-xs text-brand-muted mt-1">从完全无保护的公网直连到昂贵的端到端物理专线架构演进</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-xs">
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-2.5">
+          <div class="text-xs font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700 w-fit">第一梯队</div>
+          <h3 class="font-bold text-sm text-brand-dark">纯物理专线 (IPLC/IEPL)</h3>
+          <p class="text-slate-600 leading-relaxed">
+            数据在境内机房打包后，进入运营商封闭的内网海缆或跨境陆缆，不过公网防火墙，延迟固定，晚高峰零丢包。成本最高，也是高端服务商的核心骨干。
+          </p>
+        </div>
+
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-2.5">
+          <div class="text-xs font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-700 w-fit">第二梯队</div>
+          <h3 class="font-bold text-sm text-brand-dark">BGP 混合公网中转</h3>
+          <p class="text-slate-600 leading-relaxed">
+            国内入口部署在高质量BGP机房，接入三网优化路由。跨越国境时使用公网隧道加密传输。平时体验接近专线，但在网络敏感时期偶尔受到波动影响。
+          </p>
+        </div>
+
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-2.5">
+          <div class="text-xs font-bold px-2 py-0.5 rounded bg-amber-50 text-amber-700 w-fit">第三梯队</div>
+          <h3 class="font-bold text-sm text-brand-dark">普通单线公网中转</h3>
+          <p class="text-slate-600 leading-relaxed">
+            仅部署单一运营商（如普通移动或联通IDC）的入门服务器中转。外省电信或移动跨网访问时入口延迟极高，晚高峰容易出现单侧拥堵。
+          </p>
+        </div>
+
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-2.5">
+          <div class="text-xs font-bold px-2 py-0.5 rounded bg-rose-50 text-rose-700 w-fit">第四梯队</div>
+          <h3 class="font-bold text-sm text-brand-dark">公网直连 (Direct)</h3>
+          <p class="text-slate-600 leading-relaxed">
+            无国内中转节点，客户端直接向境外VPS发起连接。极度依赖运营商国际出口质量，晚高峰丢包率往往超过百分之三十，基本无法稳定使用。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Regional Node Characteristics -->
+    <section class="space-y-6">
+      <div class="border-b border-slate-200 pb-3">
+        <h2 class="text-xl font-bold text-brand-dark">全球四大主流地区节点特性与应用场景</h2>
+        <p class="text-xs text-brand-muted mt-1">根据具体访问目标科学选择出口国家或地区，达到速度与合规的最佳平衡</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs sm:text-sm">
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-2">
+          <h3 class="font-bold text-base text-brand-dark flex items-center gap-2">
+            <span>🇭🇰</span> 中国香港节点 (Hong Kong)
+          </h3>
+          <p class="text-slate-600 leading-relaxed">
+            物理距离极短，国内沿海直连延迟通常在15至35毫秒左右，非常适合日常网页浏览、外贸后台管理与超低延迟游戏。缺点是 OpenAI、Anthropic 官方不支持香港地区访问，且晚高峰骨干网容易拥塞。
+          </p>
+        </div>
+
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-2">
+          <h3 class="font-bold text-base text-brand-dark flex items-center gap-2">
+            <span>🇯🇵</span> 日本东京/大阪节点 (Japan)
+          </h3>
+          <p class="text-slate-600 leading-relaxed">
+            亚太地区海缆枢纽，对华东和华北用户延迟极具优势（通常在40至60毫秒）。网络带宽充沛，流媒体版权库极其丰富，且全面支持各大海外 AI 服务，是综合稳定性最高的首选节点。
+          </p>
+        </div>
+
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-2">
+          <h3 class="font-bold text-base text-brand-dark flex items-center gap-2">
+            <span>🇸🇬</span> 新加坡节点 (Singapore)
+          </h3>
+          <p class="text-slate-600 leading-relaxed">
+            东南亚数据中心核心，华南用户访问延迟仅需40至60毫秒。对 TikTok 东南亚业务、跨境电商 Shopee/Lazada 以及海外 AI 工具具有优秀的兼容性，是香港节点的绝佳备用选择。
+          </p>
+        </div>
+
+        <div class="p-5 rounded-xl border border-slate-200 bg-white space-y-2">
+          <h3 class="font-bold text-base text-brand-dark flex items-center gap-2">
+            <span>🇺🇸</span> 美国洛杉矶/硅谷节点 (United States)
+          </h3>
+          <p class="text-slate-600 leading-relaxed">
+            跨太平洋光缆直达，受物理距离限制，单程延迟在130至170毫秒之间。但美国节点拥有全球最大的网络带宽储备、最纯净的流媒体大剧版权，以及所有欧美原生业务的权威服务支持。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="space-y-4">
+      <div class="border-b border-slate-200 pb-3">
+        <h2 class="text-xl font-bold text-brand-dark">线路与专线技术常见疑问 (FAQ)</h2>
+        <p class="text-xs text-brand-muted mt-1">解答关于专线真伪辨别、倍率扣费与延迟物理极限的关键疑问</p>
+      </div>
+
+      <div class="space-y-3">
+        {networkFaq.map((item, index) => (
+          <details class="group border border-slate-200 rounded-xl bg-white p-4 transition-colors hover:border-slate-300">
+            <summary class="flex items-center justify-between cursor-pointer font-semibold text-xs sm:text-sm text-brand-dark select-none">
+              <span class="flex items-center gap-2">
+                <span class="text-cyan-600 font-mono text-xs">Q{index + 1}.</span>
+                {item.q}
+              </span>
+              <span class="text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+            </summary>
+            <p class="mt-3 text-xs sm:text-sm text-slate-600 leading-relaxed pl-6 border-t border-slate-100 pt-3">
+              {item.a}
+            </p>
+          </details>
         ))}
       </div>
     </section>
 
-    <!-- Technical FAQ Glossary -->
-    <section class="p-6 rounded-xl border border-slate-200 bg-slate-50 space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed">
-      <h3 class="text-base font-bold text-brand-dark">常见术语速查与关键定义</h3>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <!-- Footer Interlinks -->
+    <footer class="pt-8 border-t border-brand-border space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-3 text-xs text-brand-muted">
         <div>
-          <strong class="text-slate-900 block mb-1">什么是原生 IP (Native IP)？</strong>
-          指所属运营商在本地互联网注册机构（如 APNIC、ARIN）登记归属为本地的 IP。常被 Netflix、TikTok 等平台作为判定真实海外用户的核心依据。
+          <span>专题交叉穿透：</span>
+          <a href="/network/iepl-vs-iplc/" class="text-brand-link hover:underline font-medium ml-1">IEPL vs IPLC 深度解析</a>
+          <span class="mx-1.5 text-slate-300">·</span>
+          <a href="/pricing/" class="text-brand-link hover:underline font-medium">各专线套餐价格核算</a>
+          <span class="mx-1.5 text-slate-300">·</span>
+          <a href="/recommend/" class="text-brand-link hover:underline font-medium">专线加速品牌推荐</a>
+          <span class="mx-1.5 text-slate-300">·</span>
+          <a href="/compatibility/" class="text-brand-link hover:underline font-medium">AI与流媒体解锁状态</a>
         </div>
-        <div>
-          <strong class="text-slate-900 block mb-1">什么是住宅 IP (Residential IP)？</strong>
-          指由海外普通家庭宽带运营商（如 AT&T、Comcast）分配给家庭用户的 IP 地址，风控信任度远高于数据中心机房 IP。
-        </div>
+        <a href="/brands/" class="text-brand-link font-semibold hover:underline">
+          查阅 31 家品牌专线参数库 →
+        </a>
       </div>
-    </section>
+    </footer>
   </div>
 </BaseLayout>
