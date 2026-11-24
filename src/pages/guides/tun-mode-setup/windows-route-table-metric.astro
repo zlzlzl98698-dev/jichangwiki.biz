@@ -1,0 +1,194 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const breadcrumbs = [
+  { name: '教程排障', href: '/guides/' },
+  { name: 'TUN 模式深度配置', href: '/guides/tun-mode-setup/' },
+  { name: 'Windows 路由表最长前缀匹配与冲突排查', href: '/guides/tun-mode-setup/windows-route-table-metric/' },
+];
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: 'Windows 路由表最长前缀匹配与冲突排查：教你读懂 route print 与跃点数',
+  description: '开启 TUN 模式后电脑频繁出现网关冲突、路由死锁甚至完全上不了网？深度解析 Windows IP 路由栈的 LPM（最长前缀匹配）机制与 Interface Metric 跃点数优先级，附带一键排查与重置指令。',
+  datePublished: '2026-10-28',
+  dateModified: '2026-11-24',
+  inLanguage: 'zh-CN',
+  author: {
+    '@type': 'Organization',
+    name: '机场 Wiki 评测实验室',
+    url: 'https://jichangwiki.biz/',
+  },
+};
+
+const faqs = [
+  {
+    q: '什么是路由表的最长前缀匹配原则（Longest Prefix Match, LPM）？',
+    a: '当操作系统内核决定将一个 IP 数据包发送到哪一个网络接口（物理网卡或虚拟网卡）时，它会在内存路由表中进行掩码匹配。子网掩码越长（即前缀越精准，如 /32 或 /24），其匹配优先级越高。例如，针对 0.0.0.0/0（默认缺省网关）与 128.0.0.0/1 的两条路由，如果目标 IP 为 142.250.x.x，系统会优先选择前缀更长、更精准的 128.0.0.0/1 路由。代理软件正是利用这一天然机制，通过添加两段 /1 的细分路由（0.0.0.0/1 和 128.0.0.0/1），在不删除用户原有物理默认网关的前提下，将全网流量无缝抢占并导流至 TUN 网卡。'
+  },
+  {
+    q: '为什么多网卡环境（如同时插有有线网卡和 Wi-Fi 无线网卡）容易引发 TUN 路由死锁？',
+    a: '多网卡共存时，Windows 自动跃点（Automatic Metric）机制会根据物理链路速率动态给网卡分配跃点数。如果代理客户端在向代理节点建立加密连接时，未能明确将真实节点的外部 IP 绑定到物理网卡网关上，或者物理网卡的跃点数计算错误，就会导致“发往代理节点自身的加密包再次被错误路由进 TUN 虚拟网卡”，形成自己转发自己的死循环（Routing Loop），瞬间导致全网断流。'
+  },
+  {
+    q: '如果路由表被污染乱套了，应该如何一条命令恢复系统最初默认状态？',
+    a: '以管理员身份打开命令提示符（CMD），输入命令 `route -f` 强制清空除系统持久路由外的所有动态条目，随后运行 `netsh int ip reset` 重置 TCP/IP 协议栈，最后重启电脑。系统开机时会自动通过物理网卡的 DHCP 协议重新获取干净纯粹的默认网关路由表。'
+  }
+];
+---
+
+<BaseLayout
+  title="Windows 路由表排查指南 (2026最新) - route print 读懂 Metric 跃点数"
+  description="深度拆解 Windows 路由表最长前缀匹配（LPM）与跃点数冲突排查。手把手教你使用 route print 诊断 TUN 模式网关冲突与路由死锁，提供一键重置指令。"
+  breadcrumbs={breadcrumbs}
+  schema={articleSchema}
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+    <!-- Header -->
+    <header class="pb-6 border-b border-brand-border">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="px-2.5 py-0.5 text-xs font-semibold rounded bg-cyan-100 text-cyan-800">
+          网络协议栈深度排障
+        </span>
+        <span class="text-xs text-brand-muted">更新时间 2026-11-24 · 建议阅读 8 分钟</span>
+      </div>
+
+      <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-brand-dark tracking-tight leading-tight">
+        Windows 路由表最长前缀匹配与冲突排查：教你读懂 route print 与跃点数
+      </h1>
+
+      <p class="text-sm text-slate-600 mt-4 leading-relaxed">
+        开启代理软件的 TUN 虚拟网卡模式后，很多用户发现连局域网打印机、NAS 或者某些内部办公系统突然打不开了，或者关闭软件后所有流量依然无端超时。这本质上是 Windows 内核路由表中的 <strong>跃点数（Metric）与前缀优先级</strong> 发生了冲突。本文教你彻底读懂并掌控路由表。
+      </p>
+    </header>
+
+    <!-- Key Takeaway Box -->
+    <div class="p-5 rounded-xl border border-cyan-200 bg-cyan-50/60 text-xs sm:text-sm text-slate-800 leading-relaxed space-y-2">
+      <strong class="text-brand-dark block text-base font-bold">核心决策与路由铁律</strong>
+      <ul class="list-disc list-inside space-y-1.5 text-slate-700">
+        <li><strong>最长掩码优先原则：</strong>子网掩码长度越大（越具体），优先级越高；当掩码长度相同时，<strong>跃点数（Metric）越小</strong>的路由越优先被采纳。</li>
+        <li><strong>TUN 导流标准招数：</strong>注入 <code>0.0.0.0/1</code> 和 <code>128.0.0.0/1</code>，以长度为 1 的掩码碾压原生物理默认网关（<code>0.0.0.0/0</code>），实现安全覆盖。</li>
+        <li><strong>死锁防范：</strong>客户端必须为代理节点的真实服务器 IP 添加一条显式的 <code>32</code> 掩码直连路由指向物理默认网关，防止流量陷入黑洞死循环。</li>
+      </ul>
+    </div>
+
+    <!-- Chapter 1 -->
+    <section class="space-y-4">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        一、使用 route print 命令读懂 Windows 路由表全貌
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        以管理员身份打开 PowerShell 或 CMD，输入 <code>route print -4</code> 查看当前系统的 IPv4 活动路由表：
+      </p>
+
+      <div class="bg-slate-900 text-slate-100 p-4 rounded-lg text-xs font-mono overflow-x-auto space-y-1">
+        <p class="text-slate-400"># 典型的正常系统路由表示例输出：</p>
+        <pre><code>===========================================================================
+活动路由:
+网络目标        网络掩码          网关            接口          跃点数
+0.0.0.0         0.0.0.0          192.168.1.1     192.168.1.100  25
+127.0.0.0       255.0.0.0        在链路上         127.0.0.1      331
+192.168.1.0     255.255.255.0    在链路上         192.168.1.100  281
+224.0.0.0       240.0.0.0        在链路上         127.0.0.1      331
+===========================================================================</code></pre>
+      </div>
+
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        <strong>五大核心字段含义解读：</strong>
+      </p>
+      <ul class="list-disc list-inside text-xs sm:text-sm text-slate-700 space-y-1.5 pl-2">
+        <li><strong>网络目标 (Network Destination)：</strong>该条路由所指向的目的地网段或主机 IP。</li>
+        <li><strong>网络掩码 (Netmask)：</strong>用来决定该路由的精准度。<code>0.0.0.0</code> 代表全网匹配，<code>255.255.255.255</code> 代表单机独立匹配。</li>
+        <li><strong>网关 (Gateway)：</strong>数据包从本机发出后，下一跳（Next Hop）由谁负责转发。通常是光猫路由器 IP 或虚拟网卡 IP。</li>
+        <li><strong>接口 (Interface)：</strong>承担该通信任务的本机网卡物理/虚拟 IP 地址。</li>
+        <li><strong>跃点数 (Metric)：</strong>路由开销代价。数字越小代表链路质量越高、系统越优先走该通道。</li>
+      </ul>
+    </section>
+
+    <!-- Chapter 2 -->
+    <section class="space-y-4">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        二、TUN 模式如何通过最长前缀匹配优雅劫持全网流量
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        初学者常误以为代理软件开启 TUN 模式时，会把操作系统的默认物理路由（<code>0.0.0.0/0</code>）删掉。如果直接删除，一旦软件意外崩溃，用户电脑将彻底无法联网。
+      </p>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        现代客户端（如 Mihomo / Clash Verge Rev）采用的是极其精妙的<strong>“双半网段覆盖法（Two Half-Subnet Method）”</strong>：
+      </p>
+
+      <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-700 space-y-2">
+        <strong class="font-bold text-slate-900">客户端向系统动态注入两条全新路由：</strong>
+        <p class="font-mono text-blue-700">1. 目标 0.0.0.0，掩码 128.0.0.0（涵盖 0.0.0.0 到 127.255.255.255）</p>
+        <p class="font-mono text-blue-700">2. 目标 128.0.0.0，掩码 128.0.0.0（涵盖 128.0.0.0 到 255.255.255.255）</p>
+        <p class="leading-relaxed">
+          这两条路由的子网掩码长度均为 <code>1</code>（二进制最高位固定）。根据最长前缀匹配原则，<code>/1</code> 的匹配精度在数学上必然高于原有物理网卡的 <code>/0</code>。因此，全系统的所有出网流量被自动截获送往 Wintun 虚拟网卡，而原有的物理网关路由毫发无损地保留在后台。当软件正常退出时，只需删除这两条 <code>/1</code> 路由，系统瞬间无缝回退到纯净物理直连状态。
+        </p>
+      </div>
+    </section>
+
+    <!-- Chapter 3 -->
+    <section class="space-y-4">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        三、常见路由环路冲突与排障实战
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        在实际生产环境中，以下两类故障最为频发：
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="p-4 rounded-lg bg-white border border-slate-200 shadow-2xs space-y-2">
+          <h3 class="font-bold text-slate-900 text-sm text-red-600">故障一：局域网私有网段（192.168.x.x）被误劫持</h3>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            表现：开启 TUN 后，NAS 管理后台打不开，局域网共享文件断连。<br/>
+            原因：客户端路由表配置过于激进，未显式排除局域网保留地址。<br/>
+            解决办法：在客户端设置中开启<strong>“绕过局域网地址（Bypass Private Networks）”</strong>，或者手动在配置文件中为 <code>192.168.0.0/16</code> 与 <code>10.0.0.0/8</code> 添加指向物理网卡的最高优先级直连静态路由。
+          </p>
+        </div>
+
+        <div class="p-4 rounded-lg bg-white border border-slate-200 shadow-2xs space-y-2">
+          <h3 class="font-bold text-slate-900 text-sm text-red-600">故障二：残存死锁路由导致无法获取 IP</h3>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            表现：关闭软件或强制断电开机后，物理网卡显示“无 Internet 访问权限”。<br/>
+            原因：未正常删除的 <code>/1</code> 虚拟路由依然常驻在注册表中，导致流量持续发往死接口。<br/>
+            解决办法：以管理员身份运行 CMD，输入：<br/>
+            <code>route delete 0.0.0.0</code><br/>
+            <code>route delete 128.0.0.0</code><br/>
+            随后重启网卡适配器即可秒级脱困。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Accordion -->
+    <section class="space-y-4 pt-6 border-t border-brand-border">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark">
+        常见疑难解答（FAQ）
+      </h2>
+      <div class="space-y-3">
+        {faqs.map((faq) => (
+          <details class="group bg-white rounded-xl border border-slate-200 p-4 transition-all hover:border-slate-300">
+            <summary class="flex justify-between items-center font-bold text-brand-dark text-sm sm:text-base cursor-pointer list-none">
+              <span>{faq.q}</span>
+              <span class="text-brand-muted group-open:rotate-180 transition-transform text-xs">▼</span>
+            </summary>
+            <p class="text-xs sm:text-sm text-slate-600 mt-3 leading-relaxed pt-3 border-t border-slate-100">
+              {faq.a}
+            </p>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- Related Navigation -->
+    <footer class="pt-6 border-t border-brand-border flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-brand-muted">
+      <a href="/guides/tun-mode-setup/" class="text-brand-link font-medium hover:underline flex items-center gap-1">
+        ← 返回 TUN 模式深度配置专题
+      </a>
+      <a href="/guides/tun-mode-setup/wintun-driver-architecture/" class="hover:text-brand-link">
+        阅读 Wintun 驱动源码级架构解析 →
+      </a>
+    </footer>
+  </div>
+</BaseLayout>

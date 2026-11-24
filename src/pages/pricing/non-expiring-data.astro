@@ -362,41 +362,59 @@ const faqs = [
       </p>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-3">
-        <div class="p-3.5 rounded-xl border border-slate-200 bg-white space-y-1.5 hover:shadow-xs transition-shadow">
-          <span class="text-[10px] font-mono font-bold text-brand-link uppercase tracking-wider">精算对比</span>
-          <h3 class="font-bold text-xs text-brand-dark">不限时流量包与月付套餐拐点计算器</h3>
+        <a href="/pricing/cheap-airports-comparison/1gbps-bandwidth-cost/" class="group block p-3.5 rounded-xl border border-slate-200 bg-white space-y-1.5 hover:border-brand-link hover:shadow-md transition-all">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-mono font-bold text-brand-link uppercase tracking-wider">精算对比</span>
+            <span class="text-xs text-slate-400 group-hover:text-brand-link group-hover:translate-x-0.5 transition-all">阅读精算 →</span>
+          </div>
+          <h3 class="font-bold text-xs text-brand-dark group-hover:text-brand-link transition-colors">不限时流量包与月付套餐拐点计算器</h3>
           <p class="text-[11px] text-slate-500 leading-relaxed">输入你每月的平均消耗量，一秒测算出哪种计费模式在一年周期内最省钱。</p>
-        </div>
+        </a>
 
-        <div class="p-3.5 rounded-xl border border-slate-200 bg-white space-y-1.5 hover:shadow-xs transition-shadow">
-          <span class="text-[10px] font-mono font-bold text-emerald-700 uppercase tracking-wider">高可用容灾</span>
-          <h3 class="font-bold text-xs text-brand-dark">在 Clash 中配置主月付 + 备用不限时的自动 Fallback 策略组</h3>
+        <a href="/pricing/non-expiring-data/dual-sim-redundancy-setup/" class="group block p-3.5 rounded-xl border border-slate-200 bg-white space-y-1.5 hover:border-emerald-700 hover:shadow-md transition-all">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-mono font-bold text-emerald-700 uppercase tracking-wider">高可用容灾</span>
+            <span class="text-xs text-slate-400 group-hover:text-emerald-700 group-hover:translate-x-0.5 transition-all">阅读实战 →</span>
+          </div>
+          <h3 class="font-bold text-xs text-brand-dark group-hover:text-emerald-700 transition-colors">主力专线加不限时流量包：双持容灾架构</h3>
           <p class="text-[11px] text-slate-500 leading-relaxed">手把手教你编写策略组代码，让主用节点宕机时毫秒级自动切换到不限时备用包。</p>
-        </div>
+        </a>
 
-        <div class="p-3.5 rounded-xl border border-slate-200 bg-white space-y-1.5 hover:shadow-xs transition-shadow">
-          <span class="text-[10px] font-mono font-bold text-amber-700 uppercase tracking-wider">防偷跑调优</span>
-          <h3 class="font-bold text-xs text-brand-dark">Windows 系统后台遥测阻断：防止系统自动更新吞噬不限时流量</h3>
+        <a href="/guides/tun-mode-setup/" class="group block p-3.5 rounded-xl border border-slate-200 bg-white space-y-1.5 hover:border-amber-700 hover:shadow-md transition-all">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-mono font-bold text-amber-700 uppercase tracking-wider">防偷跑调优</span>
+            <span class="text-xs text-slate-400 group-hover:text-amber-700 group-hover:translate-x-0.5 transition-all">阅读调优 →</span>
+          </div>
+          <h3 class="font-bold text-xs text-brand-dark group-hover:text-amber-700 transition-colors">Windows 系统后台遥测阻断：防止系统自动更新偷跑</h3>
           <p class="text-[11px] text-slate-500 leading-relaxed">通过配置 hosts 与分流白名单，彻底禁止 Windows Update 走代理通道偷跑配额。</p>
-        </div>
+        </a>
 
-        <div class="p-3.5 rounded-xl border border-slate-200 bg-white space-y-1.5 hover:shadow-xs transition-shadow">
-          <span class="text-[10px] font-mono font-bold text-purple-700 uppercase tracking-wider">行业财务</span>
-          <h3 class="font-bold text-xs text-brand-dark">为什么头部顶级大厂通常限制不限时流量包的发售配额？</h3>
+        <a href="/pricing/monthly-plans/game-theory-monthly-vs-yearly/" class="group block p-3.5 rounded-xl border border-slate-200 bg-white space-y-1.5 hover:border-purple-700 hover:shadow-md transition-all">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-mono font-bold text-purple-700 uppercase tracking-wider">行业财务</span>
+            <span class="text-xs text-slate-400 group-hover:text-purple-700 group-hover:translate-x-0.5 transition-all">阅读揭秘 →</span>
+          </div>
+          <h3 class="font-bold text-xs text-brand-dark group-hover:text-purple-700 transition-colors">为什么头部顶级大厂通常限制不限时流量包发售？</h3>
           <p class="text-[11px] text-slate-500 leading-relaxed">从电信机房固定月租与并发连接池管理，揭秘大厂控制非周期用户的工程逻辑。</p>
-        </div>
+        </a>
 
-        <div class="p-3.5 rounded-xl border border-slate-200 bg-white space-y-1.5 hover:shadow-xs transition-shadow">
-          <span class="text-[10px] font-mono font-bold text-cyan-700 uppercase tracking-wider">多端管理</span>
-          <h3 class="font-bold text-xs text-brand-dark">在手机、iPad 与笔记本上共享不限时订阅的最佳姿势</h3>
+        <a href="/clients/ios/us-apple-id-registration-guide/" class="group block p-3.5 rounded-xl border border-slate-200 bg-white space-y-1.5 hover:border-cyan-700 hover:shadow-md transition-all">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-mono font-bold text-cyan-700 uppercase tracking-wider">多端管理</span>
+            <span class="text-xs text-slate-400 group-hover:text-cyan-700 group-hover:translate-x-0.5 transition-all">阅读指南 →</span>
+          </div>
+          <h3 class="font-bold text-xs text-brand-dark group-hover:text-cyan-700 transition-colors">在手机、iPad 与笔记本上共享不限时订阅避坑指南</h3>
           <p class="text-[11px] text-slate-500 leading-relaxed">设备数量限制、在线 IP 冲突排查与订阅安全管理的完整避坑指南。</p>
-        </div>
+        </a>
 
-        <div class="p-3.5 rounded-xl border border-slate-200 bg-white space-y-1.5 hover:shadow-xs transition-shadow">
-          <span class="text-[10px] font-mono font-bold text-rose-700 uppercase tracking-wider">退款维权</span>
-          <h3 class="font-bold text-xs text-brand-dark">不限时套餐购买后遭遇全线变质，如何申请按剩余容量比例退费？</h3>
+        <a href="/evidence/refunds-and-risks/chargeback-credit-card-dispute/" class="group block p-3.5 rounded-xl border border-slate-200 bg-white space-y-1.5 hover:border-rose-700 hover:shadow-md transition-all">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-mono font-bold text-rose-700 uppercase tracking-wider">退款维权</span>
+            <span class="text-xs text-slate-400 group-hover:text-rose-700 group-hover:translate-x-0.5 transition-all">阅读维权 →</span>
+          </div>
+          <h3 class="font-bold text-xs text-brand-dark group-hover:text-rose-700 transition-colors">不限时套餐遭遇全线变质：按剩余容量维权指南</h3>
           <p class="text-[11px] text-slate-500 leading-relaxed">解析消费者权益保护原则在按量计费软件产品中的具体适用与工单沟通模板。</p>
-        </div>
+        </a>
       </div>
     </section>
 

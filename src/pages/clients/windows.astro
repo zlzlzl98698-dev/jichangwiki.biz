@@ -400,53 +400,71 @@ const faqs = [
       </p>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
-          <span class="text-xs font-bold text-blue-600">三级选题 01</span>
-          <h3 class="font-bold text-sm text-brand-dark">Windows 终端代理完全指南</h3>
+        <a href="/clients/windows/terminal-proxy-powershell-git/" class="group block p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs hover:border-blue-500 hover:shadow-md transition-all">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-blue-600">三级选题 01</span>
+            <span class="text-xs text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all">阅读实操 →</span>
+          </div>
+          <h3 class="font-bold text-sm text-brand-dark group-hover:text-blue-600 transition-colors">Windows 终端代理完全指南</h3>
           <p class="text-xs text-slate-500 leading-relaxed">
             从 PowerShell、CMD 到 Git Bash 与 WSL2，系统讲解如何配置环境变量以彻底解决代码拉取与包管理器超时难题。
           </p>
-        </div>
+        </a>
 
-        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
-          <span class="text-xs font-bold text-blue-600">三级选题 02</span>
-          <h3 class="font-bold text-sm text-brand-dark">Wintun 驱动与 TAP 驱动深度对比</h3>
+        <a href="/guides/tun-mode-setup/wintun-driver-architecture/" class="group block p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs hover:border-blue-500 hover:shadow-md transition-all">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-blue-600">三级选题 02</span>
+            <span class="text-xs text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all">阅读解析 →</span>
+          </div>
+          <h3 class="font-bold text-sm text-brand-dark group-hover:text-blue-600 transition-colors">Wintun 驱动与 TAP 驱动深度对比</h3>
           <p class="text-xs text-slate-500 leading-relaxed">
             解剖 Windows 虚拟网络适配器的演化历程，揭秘为什么 Wintun 能将内存拷贝开销降低百分之七十并杜绝系统蓝屏。
           </p>
-        </div>
+        </a>
 
-        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
-          <span class="text-xs font-bold text-blue-600">三级选题 03</span>
-          <h3 class="font-bold text-sm text-brand-dark">Clash Verge Rev 扩展脚本实战</h3>
+        <a href="/clients/clash-verge-rev/" class="group block p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs hover:border-blue-500 hover:shadow-md transition-all">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-blue-600">三级选题 03</span>
+            <span class="text-xs text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all">查看教程 →</span>
+          </div>
+          <h3 class="font-bold text-sm text-brand-dark group-hover:text-blue-600 transition-colors">Clash Verge Rev 扩展脚本实战</h3>
           <p class="text-xs text-slate-500 leading-relaxed">
             利用 JavaScript / YAML 扩展机制实现自定义分流规则持久化，防止机场远程订阅更新强制覆盖个人策略。
           </p>
-        </div>
+        </a>
 
-        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
-          <span class="text-xs font-bold text-blue-600">三级选题 04</span>
-          <h3 class="font-bold text-sm text-brand-dark">Windows 外服游戏全锥型 NAT 优化</h3>
+        <a href="/clients/windows/uwp-loopback-exemption-fix/" class="group block p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs hover:border-blue-500 hover:shadow-md transition-all">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-blue-600">三级选题 04</span>
+            <span class="text-xs text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all">阅读排障 →</span>
+          </div>
+          <h3 class="font-bold text-sm text-brand-dark group-hover:text-blue-600 transition-colors">Windows UWP 微软商店断网与回环隔离修复</h3>
           <p class="text-xs text-slate-500 leading-relaxed">
-            针对 Steam、Epic 与战网联机联机需求，配置 Full Cone NAT 与 UDP 转发，彻底解决游戏组队跳 Ping 与掉线。
+            利用官方 CheckNetIsolation.exe 命令一键豁免微软应用商店与 Xbox 网络隔离，解决 0x80072EFD 报错。
           </p>
-        </div>
+        </a>
 
-        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
-          <span class="text-xs font-bold text-blue-600">三级选题 05</span>
-          <h3 class="font-bold text-sm text-brand-dark">WSL2 子系统全局代理最佳实践</h3>
+        <a href="/guides/tun-mode-setup/wsl2-mirrored-networking-tun/" class="group block p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs hover:border-blue-500 hover:shadow-md transition-all">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-blue-600">三级选题 05</span>
+            <span class="text-xs text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all">阅读实战 →</span>
+          </div>
+          <h3 class="font-bold text-sm text-brand-dark group-hover:text-blue-600 transition-colors">WSL2 子系统全局代理与镜像网络最佳实践</h3>
           <p class="text-xs text-slate-500 leading-relaxed">
             解决 Windows 11 下 WSL2 镜像网络模式（Mirrored Networking）与虚拟交换机的网络通信死锁与 DNS 劫持。
           </p>
-        </div>
+        </a>
 
-        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
-          <span class="text-xs font-bold text-blue-600">三级选题 06</span>
-          <h3 class="font-bold text-sm text-brand-dark">Windows 代理防漏 IP 与 WebRTC 屏蔽</h3>
+        <a href="/guides/tun-mode-setup/ipv6-leak-prevention-tun/" class="group block p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs hover:border-blue-500 hover:shadow-md transition-all">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-blue-600">三级选题 06</span>
+            <span class="text-xs text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all">阅读防御 →</span>
+          </div>
+          <h3 class="font-bold text-sm text-brand-dark group-hover:text-blue-600 transition-colors">Windows 代理防漏 IP 与 WebRTC 屏蔽</h3>
           <p class="text-xs text-slate-500 leading-relaxed">
             实操屏蔽浏览器内部 WebRTC 真实公网物理 IP 泄漏漏洞，配置严格的无污染 DNS 防止访问足迹被溯源。
           </p>
-        </div>
+        </a>
       </div>
     </section>
 

@@ -1,0 +1,197 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const breadcrumbs = [
+  { name: '教程排障', href: '/guides/' },
+  { name: 'TUN 模式深度配置', href: '/guides/tun-mode-setup/' },
+  { name: 'WSL2 镜像网络模式与 TUN 模式深度协同', href: '/guides/tun-mode-setup/wsl2-mirrored-networking-tun/' },
+];
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: 'WSL2 镜像网络模式与 TUN 模式深度协同：零配置无缝共享宿主机代理',
+  description: '彻底告别 WSL2 复杂的 nameserver 网关脚本。深度解析 Windows 11 23H2/24H2 引入的全新 Mirrored Networking 镜像网络架构，手把手配置 .wslconfig 实现 Linux 与宿主机 TUN 网卡完美穿透。',
+  datePublished: '2026-10-28',
+  dateModified: '2026-11-24',
+  inLanguage: 'zh-CN',
+  author: {
+    '@type': 'Organization',
+    name: '机场 Wiki 评测实验室',
+    url: 'https://jichangwiki.biz/',
+  },
+};
+
+const faqs = [
+  {
+    q: '什么是 WSL2 的镜像网络模式（Mirrored Networking Mode）？',
+    a: '在传统的 NAT 模式下，WSL2 是一个挂载在 Hyper-V 内部虚拟交换机上的独立虚拟机，拥有独立的私有 IP，与宿主机 Windows 之间隔着一层 NAT 转换。而微软在 Windows 11（23H2 及以上）与全新 WSL 内核中引入了实验性而后转正的“镜像网络模式（mirrored）”。开启该模式后，Linux 虚拟环境直接“镜像”Windows 宿主机的网络接口。WSL2 内部的 localhost 直接等同于 Windows 的 localhost，甚至宿主机上创建的 Wintun 虚拟网卡也会直接映射进 Linux 内核，彻底消除了跨网桥访问与防火墙阻断。'
+  },
+  {
+    q: '开启镜像网络模式后，WSL2 内执行 apt update 或 docker pull 还需要手动 export 环境变量吗？',
+    a: '完全不需要。这正是镜像网络协同 TUN 模式最震撼的技术优势。当 Windows 宿主机开启了基于 Wintun 的全局 TUN 模式时，Linux 内发起的所有 TCP/UDP 请求在流出系统的瞬间，直接命中宿主机路由栈的 Wintun 适配器并被规则分流。终端无需配置任何 http_proxy 或 all_proxy，实现了真正意义上的全系统透明全局代理。'
+  },
+  {
+    q: '配置镜像网络模式需要满足哪些系统先决条件？',
+    a: '必须满足两个条件：第一，操作系统的操作系统内部版本号必须为 Windows 11 Build 22621（23H2）或更新版本（Windows 10 官方不支持此高级镜像特性）；第二，WSL 核心版本必须通过微软商店或 GitHub 更新至 2.0.0 以上（在 PowerShell 中运行 `wsl --version` 确认内核版本）。'
+  }
+];
+---
+
+<BaseLayout
+  title="WSL2 镜像网络模式与 TUN 深度实操 (2026最新) - 共享宿主机代理"
+  description="告别繁琐的 WSL2 nameserver 脚本。深度实装 Windows 11 Mirrored 镜像网络模式，实现 Linux 子系统零配置共享宿主机 Wintun 代理加速。"
+  breadcrumbs={breadcrumbs}
+  schema={articleSchema}
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+    <!-- Header -->
+    <header class="pb-6 border-b border-brand-border">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="px-2.5 py-0.5 text-xs font-semibold rounded bg-indigo-100 text-indigo-800">
+          开发者生态进阶
+        </span>
+        <span class="text-xs text-brand-muted">更新时间 2026-11-24 · 建议阅读 8 分钟</span>
+      </div>
+
+      <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-brand-dark tracking-tight leading-tight">
+        WSL2 镜像网络模式与 TUN 模式深度协同：零配置无缝共享宿主机代理
+      </h1>
+
+      <p class="text-sm text-slate-600 mt-4 leading-relaxed">
+        多年来，在 Windows 上使用 WSL2（适用于 Linux 的 Windows 子系统）进行后端与 AI 开发的工程师，一直被其繁琐的网络隔离机制所困扰。随着 Windows 11 正式推出 <strong>镜像网络架构（Mirrored Networking）</strong>，配搭客户端的 <strong>TUN 模式</strong>，跨系统网络穿透终于迎来最优雅的终极解法。
+      </p>
+    </header>
+
+    <!-- Key Takeaway Box -->
+    <div class="p-5 rounded-xl border border-indigo-200 bg-indigo-50/60 text-xs sm:text-sm text-slate-800 leading-relaxed space-y-2">
+      <strong class="text-brand-dark block text-base font-bold">核心配置三部曲</strong>
+      <ul class="list-disc list-inside space-y-1.5 text-slate-700">
+        <li><strong>第一步：</strong>在用户根目录创建或编辑 <code>.wslconfig</code> 文件，声明 <code>networkingMode=mirrored</code>。</li>
+        <li><strong>第二步：</strong>配置 <code>dnsTunneling=true</code> 彻底规避 Linux 与 Windows 之间的 DNS 劫持与死循环。</li>
+        <li><strong>第三步：</strong>Windows 宿主机开启代理客户端的 TUN 模式，WSL2 内所有工具瞬间享受透明加速。</li>
+      </ul>
+    </div>
+
+    <!-- Chapter 1 -->
+    <section class="space-y-4">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        一、从 NAT 到 Mirrored：WSL 网络架构的划时代跃迁
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        在传统的 NAT 模式下，WSL2 相当于一台独立的虚拟机。为了让 Linux 能访问外网，宿主机不得不创建复杂的 vEthernet (WSL) 虚拟交换机，并在每次开机时动态分配不同的内网 IP。
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-700 space-y-1.5">
+          <h3 class="font-bold text-slate-900 text-sm text-red-600">传统 NAT 模式的痛点</h3>
+          <p>
+            1. Linux 访问 Windows 宿主机代理必须动态解析 <code>/etc/resolv.conf</code> 中的网关 IP；<br/>
+            2. 必须在 Windows 防火墙中为 vEthernet 接口单独放行入站规则；<br/>
+            3. VPN 或代理软件重连时，虚拟网卡经常丢失路由，导致 WSL2 彻底断网。
+          </p>
+        </div>
+        <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-700 space-y-1.5">
+          <h3 class="font-bold text-slate-900 text-sm text-emerald-600">全新 Mirrored 镜像模式的优势</h3>
+          <p>
+            1. Linux 环境与宿主机共享完全相同的网络命名空间；<br/>
+            2. 在 Linux 中访问 <code>127.0.0.1:7890</code> 直接命中宿主机监听端口；<br/>
+            3. 宿主机的 Wintun 虚拟网卡直接接管 Linux 出口流量，实现零配置全局加速。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chapter 2 -->
+    <section class="space-y-4">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        二、编写 .wslconfig 配置文件实操指南
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        按下快捷键 <code>Win + R</code>，输入 <code>%USERPROFILE%</code> 打开当前 Windows 用户的主目录。检查是否存在名为 <code>.wslconfig</code> 的文件（如不存在，新建一个文本文档并重命名为 <code>.wslconfig</code>）。
+      </p>
+
+      <div class="bg-slate-900 text-slate-100 p-4 rounded-lg text-xs font-mono overflow-x-auto space-y-2">
+        <p class="text-slate-400"># 将下列生产级配置完整粘贴至 .wslconfig 中并保存：</p>
+        <pre><code>[wsl2]
+# 启用全新的镜像网络模式
+networkingMode=mirrored
+
+# 开启 DNS 隧道，让 WSL2 通过 Windows 协议栈进行安全 DNS 解析
+dnsTunneling=true
+
+# 开启自动代理，自动同步系统级代理设置
+autoProxy=true
+
+# 启用虚拟网卡自动重定向
+autoLocalAddressLoopback=true
+
+[experimental]
+# 优化主机网络通信延迟
+hostAddressLoopback=true</code></pre>
+      </div>
+
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        保存文件后，以管理员身份打开 PowerShell，执行以下命令使新架构生效：
+      </p>
+      <div class="bg-slate-900 text-slate-100 p-3 rounded-lg text-xs font-mono">
+        <code>wsl --shutdown</code>
+      </div>
+      <p class="text-xs text-slate-600">
+        重新启动 WSL2 终端。此时，你的 Linux 系统已经与 Windows 物理主机的网络栈完成了无缝镜像绑定。
+      </p>
+    </section>
+
+    <!-- Chapter 3 -->
+    <section class="space-y-4">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        三、协同 TUN 模式：见证零配置的极速体验
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        在 Windows 上打开 Clash Verge Rev，开启 <strong>TUN 模式</strong>。进入 WSL2 Ubuntu 终端，进行实际验证：
+      </p>
+
+      <div class="bg-slate-900 text-slate-100 p-4 rounded-lg text-xs font-mono space-y-2">
+        <p class="text-slate-400"># 验证外网连通性与公网 IP 出口：</p>
+        <p>curl -I https://www.google.com</p>
+        <p class="text-emerald-400">HTTP/2 200</p>
+        <p class="text-slate-400 mt-2"># 验证 Docker 构建与 Git 代码拉取：</p>
+        <p>git clone https://github.com/torvalds/linux.git --depth=1</p>
+      </div>
+
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        你会惊喜地发现：<strong>在 WSL2 中无需在 ~/.bashrc 写入任何 export http_proxy 命令</strong>，所有的包管理器拉取、Docker 镜像构建与 Git 克隆操作，全部自动享受宿主机 Wintun 专线加速，速度跑满物理千兆光纤带宽。
+      </p>
+    </section>
+
+    <!-- FAQ Accordion -->
+    <section class="space-y-4 pt-6 border-t border-brand-border">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark">
+        常见疑难解答（FAQ）
+      </h2>
+      <div class="space-y-3">
+        {faqs.map((faq) => (
+          <details class="group bg-white rounded-xl border border-slate-200 p-4 transition-all hover:border-slate-300">
+            <summary class="flex justify-between items-center font-bold text-brand-dark text-sm sm:text-base cursor-pointer list-none">
+              <span>{faq.q}</span>
+              <span class="text-brand-muted group-open:rotate-180 transition-transform text-xs">▼</span>
+            </summary>
+            <p class="text-xs sm:text-sm text-slate-600 mt-3 leading-relaxed pt-3 border-t border-slate-100">
+              {faq.a}
+            </p>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- Related Navigation -->
+    <footer class="pt-6 border-t border-brand-border flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-brand-muted">
+      <a href="/guides/tun-mode-setup/" class="text-brand-link font-medium hover:underline flex items-center gap-1">
+        ← 返回 TUN 模式深度配置专题
+      </a>
+      <a href="/clients/windows/terminal-proxy-powershell-git/" class="hover:text-brand-link">
+        阅读 Windows 终端 PowerShell 与 Git 代理完全指南 →
+      </a>
+    </footer>
+  </div>
+</BaseLayout>

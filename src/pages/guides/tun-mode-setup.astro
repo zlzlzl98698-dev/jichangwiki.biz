@@ -321,53 +321,71 @@ const faqs = [
       </p>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
-          <span class="text-xs font-bold text-blue-600">三级选题 01</span>
-          <h3 class="font-bold text-sm text-brand-dark">Wintun 驱动源码级架构解析与性能基准</h3>
+        <a href="/guides/tun-mode-setup/wintun-driver-architecture/" class="group block p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs hover:border-blue-500 hover:shadow-md transition-all">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-blue-600">三级选题 01</span>
+            <span class="text-xs text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all">阅读实操 →</span>
+          </div>
+          <h3 class="font-bold text-sm text-brand-dark group-hover:text-blue-600 transition-colors">Wintun 驱动源码级架构解析与性能基准</h3>
           <p class="text-xs text-slate-500 leading-relaxed">
             深入揭密 WireGuard 官方 Wintun 驱动的环形缓冲区（Ring Buffer）与零拷贝内存设计。
           </p>
-        </div>
+        </a>
 
-        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
-          <span class="text-xs font-bold text-blue-600">三级选题 02</span>
-          <h3 class="font-bold text-sm text-brand-dark">Windows 路由表最长前缀匹配与冲突排查</h3>
+        <a href="/guides/tun-mode-setup/windows-route-table-metric/" class="group block p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs hover:border-blue-500 hover:shadow-md transition-all">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-blue-600">三级选题 02</span>
+            <span class="text-xs text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all">阅读排障 →</span>
+          </div>
+          <h3 class="font-bold text-sm text-brand-dark group-hover:text-blue-600 transition-colors">Windows 路由表最长前缀匹配与冲突排查</h3>
           <p class="text-xs text-slate-500 leading-relaxed">
             教你使用 <code class="font-mono">route print</code> 命令读懂跃点数（Metric）与网关绑定，解决路由环路死锁。
           </p>
-        </div>
+        </a>
 
-        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
-          <span class="text-xs font-bold text-blue-600">三级选题 03</span>
-          <h3 class="font-bold text-sm text-brand-dark">WSL2 镜像网络模式与 TUN 模式深度协同</h3>
+        <a href="/guides/tun-mode-setup/wsl2-mirrored-networking-tun/" class="group block p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs hover:border-blue-500 hover:shadow-md transition-all">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-blue-600">三级选题 03</span>
+            <span class="text-xs text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all">阅读教程 →</span>
+          </div>
+          <h3 class="font-bold text-sm text-brand-dark group-hover:text-blue-600 transition-colors">WSL2 镜像网络模式与 TUN 模式深度协同</h3>
           <p class="text-xs text-slate-500 leading-relaxed">
             详解 Windows 11 下 Mirrored Networking 模式如何让 Linux 子系统零配置共享宿主机 TUN 代理。
           </p>
-        </div>
+        </a>
 
-        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
-          <span class="text-xs font-bold text-blue-600">三级选题 04</span>
-          <h3 class="font-bold text-sm text-brand-dark">macOS utun 虚拟网卡与特权守护进程配置</h3>
+        <a href="/guides/tun-mode-setup/macos-utun-privileged-helper/" class="group block p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs hover:border-blue-500 hover:shadow-md transition-all">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-blue-600">三级选题 04</span>
+            <span class="text-xs text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all">阅读实操 →</span>
+          </div>
+          <h3 class="font-bold text-sm text-brand-dark group-hover:text-blue-600 transition-colors">macOS utun 虚拟网卡与特权守护进程配置</h3>
           <p class="text-xs text-slate-500 leading-relaxed">
             针对苹果 Mac 电脑，配置 Privileged Helper 彻底摆脱每次启动手动输入 sudo 开机密码的困扰。
           </p>
-        </div>
+        </a>
 
-        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
-          <span class="text-xs font-bold text-blue-600">三级选题 05</span>
-          <h3 class="font-bold text-sm text-brand-dark">Docker 容器环境无缝走宿主机 TUN 代理实践</h3>
+        <a href="/guides/tun-mode-setup/docker-tun-transparent-proxy/" class="group block p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs hover:border-blue-500 hover:shadow-md transition-all">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-blue-600">三级选题 05</span>
+            <span class="text-xs text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all">阅读指南 →</span>
+          </div>
+          <h3 class="font-bold text-sm text-brand-dark group-hover:text-blue-600 transition-colors">Docker 容器环境无缝走宿主机 TUN 代理实践</h3>
           <p class="text-xs text-slate-500 leading-relaxed">
             配置 host 模式与透明网关桥接，彻底解决 Docker 构建镜像时无法拉取外网包的超时难题。
           </p>
-        </div>
+        </a>
 
-        <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs">
-          <span class="text-xs font-bold text-blue-600">三级选题 06</span>
-          <h3 class="font-bold text-sm text-brand-dark">TUN 模式下防止真实物理 IPv6 泄漏全景指南</h3>
+        <a href="/guides/tun-mode-setup/ipv6-leak-prevention-tun/" class="group block p-4 rounded-xl border border-slate-200 bg-white space-y-2 shadow-2xs hover:border-blue-500 hover:shadow-md transition-all">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-blue-600">三级选题 06</span>
+            <span class="text-xs text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all">阅读防御 →</span>
+          </div>
+          <h3 class="font-bold text-sm text-brand-dark group-hover:text-blue-600 transition-colors">TUN 模式下防止真实物理 IPv6 泄漏全景指南</h3>
           <p class="text-xs text-slate-500 leading-relaxed">
             很多用户的 IPv4 走了代理，但 IPv6 却直连裸奔。教你配置完整的 IPv6 TUN 丢弃或代理策略。
           </p>
-        </div>
+        </a>
       </div>
     </section>
 

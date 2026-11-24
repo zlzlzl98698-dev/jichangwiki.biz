@@ -1,0 +1,180 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const breadcrumbs = [
+  { name: '教程排障', href: '/guides/' },
+  { name: 'TUN 模式深度配置', href: '/guides/tun-mode-setup/' },
+  { name: 'TUN 模式下防止真实物理 IPv6 泄漏全景指南', href: '/guides/tun-mode-setup/ipv6-leak-prevention-tun/' },
+];
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: 'TUN 模式下防止真实物理 IPv6 泄漏全景指南：黑洞丢弃与全局代理配置',
+  description: '为什么开启代理后访问测试网站，依然显示出中国电信或联通的真实物理 IPv6 地址？深度解析双栈网络环境下的 IPv6 旁路泄漏机理，提供一键黑洞阻断与全代理防御方案。',
+  datePublished: '2026-10-28',
+  dateModified: '2026-11-24',
+  inLanguage: 'zh-CN',
+  author: {
+    '@type': 'Organization',
+    name: '机场 Wiki 评测实验室',
+    url: 'https://jichangwiki.biz/',
+  },
+};
+
+const faqs = [
+  {
+    q: '什么是 IPv6 旁路泄漏（IPv6 Leak），它是如何发生的？',
+    a: '随着国内三大电信运营商对家庭宽带与移动网络全面铺开 IPv6 双栈部署，用户的物理光猫通常会分配一个以 `240e:`（电信）、`2408:`（联通）或 `2409:`（移动）开头的全球单播真实物理公网 IPv6 地址。很多老旧代理软件或配置不当的 TUN 规则仅劫持了 IPv4 流量（0.0.0.0/0）。当用户访问支持 IPv6 的目标网站（如 Google、YouTube、Wikipedia）时，现代操作系统（Windows/macOS/iOS）的 Happy Eyeballs 算法（RFC 8305）会优先尝试使用 IPv6 建立直连。流量直接穿过物理网卡流向公网，导致你的真实地理位置与运营商归属地瞬间裸奔暴露。'
+  },
+  {
+    q: '解决 IPv6 泄漏最安全彻底的做法是什么？',
+    a: '目前业内公认最彻底的防御方案有两种：第一种是**黑洞丢弃法（Drop/Blackhole）**。如果你的代理机场节点本身不提供纯净的海外 IPv6 落地，直接在代理客户端的 DNS 与 TUN 模块中彻底禁用 IPv6（`ipv6: false`），并在内核层面将出站的 IPv6 流量阻断。这样系统会自动回退使用安全的 IPv4 代理通道；第二种是**全局 IPv6 TUN 代理**。在客户端中声明 IPv6 TUN 网卡，将 `::/0` 路由接管，确保即使有 IPv6 流量也必须经过代理节点加密转发。'
+  },
+  {
+    q: '如何快速检验自己当前的网络是否存在 IPv6 泄露风险？',
+    a: '打开知名的 IP 与 WebRTC 泄漏测试平台（例如 `ipleak.net` 或 `browserleaks.com/ip`）。观察页面上方的检测结果。如果检测出的 IPv6 地址显示为中国大陆的运营商名称（如 China Telecom），或者直接显示出了你的省份和城市，即 100% 存在严重的 IPv6 旁路泄漏。'
+  }
+];
+---
+
+<BaseLayout
+  title="TUN 防止 IPv6 泄漏全景指南 (2026最新) - 黑洞丢弃与安全配置"
+  description="为什么开代理后依然暴露真实物理 IPv6 地址？深度拆解 Happy Eyeballs 算法双栈旁路泄漏机理，提供 Clash/Mihomo 内核级 IPv6 丢弃与安全代理全方案。"
+  breadcrumbs={breadcrumbs}
+  schema={articleSchema}
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+    <!-- Header -->
+    <header class="pb-6 border-b border-brand-border">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="px-2.5 py-0.5 text-xs font-semibold rounded bg-rose-100 text-rose-800">
+          信息安全与隐私防御
+        </span>
+        <span class="text-xs text-brand-muted">更新时间 2026-11-24 · 建议阅读 8 分钟</span>
+      </div>
+
+      <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-brand-dark tracking-tight leading-tight">
+        TUN 模式下防止真实物理 IPv6 泄漏全景指南：黑洞丢弃与全局代理配置
+      </h1>
+
+      <p class="text-sm text-slate-600 mt-4 leading-relaxed">
+        很多用户以为开启了 TUN 虚拟网卡模式就万事大吉。然而，打开 IP 检测网站时，却赫然发现页面顶部清清楚楚地显示出自己所在省市的<strong>中国电信或中国联通真实物理 IPv6 公网地址</strong>。这种“IPv4 走代理、IPv6 裸奔直连”的现象被称为 <strong>IPv6 旁路泄漏</strong>。本文系统讲解防御实操。
+      </p>
+    </header>
+
+    <!-- Key Takeaway Box -->
+    <div class="p-5 rounded-xl border border-rose-200 bg-rose-50/60 text-xs sm:text-sm text-slate-800 leading-relaxed space-y-2">
+      <strong class="text-brand-dark block text-base font-bold">泄露机制与防御核心</strong>
+      <ul class="list-disc list-inside space-y-1.5 text-slate-700">
+        <li><strong>Happy Eyeballs 算法驱动：</strong>浏览器在访问同时具备 A（IPv4）和 AAAA（IPv6）记录的网站时，优先使用 IPv6 物理直连。</li>
+        <li><strong>最稳妥防御（99% 用户的选择）：</strong>在客户端中彻底关闭全局 IPv6 解析，系统退化使用纯净的 IPv4 专线代理通道，零泄露风险。</li>
+        <li><strong>全栈进阶防御：</strong>为 Wintun 网卡绑定 <code>::/0</code> 默认路由，将 IPv6 数据包与 IPv4 一并封装进代理隧道。</li>
+      </ul>
+    </div>
+
+    <!-- Chapter 1 -->
+    <section class="space-y-4">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        一、双栈网络环境下 IPv6 旁路泄漏的底层机理
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        国内三大基础电信运营商已全面普及 IPv6。当你的光猫拨号成功后，物理网卡会自动获得一个 <code>240e:</code> 或 <code>2408:</code> 开头的公网 IP。
+      </p>
+      <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 text-xs text-slate-700 space-y-2">
+        <h3 class="font-bold text-slate-900 text-sm">RFC 8305 带来的隐形漏洞：</h3>
+        <p>
+          IETF 在 RFC 8305 规范中定义了名为 <strong>Happy Eyeballs（快乐眼球算法）</strong>的双栈连接逻辑。当你在 Chrome 中输入 <code>youtube.com</code> 时，浏览器同时发起 IPv4 和 IPv6 两个 DNS 解析。
+        </p>
+        <p>
+          如果代理客户端的 TUN 仅接管了 IPv4 路由表，而物理网卡上依然保留着物理 IPv6 默认路由（<code>::/0</code>），操作系统的 TCP/IP 协议栈会认为走本地物理 IPv6 的延迟更低，从而直接绕过代理软件发起连接！
+        </p>
+        <p class="text-red-600 font-semibold">
+          结果：海外目标网站成功捕获到你所在家庭宽带的真实物理公网 IPv6，你的隐私防护形同虚设。
+        </p>
+      </div>
+    </section>
+
+    <!-- Chapter 2 -->
+    <section class="space-y-4">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        二、在 Clash Verge Rev 中彻底封杀 IPv6 泄漏配置实操
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        绝大多数商业机场的落地机房并未部署原生纯净的海外 IPv6 出口。盲目开启 IPv6 往往带来严重的流媒体锁区与被风控封号。
+      </p>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        因此，<strong>彻底关闭 DNS 的 AAAA 解析并丢弃 IPv6 出站请求</strong>是目前业界最稳妥的黄金标准：
+      </p>
+
+      <div class="bg-slate-900 text-slate-100 p-4 rounded-lg text-xs font-mono overflow-x-auto space-y-2">
+        <p class="text-slate-400"># 在 Clash Verge Rev 扩展配置或 Mihomo 核心配置中写入：</p>
+        <pre><code># 1. 在顶层彻底关闭全局 IPv6 开关
+ipv6: false
+
+# 2. 在 DNS 模块中拒绝响应 AAAA 记录，迫使浏览器仅能获得安全分流的 IPv4
+dns:
+  enable: true
+  ipv6: false           # 严禁解析 IPv6 地址
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+
+# 3. 在 TUN 模块中配置自动丢弃物理 IPv6
+tun:
+  enable: true
+  stack: system
+  auto-route: true
+  auto-detect-interface: true
+  # 自动重置物理接口的 IPv6 路由
+  strict-route: true</code></pre>
+      </div>
+    </section>
+
+    <!-- Chapter 3 -->
+    <section class="space-y-4">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        三、在线验证泄露修复效果四步法
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        完成上述配置并重启代理软件后，请执行严格的黑盒验证：
+      </p>
+
+      <ol class="list-decimal list-inside text-xs sm:text-sm text-slate-700 space-y-2 pl-2">
+        <li>打开浏览器无痕模式，访问全球知名泄露检测站：<code>https://ipleak.net</code>；</li>
+        <li>检查页面最顶部的 <strong>"Your IP Addresses"</strong>；</li>
+        <li>确认 <strong>IPv4 地址</strong> 显示为你选择的代理节点（如香港、日本、美国专线出口）；</li>
+        <li>确认 <strong>IPv6 地址一栏显示为 "Not detected"（未检测到）</strong>。只要显示未检测到，即代表物理 IPv6 已被彻底安全阻断，零泄漏隐患！</li>
+      </ol>
+    </section>
+
+    <!-- FAQ Accordion -->
+    <section class="space-y-4 pt-6 border-t border-brand-border">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark">
+        常见疑难解答（FAQ）
+      </h2>
+      <div class="space-y-3">
+        {faqs.map((faq) => (
+          <details class="group bg-white rounded-xl border border-slate-200 p-4 transition-all hover:border-slate-300">
+            <summary class="flex justify-between items-center font-bold text-brand-dark text-sm sm:text-base cursor-pointer list-none">
+              <span>{faq.q}</span>
+              <span class="text-brand-muted group-open:rotate-180 transition-transform text-xs">▼</span>
+            </summary>
+            <p class="text-xs sm:text-sm text-slate-600 mt-3 leading-relaxed pt-3 border-t border-slate-100">
+              {faq.a}
+            </p>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- Related Navigation -->
+    <footer class="pt-6 border-t border-brand-border flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-brand-muted">
+      <a href="/guides/tun-mode-setup/" class="text-brand-link font-medium hover:underline flex items-center gap-1">
+        ← 返回 TUN 模式深度配置专题
+      </a>
+      <a href="/guides/node-timeout-troubleshooting/" class="hover:text-brand-link">
+        阅读节点超时与全电脑断网排障 →
+      </a>
+    </footer>
+  </div>
+</BaseLayout>

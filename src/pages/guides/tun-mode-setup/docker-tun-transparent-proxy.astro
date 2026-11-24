@@ -1,0 +1,170 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const breadcrumbs = [
+  { name: '教程排障', href: '/guides/' },
+  { name: 'TUN 模式深度配置', href: '/guides/tun-mode-setup/' },
+  { name: 'Docker 容器环境无缝走宿主机 TUN 代理实践', href: '/guides/tun-mode-setup/docker-tun-transparent-proxy/' },
+];
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: 'Docker 容器环境无缝走宿主机 TUN 代理实践：彻底解决构建拉包超时',
+  description: '执行 docker build 或 docker pull 时频繁提示连接超时、下载卡死在 0%？深度解析 Docker 默认 bridge 桥接网络与宿主机 TUN 适配器的隔离机制，提供 host 直通与透明网关桥接全套方案。',
+  datePublished: '2026-10-28',
+  dateModified: '2026-11-24',
+  inLanguage: 'zh-CN',
+  author: {
+    '@type': 'Organization',
+    name: '机场 Wiki 评测实验室',
+    url: 'https://jichangwiki.biz/',
+  },
+};
+
+const faqs = [
+  {
+    q: '为什么宿主机明明已经开启了 TUN 模式，Docker 容器构建（docker build）依然拉不下外网依赖？',
+    a: 'Docker 守护进程在默认情况下为每个容器创建独立的网络命名空间（Network Namespace），并通过 Linux 内部的 `docker0` 虚拟网桥进行 NAT 转发。在没有显式声明的情况下，`docker0` 网桥的数据包直接被 iptables 规则发往宿主机的物理公网物理网卡，完全绕开了代理软件在宿主机上创建的 TUN 虚拟接口。因此，即使你的桌面浏览器能流畅打开海外网站，处于容器内部的 `apt-get`、`pip install` 或 `npm install` 依然面临严重的网络超时。'
+  },
+  {
+    q: '解决 Docker 容器加速最轻量、零侵入的配置方式是什么？',
+    a: '配置 Docker 客户端全局配置文件 `~/.docker/config.json`。在其中注入 `proxies` 字段，将 HTTP 与 HTTPS 代理统一指向宿主机在当前虚拟网络下的监听端口（如 `http://host.docker.internal:7890`）。这样每次运行 `docker build` 或启动新容器时，Docker 守护进程会自动将这组环境变量注入容器内部，完全无需修改原有的 Dockerfile。'
+  },
+  {
+    q: '在 Linux 纯服务器环境下，如何通过 host 模式实现透明网络直通？',
+    a: '在启动容器时直接添加 `--net=host` 参数。此时容器不再拥有独立的虚拟 IP，而是直接借用宿主机的整个网络命名空间与路由表。如果宿主机开启了全局 TUN 模式，容器内发起的网络连接等同于宿主机原生进程，所有流量瞬间享受无感代理分流。'
+  }
+];
+---
+
+<BaseLayout
+  title="Docker 走宿主机 TUN 代理实践 (2026最新) - 解决容器构建拉包超时"
+  description="彻底搞定 Docker build 与 pull 连接超时难题。深度拆解 bridge 网桥与宿主机 TUN 适配器数据走向，提供 host 直通与 daemon 代理注入双方案。"
+  breadcrumbs={breadcrumbs}
+  schema={articleSchema}
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+    <!-- Header -->
+    <header class="pb-6 border-b border-brand-border">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="px-2.5 py-0.5 text-xs font-semibold rounded bg-amber-100 text-amber-800">
+          容器工程化实战
+        </span>
+        <span class="text-xs text-brand-muted">更新时间 2026-11-24 · 建议阅读 8 分钟</span>
+      </div>
+
+      <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-brand-dark tracking-tight leading-tight">
+        Docker 容器环境无缝走宿主机 TUN 代理实践：彻底解决构建拉包超时
+      </h1>
+
+      <p class="text-sm text-slate-600 mt-4 leading-relaxed">
+        现代云原生与微服务开发中，<strong>Docker</strong> 是不可或缺的核心基石。然而，当开发者在 <code>Dockerfile</code> 中编写 <code>RUN apt-get update</code> 或拉取海外私有镜像仓库时，连接超时（Connection Timed Out）是发生率最高的问题。本文详解如何让 Docker 流量无缝穿透宿主机的 <strong>TUN 代理适配器</strong>。
+      </p>
+    </header>
+
+    <!-- Key Takeaway Box -->
+    <div class="p-5 rounded-xl border border-amber-200 bg-amber-50/60 text-xs sm:text-sm text-slate-800 leading-relaxed space-y-2">
+      <strong class="text-brand-dark block text-base font-bold">两大工程化解决路径</strong>
+      <ul class="list-disc list-inside space-y-1.5 text-slate-700">
+        <li><strong>方案一（构建期无侵入）：</strong>编辑 <code>~/.docker/config.json</code> 注入全局代理环境变量，对所有 <code>docker build</code> 自动生效。</li>
+        <li><strong>方案二（运行期极简直通）：</strong>针对容器运行添加 <code>--net=host</code>，共享宿主机网络命名空间，直达 TUN 网卡。</li>
+        <li><strong>方案三（守护进程拉取加速）：</strong>配置 <code>/etc/docker/daemon.json</code> 或系统服务环境变量，加速 <code>docker pull</code>。</li>
+      </ul>
+    </div>
+
+    <!-- Chapter 1 -->
+    <section class="space-y-4">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        一、Docker 容器网络与宿主机 TUN 网卡的隔离痛点
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        默认状态下，Docker 会在操作系统底层创建一块虚拟桥接网卡 <code>docker0</code>。容器内部的 <code>eth0</code> 通过 veth pair 虚拟网线接入 <code>docker0</code>。
+      </p>
+      <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 text-xs text-slate-700 space-y-2">
+        <h3 class="font-bold text-slate-900 text-sm">隔离壁垒解析：</h3>
+        <p>
+          当容器向外发起 HTTP 请求时，数据包从容器流向 <code>docker0</code>，内核对其进行 SNAT 地址转换。然而系统防火墙（iptables）的 <code>FORWARD</code> 链默认将该流量定向到物理以太网卡，<strong>根本不会经过代理客户端建立的 Wintun 或 utun 虚拟接口</strong>。
+        </p>
+        <p>
+          因此，要让容器走代理，必须主动在容器网络栈中注入出口指向，或者将容器直接嫁接到宿主机的网络层。
+        </p>
+      </div>
+    </section>
+
+    <!-- Chapter 2 -->
+    <section class="space-y-4">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        二、客户端配置文件全局注入法（彻底免改 Dockerfile）
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        很多开发者习惯在 <code>Dockerfile</code> 里面写死 <code>ENV http_proxy=...</code>，这会导致镜像在交付给他人或在 CI/CD 服务器构建时报出配置错误。
+      </p>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        官方推荐的最佳工程实践是配置当前开发者的 Docker 客户端文件：
+      </p>
+
+      <div class="bg-slate-900 text-slate-100 p-4 rounded-lg text-xs font-mono overflow-x-auto space-y-2">
+        <p class="text-slate-400"># 在 Linux/macOS 编辑 ~/.docker/config.json；在 Windows 编辑 C:\Users\&lt;用户名&gt;\.docker\config.json</p>
+        <pre><code>&#123;
+  "proxies": &#123;
+    "default": &#123;
+      "httpProxy": "http://127.0.0.1:7890",
+      "httpsProxy": "http://127.0.0.1:7890",
+      "noProxy": "localhost,127.0.0.1,docker-registry.somecorporation.com"
+    &#125;
+  &#125;
+&#125;</code></pre>
+      </div>
+      <p class="text-xs text-slate-600">
+        配置完成后，无论是执行 <code>docker build</code> 还是 <code>docker run</code>，Docker 会在后台自动为所有容器环境动态注入代理变量，Dockerfile 源码保持 100% 纯净。
+      </p>
+    </section>
+
+    <!-- Chapter 3 -->
+    <section class="space-y-4">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        三、容器运行时 host 模式极速直通
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        在运行需要大量消耗外网带宽的容器时（例如运行海外爬虫、数据分析或模型测试任务），添加 <code>--net=host</code> 是最高性能的方案：
+      </p>
+      <div class="bg-slate-900 text-slate-100 p-4 rounded-lg text-xs font-mono">
+        <code>docker run --rm -it --net=host alpine:latest curl -I https://www.google.com</code>
+      </div>
+      <p class="text-xs text-slate-600 mt-2">
+        在该模式下，容器直接绑定宿主机的 Wintun 虚拟网卡，完全消除了虚拟网桥 NAT 转换带来的吞吐折损，网络性能达到原生千兆极限。
+      </p>
+    </section>
+
+    <!-- FAQ Accordion -->
+    <section class="space-y-4 pt-6 border-t border-brand-border">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark">
+        常见疑难解答（FAQ）
+      </h2>
+      <div class="space-y-3">
+        {faqs.map((faq) => (
+          <details class="group bg-white rounded-xl border border-slate-200 p-4 transition-all hover:border-slate-300">
+            <summary class="flex justify-between items-center font-bold text-brand-dark text-sm sm:text-base cursor-pointer list-none">
+              <span>{faq.q}</span>
+              <span class="text-brand-muted group-open:rotate-180 transition-transform text-xs">▼</span>
+            </summary>
+            <p class="text-xs sm:text-sm text-slate-600 mt-3 leading-relaxed pt-3 border-t border-slate-100">
+              {faq.a}
+            </p>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- Related Navigation -->
+    <footer class="pt-6 border-t border-brand-border flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-brand-muted">
+      <a href="/guides/tun-mode-setup/" class="text-brand-link font-medium hover:underline flex items-center gap-1">
+        ← 返回 TUN 模式深度配置专题
+      </a>
+      <a href="/clients/windows/terminal-proxy-powershell-git/" class="hover:text-brand-link">
+        阅读 Windows 终端与 Git 代理加速指南 →
+      </a>
+    </footer>
+  </div>
+</BaseLayout>

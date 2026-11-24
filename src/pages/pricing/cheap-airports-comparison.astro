@@ -321,41 +321,59 @@ const faqs = [
       </p>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-3">
-        <div class="p-3.5 rounded-xl border border-slate-200 bg-white space-y-1.5 hover:shadow-xs transition-shadow">
-          <span class="text-[10px] font-mono font-bold text-brand-link uppercase tracking-wider">成本精算</span>
-          <h3 class="font-bold text-xs text-brand-dark">按 GB 真实单价核算公式与倍率换算模型</h3>
-          <p class="text-[11px] text-slate-500 leading-relaxed">拆解各大机场账面价格背后的倍率水分，教你算出每 1GB 实际付出多少钱。</p>
-        </div>
+        <a href="/pricing/cheap-airports-comparison/1gbps-bandwidth-cost/" class="group block p-3.5 rounded-xl border border-slate-200 bg-white space-y-1.5 hover:border-brand-link hover:shadow-md transition-all">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-mono font-bold text-brand-link uppercase tracking-wider">成本精算</span>
+            <span class="text-xs text-slate-400 group-hover:text-brand-link group-hover:translate-x-0.5 transition-all">阅读实测 →</span>
+          </div>
+          <h3 class="font-bold text-xs text-brand-dark group-hover:text-brand-link transition-colors">1Gbps 跨境专线物理采购成本深度解剖</h3>
+          <p class="text-[11px] text-slate-500 leading-relaxed">拆解三大运营商专线月租账单，为什么几元不限流量在物理上是骗局。</p>
+        </a>
 
-        <div class="p-3.5 rounded-xl border border-slate-200 bg-white space-y-1.5 hover:shadow-xs transition-shadow">
-          <span class="text-[10px] font-mono font-bold text-emerald-700 uppercase tracking-wider">周期决策</span>
-          <h3 class="font-bold text-xs text-brand-dark">月付、季付与年付的风险报酬权衡实测</h3>
-          <p class="text-[11px] text-slate-500 leading-relaxed">为什么说按月付费虽然单价微贵，却是防止被商家收割的终极护城河。</p>
-        </div>
+        <a href="/pricing/monthly-plans/game-theory-monthly-vs-yearly/" class="group block p-3.5 rounded-xl border border-slate-200 bg-white space-y-1.5 hover:border-emerald-700 hover:shadow-md transition-all">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-mono font-bold text-emerald-700 uppercase tracking-wider">周期决策</span>
+            <span class="text-xs text-slate-400 group-hover:text-emerald-700 group-hover:translate-x-0.5 transition-all">阅读分析 →</span>
+          </div>
+          <h3 class="font-bold text-xs text-brand-dark group-hover:text-emerald-700 transition-colors">月付、季付与年付的风险博弈论实测</h3>
+          <p class="text-[11px] text-slate-500 leading-relaxed">为什么说按月付费虽然单价微贵，却是防止被商家卷款跑路的终极护城河。</p>
+        </a>
 
-        <div class="p-3.5 rounded-xl border border-slate-200 bg-white space-y-1.5 hover:shadow-xs transition-shadow">
-          <span class="text-[10px] font-mono font-bold text-amber-700 uppercase tracking-wider">替代方案</span>
-          <h3 class="font-bold text-xs text-brand-dark">不限时流量包：一次购买永久有效的真实优缺点</h3>
+        <a href="/pricing/non-expiring-data/dual-sim-redundancy-setup/" class="group block p-3.5 rounded-xl border border-slate-200 bg-white space-y-1.5 hover:border-amber-700 hover:shadow-md transition-all">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-mono font-bold text-amber-700 uppercase tracking-wider">替代方案</span>
+            <span class="text-xs text-slate-400 group-hover:text-amber-700 group-hover:translate-x-0.5 transition-all">阅读方案 →</span>
+          </div>
+          <h3 class="font-bold text-xs text-brand-dark group-hover:text-amber-700 transition-colors">主力专线加不限时流量包：双持容灾架构</h3>
           <p class="text-[11px] text-slate-500 leading-relaxed">适合轻度办公人群的终极省钱方案，如何配合规则分流一年只花二十元。</p>
-        </div>
+        </a>
 
-        <div class="p-3.5 rounded-xl border border-slate-200 bg-white space-y-1.5 hover:shadow-xs transition-shadow">
-          <span class="text-[10px] font-mono font-bold text-purple-700 uppercase tracking-wider">行业透视</span>
-          <h3 class="font-bold text-xs text-brand-dark">白标机场（White-label）上游批发商生态揭秘</h3>
+        <a href="/network/iepl-vs-iplc/" class="group block p-3.5 rounded-xl border border-slate-200 bg-white space-y-1.5 hover:border-purple-700 hover:shadow-md transition-all">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-mono font-bold text-purple-700 uppercase tracking-wider">行业透视</span>
+            <span class="text-xs text-slate-400 group-hover:text-purple-700 group-hover:translate-x-0.5 transition-all">阅读解析 →</span>
+          </div>
+          <h3 class="font-bold text-xs text-brand-dark group-hover:text-purple-700 transition-colors">白标机场上游批发商与专线生态揭秘</h3>
           <p class="text-[11px] text-slate-500 leading-relaxed">为什么市面上很多不同品牌的机场，节点名称和测速结果几乎一模一样？</p>
-        </div>
+        </a>
 
-        <div class="p-3.5 rounded-xl border border-slate-200 bg-white space-y-1.5 hover:shadow-xs transition-shadow">
-          <span class="text-[10px] font-mono font-bold text-cyan-700 uppercase tracking-wider">避坑维权</span>
-          <h3 class="font-bold text-xs text-brand-dark">支付宝/微信支付纠纷申诉与退款实操流程</h3>
-          <p class="text-[11px] text-slate-500 leading-relaxed">购买当天发现节点完全无法使用，如何合法依规进行工单沟通与维权取证。</p>
-        </div>
+        <a href="/evidence/refunds-and-risks/chargeback-credit-card-dispute/" class="group block p-3.5 rounded-xl border border-slate-200 bg-white space-y-1.5 hover:border-cyan-700 hover:shadow-md transition-all">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-mono font-bold text-cyan-700 uppercase tracking-wider">避坑维权</span>
+            <span class="text-xs text-slate-400 group-hover:text-cyan-700 group-hover:translate-x-0.5 transition-all">阅读维权 →</span>
+          </div>
+          <h3 class="font-bold text-xs text-brand-dark group-hover:text-cyan-700 transition-colors">服务商跑路追损：Visa与MasterCard拒付实战</h3>
+          <p class="text-[11px] text-slate-500 leading-relaxed">购买当天发现节点完全无法使用，如何向银行发起 13.1 争议追回款项。</p>
+        </a>
 
-        <div class="p-3.5 rounded-xl border border-slate-200 bg-white space-y-1.5 hover:shadow-xs transition-shadow">
-          <span class="text-[10px] font-mono font-bold text-rose-700 uppercase tracking-wider">客户端调优</span>
-          <h3 class="font-bold text-xs text-brand-dark">低价机场在 Clash 中的规则优化：防止后台暗中跑流量</h3>
+        <a href="/guides/tun-mode-setup/" class="group block p-3.5 rounded-xl border border-slate-200 bg-white space-y-1.5 hover:border-rose-700 hover:shadow-md transition-all">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-mono font-bold text-rose-700 uppercase tracking-wider">客户端调优</span>
+            <span class="text-xs text-slate-400 group-hover:text-rose-700 group-hover:translate-x-0.5 transition-all">阅读配置 →</span>
+          </div>
+          <h3 class="font-bold text-xs text-brand-dark group-hover:text-rose-700 transition-colors">低价机场在 Clash 中的规则优化防偷跑</h3>
           <p class="text-[11px] text-slate-500 leading-relaxed">教你配置精准分流规则，阻止系统更新和后台软件偷跑你的小额流量配额。</p>
-        </div>
+        </a>
       </div>
     </section>
 
