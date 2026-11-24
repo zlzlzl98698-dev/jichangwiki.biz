@@ -1,0 +1,318 @@
+{
+  "version": "1.0.0",
+  "updatedAt": "2026-11-24",
+  "articles": [
+    {
+      "id": "c-win-01",
+      "targetUrl": "/clients/windows/terminal-proxy-powershell-git/",
+      "primaryKeyword": "Windows终端代理",
+      "secondaryKeywords": ["PowerShell代理", "Git clone加速", "WSL2代理配置", "CMD环境变量代理"],
+      "longTailQuestions": [
+        "为什么浏览器能上网但终端git clone超时？",
+        "PowerShell如何临时设置http_proxy环境变量？",
+        "WSL2如何共享Windows主机的Clash代理端口？"
+      ],
+      "searchIntent": "How-to",
+      "audience": "开发者与技术工程师",
+      "contentType": "教程文章",
+      "parentTopic": "clients",
+      "parentCluster": "/clients/windows/",
+      "articleTitle": "Windows 终端 PowerShell 与 Git 代理配置完全指南：告别连接超时",
+      "relatedArticles": [
+        "/clients/windows/wintun-vs-tap-architecture/",
+        "/guides/tun-mode-setup/"
+      ],
+      "relatedBrands": ["guangsu", "muguang"],
+      "conversionIntent": "Low",
+      "contentPriority": "P0",
+      "contentStatus": "published",
+      "lastReviewedAt": "2026-11-24"
+    },
+    {
+      "id": "c-win-02",
+      "targetUrl": "/clients/windows/uwp-loopback-exemption-fix/",
+      "primaryKeyword": "微软商店代理断网",
+      "secondaryKeywords": ["Windows UWP应用隔离", "CheckNetIsolation命令", "Fiddler Loopback工具", "微软商店0x80072EFD"],
+      "longTailQuestions": [
+        "为什么开启代理后微软应用商店打不开？",
+        "如何解除Windows 11 UWP应用的本地回环隔离？",
+        "使用CheckNetIsolation.exe一键豁免所有应用的指令是什么？"
+      ],
+      "searchIntent": "Troubleshooting",
+      "audience": "Windows日常办公用户",
+      "contentType": "排障文章",
+      "parentTopic": "clients",
+      "parentCluster": "/clients/windows/",
+      "articleTitle": "Windows UWP 微软商店应用回环隔离与断网修复：CheckNetIsolation 实战",
+      "relatedArticles": [
+        "/clients/windows/",
+        "/guides/tun-mode-setup/"
+      ],
+      "relatedBrands": [],
+      "conversionIntent": "Medium",
+      "contentPriority": "P0",
+      "contentStatus": "published",
+      "lastReviewedAt": "2026-11-24"
+    },
+    {
+      "id": "c-ios-01",
+      "targetUrl": "/clients/ios/us-apple-id-registration-guide/",
+      "primaryKeyword": "美区Apple ID免信用卡注册",
+      "secondaryKeywords": ["美区苹果账号注册", "美区App Store礼品卡充值", "Shadowrocket正版购买", "免税州账单地址"],
+      "longTailQuestions": [
+        "没有国外信用卡怎么注册美区Apple ID？",
+        "美区苹果账号账单地址怎么填免税？",
+        "公共共享小火箭账号有哪些严重被锁机勒索风险？"
+      ],
+      "searchIntent": "How-to",
+      "audience": "iPhone与iPad苹果用户",
+      "contentType": "教程文章",
+      "parentTopic": "clients",
+      "parentCluster": "/clients/ios/",
+      "articleTitle": "美区 Apple ID 免信用卡安全注册 2026 最新图解教程：正版小火箭获取指南",
+      "relatedArticles": [
+        "/clients/ios/",
+        "/clients/ios/networkextension-15mb-memory-fix/"
+      ],
+      "relatedBrands": ["guangsu", "feimao"],
+      "conversionIntent": "Medium",
+      "contentPriority": "P0",
+      "contentStatus": "published",
+      "lastReviewedAt": "2026-11-24"
+    },
+    {
+      "id": "c-ios-02",
+      "targetUrl": "/clients/ios/networkextension-15mb-memory-fix/",
+      "primaryKeyword": "小火箭后台断流",
+      "secondaryKeywords": ["iOS NetworkExtension 15MB内存限制", "小火箭闪退", "iPhone锁屏断网", "小火箭精简规则集"],
+      "longTailQuestions": [
+        "为什么小火箭在锁屏一段时间后会自动断开？",
+        "苹果iOS对NetworkExtension扩展的15MB物理内存限制机制是什么？",
+        "如何通过精简规则和关闭抓包彻底根治小火箭闪退？"
+      ],
+      "searchIntent": "Troubleshooting",
+      "audience": "iOS重度用户",
+      "contentType": "排障文章",
+      "parentTopic": "clients",
+      "parentCluster": "/clients/ios/",
+      "articleTitle": "解决 iOS 严格 15MB 物理内存上限导致的小火箭闪退与断流排障手册",
+      "relatedArticles": [
+        "/clients/ios/",
+        "/clients/ios/us-apple-id-registration-guide/"
+      ],
+      "relatedBrands": [],
+      "conversionIntent": "Low",
+      "contentPriority": "P0",
+      "contentStatus": "published",
+      "lastReviewedAt": "2026-11-24"
+    },
+    {
+      "id": "c-ai-01",
+      "targetUrl": "/compatibility/chatgpt-claude-gemini/claude-ban-appeal-template/",
+      "primaryKeyword": "Claude封号申诉",
+      "secondaryKeywords": ["Anthropic官方申诉信", "Claude账号解封", "Claude IP纯净度要求", "Claude地区不受支持"],
+      "longTailQuestions": [
+        "Claude账号无故被封怎么向Anthropic官方提交申诉？",
+        "有哪些经过实测成功找回账号的英文申诉模板？",
+        "为什么使用香港节点会导致Claude立即封号？"
+      ],
+      "searchIntent": "Troubleshooting",
+      "audience": "AI研究人员与开发者",
+      "contentType": "排障文章",
+      "parentTopic": "compatibility",
+      "parentCluster": "/compatibility/chatgpt-claude-gemini/",
+      "articleTitle": "Claude 账号误封官方英文申诉模版与 IP 纯净度拯救指南",
+      "relatedArticles": [
+        "/compatibility/chatgpt-claude-gemini/",
+        "/compatibility/chatgpt-claude-gemini/chatgpt-plus-stripe-anti-fraud/"
+      ],
+      "relatedBrands": ["guangsu", "muguang"],
+      "conversionIntent": "Medium",
+      "contentPriority": "P0",
+      "contentStatus": "published",
+      "lastReviewedAt": "2026-11-24"
+    },
+    {
+      "id": "c-ai-02",
+      "targetUrl": "/compatibility/chatgpt-claude-gemini/chatgpt-plus-stripe-anti-fraud/",
+      "primaryKeyword": "ChatGPT Plus信用卡拒付",
+      "secondaryKeywords": ["Stripe反欺诈风控", "Your card has been declined", "虚拟卡订阅ChatGPT", "美西原生节点绑卡"],
+      "longTailQuestions": [
+        "订阅ChatGPT Plus时提示银行卡被拒绝怎么解决？",
+        "Stripe风控系统如何通过浏览器时区和IP地理位置识别欺诈？",
+        "如何通过美区App Store礼品卡内购绕过网页端Stripe风控？"
+      ],
+      "searchIntent": "Troubleshooting",
+      "audience": "大模型重度付费用户",
+      "contentType": "排障文章",
+      "parentTopic": "compatibility",
+      "parentCluster": "/compatibility/chatgpt-claude-gemini/",
+      "articleTitle": "ChatGPT Plus 虚拟信用卡 Stripe 反欺诈风控穿透全实操手册",
+      "relatedArticles": [
+        "/compatibility/chatgpt-claude-gemini/",
+        "/clients/ios/us-apple-id-registration-guide/"
+      ],
+      "relatedBrands": ["guangsu"],
+      "conversionIntent": "High",
+      "contentPriority": "P0",
+      "contentStatus": "published",
+      "lastReviewedAt": "2026-11-24"
+    },
+    {
+      "id": "c-st-01",
+      "targetUrl": "/compatibility/netflix-disney-streaming/tvos-apple-tv-4k-setup/",
+      "primaryKeyword": "Apple TV看奈飞4K",
+      "secondaryKeywords": ["tvOS 17原生代理", "Apple TV Stash配置", "客厅大屏杜比视界直通", "Netflix非自制剧解锁"],
+      "longTailQuestions": [
+        "如何在Apple TV 4K上安装代理客户端看Netflix 4K？",
+        "tvOS 17自带的NetworkExtension功能如何配置？",
+        "如何保证电视端流媒体播放直通杜比视界与杜比全景声？"
+      ],
+      "searchIntent": "How-to",
+      "audience": "家庭影院与客厅大屏发烧友",
+      "contentType": "教程文章",
+      "parentTopic": "compatibility",
+      "parentCluster": "/compatibility/netflix-disney-streaming/",
+      "articleTitle": "Apple TV 4K 客厅流媒体配置与杜比视界直通全手册：tvOS 17 原生代理指南",
+      "relatedArticles": [
+        "/compatibility/netflix-disney-streaming/",
+        "/clients/ios/"
+      ],
+      "relatedBrands": ["guangsu", "muguang"],
+      "conversionIntent": "High",
+      "contentPriority": "P0",
+      "contentStatus": "published",
+      "lastReviewedAt": "2026-11-24"
+    },
+    {
+      "id": "c-pri-01",
+      "targetUrl": "/pricing/cheap-airports-comparison/1gbps-bandwidth-cost/",
+      "primaryKeyword": "1Gbps跨境专线成本",
+      "secondaryKeywords": ["专线物理带宽价格", "电信CTG专线月租", "为什么一元机场是骗局", "专线超卖比例"],
+      "longTailQuestions": [
+        "电信运营商一条1Gbps IEPL专线月租到底要多少钱？",
+        "为什么几块钱一个月的不限流量全专线在物理学上不可能存在？",
+        "低价廉价机场是如何通过超卖和偷跑流量实现收支平衡的？"
+      ],
+      "searchIntent": "Informational",
+      "audience": "理性消费者与网络爱好者",
+      "contentType": "价格文章",
+      "parentTopic": "pricing",
+      "parentCluster": "/pricing/cheap-airports-comparison/",
+      "articleTitle": "1Gbps 跨境专线物理采购成本深度解剖：为什么几元不限流量是骗局",
+      "relatedArticles": [
+        "/pricing/cheap-airports-comparison/",
+        "/network/iepl-vs-iplc/"
+      ],
+      "relatedBrands": ["guangsu", "dalaoyun"],
+      "conversionIntent": "High",
+      "contentPriority": "P0",
+      "contentStatus": "published",
+      "lastReviewedAt": "2026-11-24"
+    },
+    {
+      "id": "c-pri-02",
+      "targetUrl": "/pricing/monthly-plans/game-theory-monthly-vs-yearly/",
+      "primaryKeyword": "机场月付年付对比",
+      "secondaryKeywords": ["沉淀资金博弈论", "三年付跑路风险", "买三年送两年套路", "机场按月订阅优势"],
+      "longTailQuestions": [
+        "买机场到底应该选月付还是年付？",
+        "为什么机场突然推出三年付打折促销往往是准备卷款跑路？",
+        "坚持月付如何帮助用户规避90%以上的跑路财务损失？"
+      ],
+      "searchIntent": "Commercial Investigation",
+      "audience": "全体跨境网络消费者",
+      "contentType": "比较文章",
+      "parentTopic": "pricing",
+      "parentCluster": "/pricing/monthly-plans/",
+      "articleTitle": "机场买月付还是年付？沉淀资金博弈论与三年付跑路案卷分析",
+      "relatedArticles": [
+        "/pricing/monthly-plans/",
+        "/evidence/runaway-warning-and-alternatives/"
+      ],
+      "relatedBrands": ["guangsu", "muguang"],
+      "conversionIntent": "High",
+      "contentPriority": "P0",
+      "contentStatus": "published",
+      "lastReviewedAt": "2026-11-24"
+    },
+    {
+      "id": "c-pri-03",
+      "targetUrl": "/pricing/non-expiring-data/dual-sim-redundancy-setup/",
+      "primaryKeyword": "双持备用机场",
+      "secondaryKeywords": ["不限时按量流量包", "网络容灾双持方案", "备用机场配置", "Clash自动故障转移"],
+      "longTailQuestions": [
+        "什么是网络访问的主备双持容灾架构？",
+        "如何用主力专线搭配一个不限时小包实现零断网？",
+        "在Clash中如何配置Fallback故障转移策略组？"
+      ],
+      "searchIntent": "How-to",
+      "audience": "高可用刚需与跨国办公族",
+      "contentType": "教程文章",
+      "parentTopic": "pricing",
+      "parentCluster": "/pricing/non-expiring-data/",
+      "articleTitle": "主力专线加不限时流量包：坚不可摧的“双持容灾”网络架构实操",
+      "relatedArticles": [
+        "/pricing/non-expiring-data/",
+        "/recommend/stable-airports/"
+      ],
+      "relatedBrands": ["guangsu", "dalaoyun"],
+      "conversionIntent": "High",
+      "contentPriority": "P0",
+      "contentStatus": "published",
+      "lastReviewedAt": "2026-11-24"
+    },
+    {
+      "id": "c-gui-01",
+      "targetUrl": "/guides/node-timeout-troubleshooting/proxyenable-registry-fix-script/",
+      "primaryKeyword": "注册表ProxyEnable恢复",
+      "secondaryKeywords": ["退出代理后电脑断网", "127.0.0.1:7890拒绝连接", "注册表一键修复脚本", "Windows手动关闭代理"],
+      "longTailQuestions": [
+        "为什么退出Clash或关机后全电脑浏览器都无法上网？",
+        "如何通过一键批处理脚本强制将注册表ProxyEnable清零？",
+        "微信能收发消息但网页打不开是什么原因？"
+      ],
+      "searchIntent": "Troubleshooting",
+      "audience": "全部Windows电脑用户",
+      "contentType": "排障文章",
+      "parentTopic": "guides",
+      "parentCluster": "/guides/node-timeout-troubleshooting/",
+      "articleTitle": "关闭软件后全电脑断网？一秒强制重置注册表 ProxyEnable 批处理脚本",
+      "relatedArticles": [
+        "/guides/node-timeout-troubleshooting/",
+        "/clients/windows/"
+      ],
+      "relatedBrands": [],
+      "conversionIntent": "Low",
+      "contentPriority": "P0",
+      "contentStatus": "published",
+      "lastReviewedAt": "2026-11-24"
+    },
+    {
+      "id": "c-evi-01",
+      "targetUrl": "/evidence/refunds-and-risks/chargeback-credit-card-dispute/",
+      "primaryKeyword": "信用卡Chargeback申诉",
+      "secondaryKeywords": ["机场跑路拒付", "Visa卡争议处理", "MasterCard服务未提供申诉", "第四方支付接口追损"],
+      "longTailQuestions": [
+        "被机场骗了钱用国际信用卡能申请拒付追回吗？",
+        "如何向银行提供服务未提供的证据链？",
+        "信用卡Chargeback的流程与时效是多久？"
+      ],
+      "searchIntent": "How-to",
+      "audience": "受害消费者与维权用户",
+      "contentType": "维权文章",
+      "parentTopic": "evidence",
+      "parentCluster": "/evidence/refunds-and-risks/",
+      "articleTitle": "网络服务商跑路如何追回款项？Visa 与 MasterCard 争议拒付实战手册",
+      "relatedArticles": [
+        "/evidence/refunds-and-risks/",
+        "/evidence/runaway-warning-and-alternatives/"
+      ],
+      "relatedBrands": [],
+      "conversionIntent": "High",
+      "contentPriority": "P0",
+      "contentStatus": "published",
+      "lastReviewedAt": "2026-11-24"
+    }
+  ]
+}

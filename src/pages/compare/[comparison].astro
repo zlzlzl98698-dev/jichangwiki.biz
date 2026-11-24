@@ -6,11 +6,17 @@ import brands from '../../data/published-brands.json';
 export async function getStaticPaths() {
   const comparisons = [
     { slug: 'guangsu-vs-muguang', aSlug: 'guangsu', bSlug: 'muguang' },
+    { slug: 'guangsu-vs-feimao', aSlug: 'guangsu', bSlug: 'feimao' },
+    { slug: 'guangsu-vs-ermao', aSlug: 'guangsu', bSlug: 'ermao' },
     { slug: 'feimao-vs-weifeng', aSlug: 'feimao', bSlug: 'weifeng' },
+    { slug: 'feimao-vs-xingdaomeng', aSlug: 'feimao', bSlug: 'xingdaomeng' },
     { slug: 'shandianshu-vs-dalaoyun', aSlug: 'shandianshu', bSlug: 'dalaoyun' },
+    { slug: 'dalaoyun-vs-shandianshu', aSlug: 'dalaoyun', bSlug: 'shandianshu' },
     { slug: 'firefly-vs-weitu', aSlug: 'firefly', bSlug: 'weitu' },
     { slug: 'yifan-vs-u1s1', aSlug: 'yifan', bSlug: 'u1s1' },
     { slug: 'sogo-vs-yinxingren', aSlug: 'sogo', bSlug: 'yinxingren' },
+    { slug: 'yinxingren-vs-lingdong', aSlug: 'yinxingren', bSlug: 'lingdong' },
+    { slug: 'edgenova-vs-langwang', aSlug: 'edgenova', bSlug: 'langwang' },
   ];
 
   return comparisons.map((c) => {

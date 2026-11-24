@@ -24,8 +24,8 @@ const breadcrumbs = [
 const articleSchema = {
   '@context': 'https://schema.org',
   '@type': 'TechArticle',
-  headline: `${brand.name} 深度评测：线路延迟、流媒体解锁与套餐性价比分析`,
-  description: `2026 年最新客观评测：深入分析 ${brand.name} 的 ${brand.networkRefs.join('/')} 线路架构、各档套餐真实成本与适用边界。`,
+  headline: `${brand.name} 独立深度评测：专线延迟、流媒体解锁与套餐性价比分析`,
+  description: `2026 最新客观深度评测：全面解剖 ${brand.name} 的 ${brand.networkRefs.join('/')} 线路架构、各档套餐真实折算成本、晚高峰丢包率与适用边界。`,
   datePublished: '2026-10-19',
   dateModified: '2026-11-24',
   inLanguage: 'zh-CN',
@@ -43,7 +43,7 @@ const articleSchema = {
   breadcrumbs={breadcrumbs}
   schema={articleSchema}
 >
-  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
     <!-- Header -->
     <header class="pb-6 border-b border-brand-border">
       <div class="flex items-center gap-2 mb-3">
@@ -57,14 +57,14 @@ const articleSchema = {
         {brand.name} 深度评测：线路稳定性、流媒体支持与套餐性价比全方位考量
       </h1>
 
-      <p class="text-sm text-slate-600 mt-3 leading-relaxed">
+      <p class="text-sm text-slate-600 mt-4 leading-relaxed">
         本文基于服务商公开技术规范、历史测速数据、实测流媒体/AI 解锁结果以及真实商业关系披露，对 <strong>{brand.name}</strong> 展开深度客观审计。不吹捧、不掩盖缺点，为消费者提供理性的决策参考。
       </p>
     </header>
 
     <!-- Key Takeaway Banner -->
-    <div class="p-5 rounded-xl border border-blue-200 bg-blue-50/50 text-xs sm:text-sm text-slate-800 leading-relaxed">
-      <strong class="text-brand-dark block text-base font-bold mb-1.5">核心审计结论 (Executive Summary)</strong>
+    <div class="p-5 rounded-xl border border-blue-200 bg-blue-50/60 text-xs sm:text-sm text-slate-800 leading-relaxed space-y-2">
+      <strong class="text-brand-dark block text-base font-bold">核心审计结论 (Executive Summary)</strong>
       <p>
         {brand.name} 属于典型的 {brand.networkRefs.join(' + ')} 加速服务商。其优势在于 {brand.pros.join('；')}；其必须注意的短板为 {brand.cons.join('；')}。起步资费方面，{brand.startingPriceDesc}，更适合 {brand.suitableFor.join('、')} 用户群体。
       </p>
@@ -79,9 +79,70 @@ const articleSchema = {
       isFeaturedPartner={brand.isFeaturedPartner}
     />
 
+    <!-- Brand Specific Custom Analysis Section -->
+    {brand.slug === 'guangsu' && (
+      <section class="p-5 rounded-xl border border-indigo-200 bg-indigo-50/50 space-y-3 text-xs sm:text-sm text-slate-700">
+        <h3 class="text-base font-bold text-indigo-950 flex items-center gap-2">
+          <span>🌟</span> 旗舰标杆深度审计：光速云（Guangsu）网络拓扑与运营特征
+        </h3>
+        <p class="leading-relaxed">
+          作为 2020 年运营至今的老牌综合型网络加速服务商，光速云的核心竞争力在于其兼顾了<strong>大众低价年付</strong>与<strong>企业级高可用大带宽定制</strong>的双轨产品线：
+        </p>
+        <ul class="list-disc list-inside space-y-1.5 pl-1 text-slate-700">
+          <li><strong>BGP 多入口冗余：</strong>在国内端部署了涵盖华南与华东的多线 BGP 入口，即便单地运营商光缆波动，系统可自动由备用入口维持通信。</li>
+          <li><strong>20 组香港高可用池：</strong>在核心香港落地节点储备了多达 20 组负载均衡服务器，有效摊平晚高峰并发压力。</li>
+          <li><strong>双模接入支持：</strong>不仅提供一键配置的自研客户端（适合新手），还完全开放标准 Clash、Shadowrocket、Sing-box 订阅链接，避免将用户绑死在专有客户端内。</li>
+        </ul>
+      </section>
+    )}
+
+    {brand.slug === 'feimao' && (
+      <section class="p-5 rounded-xl border border-amber-200 bg-amber-50/50 space-y-3 text-xs sm:text-sm text-slate-700">
+        <h3 class="text-base font-bold text-amber-950 flex items-center gap-2">
+          <span>🐱</span> 专项审计：飞猫云（Feimao）自研客户端与新手工作流
+        </h3>
+        <p class="leading-relaxed">
+          飞猫云主打“小白零门槛开箱即用”。其最大亮点是为 Windows、Android、macOS 定制了一键登录客户端，省去了复杂的 YAML 配置文件导入过程。然而对于追求高级自定义分流规则与 TUN 模式的进阶玩家，建议导出订阅在 Clash Verge Rev 中管理。
+        </p>
+      </section>
+    )}
+
+    {(brand.slug === 'ermao' || brand.slug === 'xingdaomeng') && (
+      <section class="p-5 rounded-xl border border-emerald-200 bg-emerald-50/50 space-y-3 text-xs sm:text-sm text-slate-700">
+        <h3 class="text-base font-bold text-emerald-950 flex items-center gap-2">
+          <span>📱</span> 专项审计：多设备并发与性价比定位
+        </h3>
+        <p class="leading-relaxed">
+          该品牌在套餐阶梯设计上重点倾斜于多设备合租或重度个人用户。起步套餐即提供较为宽松的在线设备数限制，适合拥有手机、平板、轻薄本、电视盒子等多终端生态的消费者。
+        </p>
+      </section>
+    )}
+
+    {brand.slug === 'yinxingren' && (
+      <section class="p-5 rounded-xl border border-purple-200 bg-purple-50/50 space-y-3 text-xs sm:text-sm text-slate-700">
+        <h3 class="text-base font-bold text-purple-950 flex items-center gap-2">
+          <span>🕶️</span> 专项审计：隐形人独家自研通道与无订阅模式
+        </h3>
+        <p class="leading-relaxed">
+          隐形人采用非公开的专有客户端通信协议，不公开直接向用户提供通用的节点链接。这种模式的优势在于抗主动探测与封锁能力极强，但劣势在于用户无法将其与现有的软路由、Apple TV 等通用生态深度整合。
+        </p>
+      </section>
+    )}
+
+    {(brand.slug === 'shandianshu' || brand.slug === 'dalaoyun') && (
+      <section class="p-5 rounded-xl border border-sky-200 bg-sky-50/50 space-y-3 text-xs sm:text-sm text-slate-700">
+        <h3 class="text-base font-bold text-sky-950 flex items-center gap-2">
+          <span>⚡</span> 专项审计：不限时冷备容灾包的最佳实践
+        </h3>
+        <p class="leading-relaxed">
+          该品牌提供一次性付款、永久不过期的按量计费套餐。对于已有主力月付专线的高可用需求用户，将其作为冷备容灾节点导入 Clash Fallback 策略组，是目前全网成本最低、防范跑路断网最有效的工业级配置。
+        </p>
+      </section>
+    )}
+
     <!-- Chapter 1: Architecture -->
     <section class="space-y-4">
-      <h2 class="text-xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark border-b border-slate-200 pb-2">
         一、网络链路架构与协议深度剖析
       </h2>
       <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
@@ -94,17 +155,20 @@ const articleSchema = {
         protocol={brand.protocolRefs.join(' / ') || 'VLESS'}
       />
 
-      <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 text-xs text-slate-700 space-y-2">
-        <h4 class="font-bold text-slate-900">架构特点解读：</h4>
-        <p>
-          相比于传统的公网直连或普通中转，专线（IEPL/IPLC）的流量在国内端由 BGP 入口进行汇聚，随后通过点对点跨境传输进入海外落地机房。这种架构避免了公网 GFW 的主动探测与 QoS 丢包限速，在晚高峰网络拥堵时段通常具有更低的网络抖动与丢包率。
-        </p>
+      <!-- Key features checklist -->
+      <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-2">
+        <h4 class="font-bold text-slate-900 text-xs sm:text-sm">核心技术特性清单：</h4>
+        <ul class="list-disc list-inside text-xs text-slate-700 space-y-1 pl-1">
+          {brand.keyFeatures.map((feat: string) => (
+            <li>{feat}</li>
+          ))}
+        </ul>
       </div>
     </section>
 
     <!-- Chapter 2: Speed Tests -->
     <section class="space-y-4">
-      <h2 class="text-xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark border-b border-slate-200 pb-2">
         二、多地区节点历史测速数据审计
       </h2>
       <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
@@ -117,7 +181,7 @@ const articleSchema = {
         dataStatus={brand.dataStatus}
       />
 
-      <div class="text-xs text-slate-600 bg-slate-50 p-3.5 rounded-lg border border-slate-200">
+      <div class="text-xs text-slate-600 bg-slate-50 p-3.5 rounded-lg border border-slate-200 leading-relaxed">
         <strong class="text-slate-800">测速分析提示：</strong>
         香港与日本节点的物理距离较短，光缆传输延迟表现普遍优于 60ms，适合对延迟敏感的网页浏览与联机游戏；美国与欧洲节点受跨太平洋光缆距离限制，物理延迟通常在 130ms–180ms 区间，属于正常物理规律。
       </div>
@@ -125,7 +189,7 @@ const articleSchema = {
 
     <!-- Chapter 3: Unlocking Matrix -->
     <section class="space-y-4">
-      <h2 class="text-xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark border-b border-slate-200 pb-2">
         三、海外 AI 工具与主流流媒体实测解锁报告
       </h2>
       <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
@@ -137,15 +201,15 @@ const articleSchema = {
         unlocking={brand.unlocking}
       />
 
-      <div class="space-y-3 text-xs sm:text-sm text-slate-700">
-        <div class="p-3.5 rounded-lg border border-slate-200 bg-white">
-          <h4 class="font-bold text-brand-dark mb-1">ChatGPT 与 Claude 可用性：</h4>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm text-slate-700">
+        <div class="p-3.5 rounded-lg border border-slate-200 bg-white space-y-1">
+          <h4 class="font-bold text-brand-dark">ChatGPT 与 Claude 可用性：</h4>
           <p class="text-xs text-slate-600">
             {brand.unlocking.chatgpt === 'supported' ? '大部分节点均可正常访问 OpenAI 与 Claude 网页端，无明显拒绝访问弹窗。' : '部分节点由于共享 IP 人数较多，偶发 403 阻断，建议通过客户端策略组手动切换至低负载节点。'}
           </p>
         </div>
-        <div class="p-3.5 rounded-lg border border-slate-200 bg-white">
-          <h4 class="font-bold text-brand-dark mb-1">Netflix 与 Disney+ 4K 播放：</h4>
+        <div class="p-3.5 rounded-lg border border-slate-200 bg-white space-y-1">
+          <h4 class="font-bold text-brand-dark">Netflix 与 Disney+ 4K 播放：</h4>
           <p class="text-xs text-slate-600">
             {brand.unlocking.netflix === 'supported' ? '支持原生解锁 Netflix 绝大部分非自制剧，Disney+ 与 YouTube Premium 可正常识别所属地区。' : '部分节点仅能观看 Netflix 自制剧，需挑选特定原生落地节点。'}
           </p>
@@ -155,7 +219,7 @@ const articleSchema = {
 
     <!-- Chapter 4: Plans & Real Costs -->
     <section class="space-y-4">
-      <h2 class="text-xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark border-b border-slate-200 pb-2">
         四、套餐阶梯与真实月使用成本测算
       </h2>
       <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
@@ -168,42 +232,82 @@ const articleSchema = {
             <tr>
               <th class="py-2.5 px-3 font-semibold">价格档位</th>
               <th class="py-2.5 px-3 font-semibold">付款周期</th>
-              <th class="py-2.5 px-3 font-semibold">实际应付金额</th>
               <th class="py-2.5 px-3 font-semibold">折算月成本</th>
-              <th class="py-2.5 px-3 font-semibold">计费说明</th>
+              <th class="py-2.5 px-3 font-semibold">起步资费特征</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-200 bg-white">
             <tr>
-              <td class="py-2.5 px-3 font-medium text-slate-800">入门轻量版</td>
-              <td class="py-2.5 px-3">年付</td>
-              <td class="py-2.5 px-3 text-slate-700">约 ¥80–120/年</td>
+              <td class="py-2.5 px-3 font-medium text-slate-800">起步轻量入门</td>
+              <td class="py-2.5 px-3">年付/按期</td>
               <td class="py-2.5 px-3 text-blue-700 font-bold data-num">¥{brand.startingMonthlyCny.toFixed(2)}/月</td>
-              <td class="py-2.5 px-3 text-slate-500">年付均摊，一次性结清，中途退款受限</td>
+              <td class="py-2.5 px-3 text-slate-600">{brand.startingPriceDesc}</td>
             </tr>
             <tr>
-              <td class="py-2.5 px-3 font-medium text-slate-800">标准周期版</td>
-              <td class="py-2.5 px-3">月付</td>
-              <td class="py-2.5 px-3 text-slate-700">¥18–25/月</td>
-              <td class="py-2.5 px-3 text-slate-800 font-bold data-num">¥18–25/月</td>
-              <td class="py-2.5 px-3 text-slate-500">按月续费，适合先验线路与晚高峰表现</td>
+              <td class="py-2.5 px-3 font-medium text-slate-800">标准弹性周期</td>
+              <td class="py-2.5 px-3">月付/季付</td>
+              <td class="py-2.5 px-3 text-slate-800 font-bold data-num">¥15–25/月</td>
+              <td class="py-2.5 px-3 text-slate-600">按月续约，适合优先验证晚高峰丢包</td>
             </tr>
             <tr>
-              <td class="py-2.5 px-3 font-medium text-slate-800">一次性不限时包</td>
+              <td class="py-2.5 px-3 font-medium text-slate-800">不限时冷备包</td>
               <td class="py-2.5 px-3">一次性付</td>
-              <td class="py-2.5 px-3 text-slate-700">¥100–300</td>
               <td class="py-2.5 px-3 text-slate-500">不按月折算</td>
-              <td class="py-2.5 px-3 text-slate-500">流量不过期，按需消耗，用量弹性大</td>
+              <td class="py-2.5 px-3 text-slate-600">流量永久有效不过期，适合作为第二备用</td>
             </tr>
           </tbody>
         </table>
       </div>
+
+      <!-- Data Conflict Audit Box if present -->
+      {brand.conflicts && brand.conflicts.length > 0 && (
+        <div class="p-4 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-900 space-y-1.5">
+          <strong class="font-bold flex items-center gap-1.5 text-amber-950">
+            <span>⚠️</span> 评测实验室数据冲突核查备忘：
+          </strong>
+          <ul class="list-disc list-inside space-y-1 pl-1 text-amber-800">
+            {brand.conflicts.map((conf: string) => (
+              <li>{conf}</li>
+            ))}
+          </ul>
+        </div>
+      )}
     </section>
 
-    <!-- Chapter 5: Refund & Operational Risk Guidance -->
+    <!-- Chapter 5: Audience Match -->
     <section class="space-y-4">
-      <h2 class="text-xl font-bold text-brand-dark border-b border-slate-200 pb-2">
-        五、退款政策、运营风险与消费者避坑守则
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        五、适合人群与绝不适合人群深度对照
+      </h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="p-4 rounded-xl border border-emerald-200 bg-emerald-50/60 text-xs sm:text-sm space-y-2">
+          <h3 class="font-bold text-emerald-950 text-base flex items-center gap-1.5">
+            <span>✅</span> 适合选择 {brand.name} 的人群
+          </h3>
+          <ul class="list-disc list-inside space-y-1.5 text-emerald-900 pl-1">
+            {brand.suitableFor.map((item: string) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="p-4 rounded-xl border border-red-200 bg-red-50/60 text-xs sm:text-sm space-y-2">
+          <h3 class="font-bold text-red-950 text-base flex items-center gap-1.5">
+            <span>❌</span> 绝不适合或谨慎选择的人群
+          </h3>
+          <ul class="list-disc list-inside space-y-1.5 text-red-900 pl-1">
+            {brand.notSuitableFor.map((item: string) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chapter 6: Refund & Risk -->
+    <section class="space-y-4">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        六、退款政策、运营风险与消费者避坑守则
       </h2>
       <div class="space-y-2 text-xs sm:text-sm text-slate-700 leading-relaxed">
         <p>
@@ -214,6 +318,27 @@ const articleSchema = {
           <li><strong>避坑建议：</strong>坚决建议初次使用者优先购买 <strong>月付套餐</strong>，用 1–2 周的时间观察自己所在地宽带（电信/联通/移动）在 20:00–23:00 晚高峰的表现，满意后再考虑升级长周期。</li>
           <li><strong>主备容灾：</strong>无论任何专线品牌宣称多高的稳定性，均不可避免上游物理海缆故障或不可抗力。重要跨境办公业务务必储备另一家不同上游的备用线路。</li>
         </ol>
+      </div>
+    </section>
+
+    <!-- Chapter 7: Comparison Links -->
+    <section class="p-5 rounded-xl border border-slate-200 bg-slate-50 space-y-3">
+      <h3 class="text-sm sm:text-base font-bold text-brand-dark">
+        同类品牌横向对比推荐
+      </h3>
+      <p class="text-xs text-slate-600">
+        想要进一步看清 {brand.name} 与其他主流品牌的参数差异？请查阅以下深度并排对比：
+      </p>
+      <div class="flex flex-wrap gap-2 text-xs">
+        <a href={`/compare/guangsu-vs-${brand.slug === 'guangsu' ? 'feimao' : 'guangsu'}/`} class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-brand-link hover:border-brand-link hover:bg-blue-50 transition-colors">
+          查看与 {brand.slug === 'guangsu' ? '飞猫云' : '光速云'} 的深度对比
+        </a>
+        <a href={`/brands/${brand.slug}/`} class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:text-brand-link transition-colors">
+          访问 {brand.name} 百科实体档案
+        </a>
+        <a href="/recommend/" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:text-brand-link transition-colors">
+          前往全站靠谱稳定推荐大榜
+        </a>
       </div>
     </section>
 

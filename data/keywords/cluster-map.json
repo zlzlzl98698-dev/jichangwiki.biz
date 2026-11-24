@@ -1,0 +1,225 @@
+{
+  "version": "1.0.0",
+  "updatedAt": "2026-11-24",
+  "pillars": [
+    {
+      "slug": "recommend",
+      "name": "推荐比较",
+      "hubs": [
+        {
+          "slug": "stable-airports",
+          "name": "靠谱稳定机场推荐",
+          "url": "/recommend/stable-airports/",
+          "clusters": [
+            { "id": "sla-metrics", "name": "SLA指标与丢包率", "plannedArticles": 3 },
+            { "id": "bgp-multi-entry", "name": "BGP多线入口技术", "plannedArticles": 3 }
+          ]
+        },
+        {
+          "slug": "beginners-guide",
+          "name": "新手入门指引",
+          "url": "/recommend/beginners-guide/",
+          "clusters": [
+            { "id": "core-concepts", "name": "核心概念图解", "plannedArticles": 3 },
+            { "id": "beginner-setup", "name": "极速上手避坑", "plannedArticles": 3 }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "pricing",
+      "name": "套餐价格",
+      "hubs": [
+        {
+          "slug": "cheap-airports-comparison",
+          "name": "便宜机场对比",
+          "url": "/pricing/cheap-airports-comparison/",
+          "clusters": [
+            { "id": "cost-breakdown", "name": "专线带宽物理成本", "plannedArticles": 3 },
+            { "id": "reseller-risks", "name": "白标超卖内幕", "plannedArticles": 3 }
+          ]
+        },
+        {
+          "slug": "monthly-plans",
+          "name": "月付周期防坑",
+          "url": "/pricing/monthly-plans/",
+          "clusters": [
+            { "id": "game-theory", "name": "月付年付金融博弈", "plannedArticles": 3 },
+            { "id": "checkout-security", "name": "支付安全法则", "plannedArticles": 3 }
+          ]
+        },
+        {
+          "slug": "non-expiring-data",
+          "name": "不限时按量流量包",
+          "url": "/pricing/non-expiring-data/",
+          "clusters": [
+            { "id": "volume-savings", "name": "按量计费省钱精算", "plannedArticles": 3 },
+            { "id": "dual-sim-redundancy", "name": "双持容灾架构", "plannedArticles": 3 }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "clients",
+      "name": "客户端",
+      "hubs": [
+        {
+          "slug": "windows",
+          "name": "Windows电脑客户端专栏",
+          "url": "/clients/windows/",
+          "clusters": [
+            { "id": "terminal-proxy", "name": "终端与命令行加速", "plannedArticles": 3 },
+            { "id": "uwp-isolation", "name": "UWP应用沙盒解禁", "plannedArticles": 3 }
+          ]
+        },
+        {
+          "slug": "ios",
+          "name": "iOS苹果小火箭专栏",
+          "url": "/clients/ios/",
+          "clusters": [
+            { "id": "apple-id-setup", "name": "外区账号正规获取", "plannedArticles": 3 },
+            { "id": "keepalive-optimization", "name": "后台保活与内存优化", "plannedArticles": 3 }
+          ]
+        },
+        {
+          "slug": "clash-verge-rev",
+          "name": "Clash Verge Rev专题",
+          "url": "/clients/clash-verge-rev/",
+          "clusters": [
+            { "id": "service-mode", "name": "系统服务模式与Wintun", "plannedArticles": 3 },
+            { "id": "merge-scripts", "name": "规则扩展与配置持久化", "plannedArticles": 3 }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "compatibility",
+      "name": "AI与流媒体",
+      "hubs": [
+        {
+          "slug": "chatgpt-claude-gemini",
+          "name": "AI工具访问诊断",
+          "url": "/compatibility/chatgpt-claude-gemini/",
+          "clusters": [
+            { "id": "waf-anti-fraud", "name": "反欺诈风控穿透", "plannedArticles": 3 },
+            { "id": "ip-purity", "name": "原生IP纯净度检测", "plannedArticles": 3 }
+          ]
+        },
+        {
+          "slug": "netflix-disney-streaming",
+          "name": "海外流媒体解锁指南",
+          "url": "/compatibility/netflix-disney-streaming/",
+          "clusters": [
+            { "id": "drm-hardware", "name": "Widevine L1硬件认证", "plannedArticles": 3 },
+            { "id": "tv-box-setup", "name": "客厅大屏观影方案", "plannedArticles": 3 }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "network",
+      "name": "网络技术",
+      "hubs": [
+        {
+          "slug": "iepl-vs-iplc",
+          "name": "IEPL vs IPLC 专线解析",
+          "url": "/network/iepl-vs-iplc/",
+          "clusters": [
+            { "id": "layer1-layer2", "name": "物理层与数据链路层", "plannedArticles": 3 },
+            { "id": "traceroute-audit", "name": "NextTrace抓包鉴别", "plannedArticles": 3 }
+          ]
+        },
+        {
+          "slug": "regional-nodes-and-latency",
+          "name": "节点地区与延迟特性",
+          "url": "/network/regional-nodes-and-latency/",
+          "clusters": [
+            { "id": "speed-of-light", "name": "光速物理延迟极限", "plannedArticles": 3 },
+            { "id": "ttfb-latency", "name": "TTFB首字节响应测速", "plannedArticles": 3 }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "vpn",
+      "name": "VPN对比",
+      "hubs": [
+        {
+          "slug": "free-vpn-risks",
+          "name": "免费VPN致命安全风险",
+          "url": "/vpn/free-vpn-risks/",
+          "clusters": [
+            { "id": "mitm-root-cert", "name": "中间人根证书劫持", "plannedArticles": 3 },
+            { "id": "botnet-proxies", "name": "肉鸡代理池黑产", "plannedArticles": 3 }
+          ]
+        },
+        {
+          "slug": "gaming-accelerator-vs-proxy",
+          "name": "游戏加速器 vs 节点代理",
+          "url": "/vpn/gaming-accelerator-vs-proxy/",
+          "clusters": [
+            { "id": "layer4-vs-layer7", "name": "四层与七层协议差异", "plannedArticles": 3 },
+            { "id": "full-cone-nat", "name": "全锥型NAT游戏优化", "plannedArticles": 3 }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "guides",
+      "name": "教程排障",
+      "hubs": [
+        {
+          "slug": "subscription-import-guide",
+          "name": "订阅导入与转换防坑",
+          "url": "/guides/subscription-import-guide/",
+          "clusters": [
+            { "id": "sub-formats", "name": "YAML与Base64格式", "plannedArticles": 3 },
+            { "id": "docker-subconverter", "name": "私有Docker转换搭建", "plannedArticles": 3 }
+          ]
+        },
+        {
+          "slug": "tun-mode-setup",
+          "name": "TUN虚拟网卡配置",
+          "url": "/guides/tun-mode-setup/",
+          "clusters": [
+            { "id": "wintun-routing", "name": "双段路由最长前缀匹配", "plannedArticles": 3 },
+            { "id": "nas-loopback", "name": "局域网死锁修复", "plannedArticles": 3 }
+          ]
+        },
+        {
+          "slug": "node-timeout-troubleshooting",
+          "name": "节点全部超时排查",
+          "url": "/guides/node-timeout-troubleshooting/",
+          "clusters": [
+            { "id": "time-sync-90s", "name": "系统时钟90秒时差", "plannedArticles": 3 },
+            { "id": "registry-fix", "name": "注册表ProxyEnable恢复", "plannedArticles": 3 }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "evidence",
+      "name": "证据风险",
+      "hubs": [
+        {
+          "slug": "refunds-and-risks",
+          "name": "退款纠纷与维权实操",
+          "url": "/evidence/refunds-and-risks/",
+          "clusters": [
+            { "id": "tos-traps", "name": "服务条款霸王条款", "plannedArticles": 3 },
+            { "id": "chargeback-disputes", "name": "信用卡争议拒付流程", "plannedArticles": 3 }
+          ]
+        },
+        {
+          "slug": "runaway-warning-and-alternatives",
+          "name": "跑路预警与应急备用",
+          "url": "/evidence/runaway-warning-and-alternatives/",
+          "clusters": [
+            { "id": "exit-scam-signs", "name": "三大致命跑路前兆", "plannedArticles": 3 },
+            { "id": "five-min-emergency", "name": "五分钟应急自救SOP", "plannedArticles": 3 }
+          ]
+        }
+      ]
+    }
+  ]
+}

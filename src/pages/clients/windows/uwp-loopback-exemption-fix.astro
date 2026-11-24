@@ -1,0 +1,229 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const breadcrumbs = [
+  { name: '客户端', href: '/clients/' },
+  { name: 'Windows 代理指南', href: '/clients/windows/' },
+  { name: 'UWP 回环隔离与应用商店排障', href: '/clients/windows/uwp-loopback-exemption-fix/' },
+];
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: 'Windows UWP 微软商店应用回环隔离与断网修复：CheckNetIsolation 实战手册',
+  description: '开启代理后 Microsoft Store 提示 0x80072EFD 无法联网，甚至 Xbox、自带邮件、OneNote 全部断开？深度解析 Windows AppContainer 沙盒隔离机制，提供 CheckNetIsolation 批量解除指令与一键修复方案。',
+  datePublished: '2026-10-25',
+  dateModified: '2026-11-24',
+  inLanguage: 'zh-CN',
+  author: {
+    '@type': 'Organization',
+    name: '机场 Wiki 评测实验室',
+    url: 'https://jichangwiki.biz/',
+  },
+};
+
+const faqs = [
+  {
+    q: '为什么普通浏览器上网正常，但微软商店和 Windows 自带天气应用总是报错 0x80072EFD？',
+    a: '微软自 Windows 8 开始为现代磁贴和 UWP 应用引入了严密的 AppContainer 运行环境。处于该沙盒环境内的应用受到操作系统的严格安全策略限制，其中一项核心安全规则就是网络回环保护（Loopback Restriction）。系统禁止 UWP 应用向本地主机（127.0.0.1）发送任何网络请求，以防止恶意 UWP 程序通过本地监听端口攻击本地服务。当桌面代理客户端开启系统代理（监听 127.0.0.1:7890）时，微软商店尝试按系统代理向本地发送数据包，被 Windows 防火墙内核底层无情拦截，从而抛出连接被拒绝或 0x80072EFD 超时错误。'
+  },
+  {
+    q: '使用 CheckNetIsolation 命令会降低 Windows 系统的安全性吗？',
+    a: 'CheckNetIsolation.exe 是微软官方内置在 Windows 操作系统中的网络隔离诊断工具。该命令的作用仅是向系统的访问控制列表（ACL）中注册豁免名单（Loopback Exemption），允许经过用户明确授权的 UWP 应用向本机指定网络回环地址通信。它并没有破坏操作系统的沙盒文件隔离系统，也不会赋予应用额外的系统管理员权限，属于官方标准支持且风险可控的操作。'
+  },
+  {
+    q: '在 Windows 系统更新或重装应用后，已豁免的列表会丢失吗？',
+    a: '对于已有应用，普通的月度补丁更新不会重置注册表中的 AppContainer 豁免列表。但如果执行了 Windows 跨版本大版本升级（例如从 Windows 10 升级到 Windows 11，或执行 Windows 11 23H2 到 24H2 升级），或者在微软商店中彻底卸载并重新安装了该应用，其生成的包安全标识符（Package SID）可能会发生变更，此时需要重新执行一次一键豁免指令。'
+  },
+  {
+    q: '开启客户端的 TUN 虚拟网卡模式可以彻底绕过这个回环隔离问题吗？',
+    a: '可以。TUN 模式的流量走向与传统的本地回环代理完全不同。在 TUN 模式下，系统级数据包在网络第三层直接被虚拟网卡（Wintun）捕获。对于 UWP 应用来说，它发起的是向公网服务器的普通 IP 请求，并不把本地 127.0.0.1 作为目标地址，因此根本不会触发 Windows 防火墙的本地回环拦截规则。'
+  }
+];
+---
+
+<BaseLayout
+  title="Windows UWP 微软商店断网修复 (2026最新) - CheckNetIsolation 回环豁免指南"
+  description="彻底解决开启代理后 Windows 11/10 微软应用商店、Xbox 提示 0x80072EFD 无法联网问题。拆解 AppContainer 沙盒原理，提供官方 CheckNetIsolation 批量豁免脚本。"
+  breadcrumbs={breadcrumbs}
+  schema={articleSchema}
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+    <!-- Header -->
+    <header class="pb-6 border-b border-brand-border">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="px-2.5 py-0.5 text-xs font-semibold rounded bg-amber-100 text-amber-800">
+          系统底层故障诊断
+        </span>
+        <span class="text-xs text-brand-muted">更新时间 2026-11-24 · 建议阅读 7 分钟</span>
+      </div>
+
+      <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-brand-dark tracking-tight leading-tight">
+        Windows UWP 微软商店应用回环隔离与断网修复：CheckNetIsolation 实战
+      </h1>
+
+      <p class="text-sm text-slate-600 mt-4 leading-relaxed">
+        许多 Windows 10 与 Windows 11 用户在开启代理后，常常遇到奇怪的现象：浏览器浏览外网飞快，但点击打开 Microsoft Store 时却弹出 <code>0x80072EFD</code> 错误代码，或者 Xbox、自带邮件无法同步。这并非机场节点故障，而是 Windows 系统固有的 UWP 回环隔离机制在起作用。
+      </p>
+    </header>
+
+    <!-- Key Takeaway Box -->
+    <div class="p-5 rounded-xl border border-amber-200 bg-amber-50/60 text-xs sm:text-sm text-slate-800 leading-relaxed space-y-2">
+      <strong class="text-brand-dark block text-base font-bold">快速诊断与解决方案概览</strong>
+      <ul class="list-disc list-inside space-y-1.5 text-slate-700">
+        <li><strong>故障根源：</strong>Windows 的 AppContainer 沙盒策略天生禁止 UWP 应用程序向本地 IP（127.0.0.1）发送网络请求。</li>
+        <li><strong>官方解决途径：</strong>使用管理员权限运行系统自带的 <code>CheckNetIsolation.exe</code> 为指定应用添加回环豁免。</li>
+        <li><strong>一键解决脚本：</strong>在 PowerShell 中运行一行循环指令，为全系统所有已安装 UWP 应用批量解除限制。</li>
+        <li><strong>终极免配置方式：</strong>启用代理软件的 TUN 虚拟网卡模式，从网络底层彻底规避回环限制。</li>
+      </ul>
+    </div>
+
+    <!-- Chapter 1 -->
+    <section class="space-y-4">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        一、AppContainer 沙盒与网络回环隔离机制
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        在传统的 Win32 应用程序（如常见的 <code>.exe</code> 软件）中，程序拥有与当前登录用户等同的完整系统访问权限，能够自由监听和连接本机的任意网络端口。为了提升现代操作系统的安全性与权限隔离，微软在 Windows 8 时代引入了通用 Windows 平台（UWP）和 <strong>AppContainer</strong> 运行沙盒。
+      </p>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        处于 AppContainer 内的程序（包括但不限于：Microsoft Store、Windows 终端自身的部分组件、Xbox 应用、系统内置照片与邮件）受到底层访问控制列表（SACL）的强制约束。系统禁止其向本机的回环接口（Loopback Interface，即 <code>127.0.0.1</code> 或 <code>localhost</code>）发起通信。微软这项设计的初衷是防止恶意的沙盒扩展利用本地未授权端口攻击电脑上的其他服务。
+      </p>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        然而，常规代理软件的工作机制恰恰是在本地启动一个监听服务（如 <code>127.0.0.1:7890</code>），并将其设置为系统代理。当 UWP 应用尝试联网时，它向本地 7890 端口发送连接请求，被 Windows 底层防火墙判定为违反回环限制策略，瞬间被系统掐断，进而表现为“全应用假死断网”。
+      </p>
+    </section>
+
+    <!-- Chapter 2 -->
+    <section class="space-y-4">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        二、官方工具 CheckNetIsolation 修复实操
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        微软官方其实为系统网络管理员预留了专门的豁免指令：<code>CheckNetIsolation.exe</code>。
+      </p>
+      
+      <h3 class="text-base font-semibold text-slate-800">1. 查询微软商店应用的 PackageFamilyName</h3>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        每个 UWP 应用都有一个唯一的包家族名称。以管理员权限打开 PowerShell，运行以下命令即可查询微软商店的包名：
+      </p>
+      <div class="bg-slate-900 text-slate-100 p-4 rounded-lg text-xs font-mono overflow-x-auto">
+        <pre><code>Get-AppxPackage *WindowsStore* | Select-Object Name, PackageFamilyName</code></pre>
+      </div>
+      <p class="text-xs text-slate-600">
+        输出通常为：<code>Microsoft.WindowsStore_8wekyb3d8bbwe</code>。
+      </p>
+
+      <h3 class="text-base font-semibold text-slate-800">2. 单独为微软商店添加豁免</h3>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        在管理员命令提示符或 PowerShell 中执行以下官方解除命令：
+      </p>
+      <div class="bg-slate-900 text-slate-100 p-4 rounded-lg text-xs font-mono overflow-x-auto">
+        <pre><code>CheckNetIsolation.exe LoopbackExempt -a -n="Microsoft.WindowsStore_8wekyb3d8bbwe"</code></pre>
+      </div>
+      <p class="text-xs text-slate-600">
+        如果返回 <code>确定。(OK.)</code>，表示微软商店已经获得连接本地 127.0.0.1 的合法权限。此时刷新商店页面即可秒级恢复加载。
+      </p>
+    </section>
+
+    <!-- Chapter 3 -->
+    <section class="space-y-4">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        三、一键批量豁免所有 UWP 应用自动化脚本
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        用户电脑上通常安装了数十个 UWP 应用（如 Xbox、OneNote、OneDrive、第三方聊天工具等）。逐个排查包名显然效率极低。以下为编写的一键批量豁免指令：
+      </p>
+      
+      <div class="bg-slate-900 text-slate-100 p-4 rounded-lg text-xs font-mono overflow-x-auto space-y-2">
+        <p class="text-slate-400"># 以管理员身份打开 PowerShell，完整粘贴并回车执行：</p>
+        <pre><code>Get-ChildItem -Path "HKCU:\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppContainer\Mappings" | ForEach-Object &#123;
+    $name = (Get-ItemProperty $_.PsPath).DisplayName
+    $id = $_.PsChildName
+    if ($id) &#123;
+        CheckNetIsolation.exe LoopbackExempt -a -p="$id" | Out-Null
+        Write-Host "[+] 已豁免回环限制: $name ($id)" -ForegroundColor Green
+    &#125;
+&#125;</code></pre>
+      </div>
+      <p class="text-xs text-slate-600">
+        该脚本会自动遍历注册表中当前用户的所有 AppContainer 实例，并在两秒内为它们一次性写入本地回环通行证。运行完毕后，系统内所有的 UWP 软件均能完美适配本地代理。
+      </p>
+    </section>
+
+    <!-- Chapter 4 -->
+    <section class="space-y-4">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        四、利用图形化工具实现可视化豁免管理
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        如果你不习惯使用命令行，目前主流的代理客户端均已内置了可视化解法：
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-700 space-y-2">
+          <h3 class="font-bold text-slate-900 text-sm">Clash Verge Rev 客户端内置工具</h3>
+          <p>
+            打开软件设置面板，在<strong>“系统设置”</strong>或<strong>“高级工具”</strong>中找到<strong>“Windows UWP 回环豁免”</strong>（Loopback Exemption）。点击即可弹出一个包含所有已安装应用的清单窗口，勾选需要代理的应用（或点击右上角全部勾选），点击保存即可在后台自动调用 API 完成注册。
+          </p>
+        </div>
+        <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-700 space-y-2">
+          <h3 class="font-bold text-slate-900 text-sm">Fiddler Loopback 独立免费小工具</h3>
+          <p>
+            由知名抓包工具 Fiddler 官方团队开发的独立绿色小工具 <code>EnableLoopback.exe</code>（仅数十 KB 大小），打开后会自动列出所有的 AppContainer，点击“Exempt All”并保存，同样是 Windows 圈内久经考验的实用方案。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chapter 5 -->
+    <section class="space-y-4">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        五、TUN 虚拟网卡模式带来的根本性优势
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        虽然豁免脚本可以解决问题，但每一次应用大规模重装或新装应用时，用户可能依然需要重复操作。
+      </p>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        从系统架构层面彻底消除这个问题的终极手段是：<strong>全面转向 TUN 虚拟网卡模式</strong>。
+      </p>
+      <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 text-xs sm:text-sm text-blue-900 leading-relaxed">
+        <p>
+          在 TUN 模式下，代理客户端不在本地注册表写入任何 <code>127.0.0.1</code> 代理设置，系统的“代理服务器”开关完全保持关闭。客户端直接在系统底层创建一块虚拟网卡，并通过修改默认网关路由表将流量导入该网卡。
+        </p>
+        <p class="mt-2">
+          UWP 应用在发起网络请求时，操作系统认定其正在访问普通的外部公网目标，根本不会触发针对本地 127.0.0.1 的回环拦截逻辑。既保障了沙盒安全，又实现了无感知的流畅网络加速。
+        </p>
+      </div>
+    </section>
+
+    <!-- FAQ Accordion -->
+    <section class="space-y-4 pt-6 border-t border-brand-border">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark">
+        常见疑难解答（FAQ）
+      </h2>
+      <div class="space-y-3">
+        {faqs.map((faq) => (
+          <details class="group bg-white rounded-xl border border-slate-200 p-4 transition-all hover:border-slate-300">
+            <summary class="flex justify-between items-center font-bold text-brand-dark text-sm sm:text-base cursor-pointer list-none">
+              <span>{faq.q}</span>
+              <span class="text-brand-muted group-open:rotate-180 transition-transform text-xs">▼</span>
+            </summary>
+            <p class="text-xs sm:text-sm text-slate-600 mt-3 leading-relaxed pt-3 border-t border-slate-100">
+              {faq.a}
+            </p>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- Related Navigation -->
+    <footer class="pt-6 border-t border-brand-border flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-brand-muted">
+      <a href="/clients/windows/" class="text-brand-link font-medium hover:underline flex items-center gap-1">
+        ← 返回 Windows 电脑代理核心选型
+      </a>
+      <a href="/clients/windows/terminal-proxy-powershell-git/" class="hover:text-brand-link">
+        阅读 PowerShell 与 Git 终端代理实战 →
+      </a>
+    </footer>
+  </div>
+</BaseLayout>

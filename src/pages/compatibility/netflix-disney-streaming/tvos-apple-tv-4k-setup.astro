@@ -1,0 +1,251 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const breadcrumbs = [
+  { name: 'AI与流媒体', href: '/compatibility/' },
+  { name: '全球流媒体解锁', href: '/compatibility/netflix-disney-streaming/' },
+  { name: 'Apple TV 4K 客厅大屏流媒体配置', href: '/compatibility/netflix-disney-streaming/tvos-apple-tv-4k-setup/' },
+];
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: 'Apple TV 4K 客厅流媒体配置与杜比视界直通全手册：tvOS 17 原生代理指南',
+  description: '彻底告别软路由旁路折腾。深度解析 Apple TV 4K 在 tvOS 17 原生代理支持下的配置逻辑，手把手教你配置 Stash 或 Sing-box，点亮 Netflix 与 Disney+ 4K 杜比视界与全景声直通。',
+  datePublished: '2026-10-25',
+  dateModified: '2026-11-24',
+  inLanguage: 'zh-CN',
+  author: {
+    '@type': 'Organization',
+    name: '机场 Wiki 评测实验室',
+    url: 'https://jichangwiki.biz/',
+  },
+};
+
+const faqs = [
+  {
+    q: '为什么说 tvOS 17 是家庭影院客厅流媒体体验的革命性里程碑？',
+    a: '在 tvOS 17 发布之前，Apple TV 作为一个封闭的电视盒子，系统底层并不支持任何原生代理扩展应用。想要让 Apple TV 观看 Netflix 4K 或 YouTube，家庭用户必须采购昂贵的软路由硬件（如 x86 小主机），配置复杂的 OpenWrt 或旁路由网关模式，一旦旁路由断网，全家网络瘫痪。而自 tvOS 17 开始，苹果官方正式将 iOS 成熟的 NetworkExtension 框架完整开放给 tvOS 平台。开发者可以直接上架原生的电视端代理 App（如 Stash for tvOS、Sing-box、Surge for tvOS）。用户只需在电视上直接下载 App 导入订阅，电视盒子即可实现独立无感知的高速分流，彻底摆脱软路由的繁琐束缚。'
+  },
+  {
+    q: '为什么在电视上看 Netflix 4K 经常只有 1080P 甚至 720P，无法点亮 4K 和杜比视界？',
+    a: '在大屏电视上点亮 4K 杜比视界（Dolby Vision）需要满足三项硬性硬件与网络条件：第一，账号必须是 Netflix 最高规格的高级会员（Premium 4K 套餐）；第二，Apple TV 与电视机或回音壁的连接线必须是支持 HDMI 2.1 或高规格 HDMI 2.0 的高速线缆，电视机 HDMI 输入接口必须开启增强格式（Enhanced Format）；第三也是最核心的——节点带宽与延迟稳定性。Netflix 的自适应码率算法（ABR）在检测到网络抖动或带宽低于 25Mbps 时，会在数秒内主动降低流媒体码率并回退至 SDR 1080P。必须保证代理节点的单线程测速稳定在 50Mbps 以上且丢包率接近为零。'
+  },
+  {
+    q: '什么是 Netflix 非自制剧，为什么有些节点只能看自制剧？',
+    a: '自制剧（Netflix Originals，如《怪奇物语》《黑暗荣耀》）是由 Netflix 拥有全球完整版权的影视内容，Netflix 对其地理位置限制极其宽松，只要是能连通机房的常规 IP 都能观看。而非自制剧（如《绝命毒师》《老友记》以及各大好莱坞影业的版权电影）是按特定国家地区购买的独家转播权。Netflix 对此类剧集应用了最高等级的商业机房 IP 封锁。只有被流媒体官方认定为该国正规民用宽带的原生住宅 IP，才会展示并播放非自制剧。'
+  },
+  {
+    q: '电视端直接运行代理 App 会影响同一局域网内其他家人手机看国内爱奇艺和微信吗？',
+    a: '完全不会。这正是 tvOS 原生代理相比于传统软路由最大的优势所在。传统的软路由旁路网关一旦配置失误，可能导致全家老人小孩手机的网络时好时坏。而在 Apple TV 自身系统内运行代理客户端，代理流量被严格限制在 Apple TV 这一台设备内部，家庭物理路由器和其他设备的网络通道完全独立直连，实现了真正意义上的网络环境物理隔离。'
+  }
+];
+---
+
+<BaseLayout
+  title="Apple TV 4K 看奈飞 4K (2026最新) - tvOS 17 原生代理与杜比视界全攻略"
+  description="告别复杂旁路由软路由。深度实操 Apple TV 4K 安装 tvOS 17 原生代理客户端（Stash/Sing-box），手把手点亮 Netflix 与 Disney+ 4K 杜比视界及杜比全景声直通。"
+  breadcrumbs={breadcrumbs}
+  schema={articleSchema}
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+    <!-- Header -->
+    <header class="pb-6 border-b border-brand-border">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="px-2.5 py-0.5 text-xs font-semibold rounded bg-sky-100 text-sky-800">
+          家庭影院与客厅大屏
+        </span>
+        <span class="text-xs text-brand-muted">更新时间 2026-11-24 · 建议阅读 9 分钟</span>
+      </div>
+
+      <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-brand-dark tracking-tight leading-tight">
+        Apple TV 4K 客厅流媒体配置与杜比视界直通全手册：tvOS 17 原生代理指南
+      </h1>
+
+      <p class="text-sm text-slate-600 mt-4 leading-relaxed">
+        在追求极致声画体验的客厅大屏环境中，<strong>Apple TV 4K 搭配索尼/LG OLED 电视及杜比回音壁</strong>被公认为影音发烧友的黄金标配。随着苹果正式推出 <strong>tvOS 17 原生 VPN 框架</strong>，困扰玩家多年的“软路由旁路折腾时代”彻底终结。本文系统讲解电视端原生分流实操。
+      </p>
+    </header>
+
+    <!-- Key Takeaway Box -->
+    <div class="p-5 rounded-xl border border-sky-200 bg-sky-50/60 text-xs sm:text-sm text-slate-800 leading-relaxed space-y-2">
+      <strong class="text-brand-dark block text-base font-bold">核心技术变革与搭建清单</strong>
+      <ul class="list-disc list-inside space-y-1.5 text-slate-700">
+        <li><strong>技术范式革新：</strong>tvOS 17 原生支持第三方网络代理应用，单机独立接管自身流量，全屋其他设备保持 100% 纯净直连。</li>
+        <li><strong>核心软件选型：</strong>推荐首选 <strong>Stash for tvOS</strong>（与 iOS 端通用买断，支持 Clash 规则体系）或开源的 <strong>Sing-box for tvOS</strong>。</li>
+        <li><strong>杜比视界四要素：</strong>高级套餐授权 + HDMI 2.1 高带宽通道 + 电视色彩匹配 + 专线单线程下行稳定不低于 35Mbps。</li>
+      </ul>
+    </div>
+
+    <!-- Chapter 1 -->
+    <section class="space-y-4">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        一、电视端原生代理 vs 传统软路由旁路架构横向对比
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        在过去，要在 Apple TV 上畅享海外高清流媒体，用户往往需要经历痛苦的折腾。我们通过架构对比看清 tvOS 17 的划时代优势：
+      </p>
+
+      <div class="overflow-x-auto custom-scrollbar">
+        <table class="w-full text-xs text-left border border-slate-200 rounded-lg overflow-hidden">
+          <thead class="bg-slate-100 text-slate-700">
+            <tr>
+              <th class="py-2.5 px-3 font-semibold">对比维度</th>
+              <th class="py-2.5 px-3 font-semibold">传统软路由/旁路由方案</th>
+              <th class="py-2.5 px-3 font-semibold text-blue-700">tvOS 17 原生代理方案（推荐）</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200 bg-white">
+            <tr>
+              <td class="py-2.5 px-3 font-medium text-slate-800">硬件投入成本</td>
+              <td class="py-2.5 px-3 text-slate-600">需额外购买 500-1500 元的小主机软路由设备</td>
+              <td class="py-2.5 px-3 text-emerald-600 font-semibold">零硬件成本（复用已有 Apple TV 4K）</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 px-3 font-medium text-slate-800">全屋网络耦合度</td>
+              <td class="py-2.5 px-3 text-red-600">极高（旁路由故障或升级时可能引发全屋断网）</td>
+              <td class="py-2.5 px-3 text-emerald-600 font-semibold">零耦合（流量仅在 Apple TV 本地闭环处理）</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 px-3 font-medium text-slate-800">日常维护难度</td>
+              <td class="py-2.5 px-3 text-slate-600">需登录 Linux Web 管理面板调试网络网关与 DNS</td>
+              <td class="py-2.5 px-3 text-blue-700 font-semibold">电视遥控器操作，与手机 App 体验完全一致</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 px-3 font-medium text-slate-800">AirPlay 与家庭中枢</td>
+              <td class="py-2.5 px-3 text-slate-600">偶发多网段广播隔离，导致 HomeKit 配对丢包</td>
+              <td class="py-2.5 px-3 text-slate-800">原生广播协议 100% 完整保留，HomeKit 极速秒连</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Chapter 2 -->
+    <section class="space-y-4">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        二、tvOS 17 代理软件下载与订阅导入实操
+      </h2>
+      
+      <div class="space-y-4 text-xs sm:text-sm text-slate-700">
+        <div class="p-4 rounded-lg border border-slate-200 bg-white space-y-2">
+          <h3 class="font-bold text-brand-dark text-base">第一步：在 Apple TV 上切换美区账号下载软件</h3>
+          <p>
+            打开 Apple TV【设置】→【用户与账户】→【添加新用户】。输入你的美区 Apple ID（需提前购买 Stash 等应用）。登录后在电视上的 App Store 搜索 <strong>Stash</strong> 或 <strong>Sing-box</strong> 点击下载。
+          </p>
+          <div class="bg-blue-50 text-blue-900 p-2.5 rounded text-xs">
+            小技巧：如果你的 iPhone 和 Apple TV 登录在同一个家庭网络中，iPhone 上已购买的 tvOS 兼容应用会在电视商店的“已购项目”中直接免费安装。
+          </div>
+        </div>
+
+        <div class="p-4 rounded-lg border border-slate-200 bg-white space-y-2">
+          <h3 class="font-bold text-brand-dark text-base">第二步：极其优雅的局域网隔空导入订阅</h3>
+          <p>
+            很多用户担心在电视上用遥控器敲击长达数百字符的订阅链接会非常痛苦。Stash 为 tvOS 提供了绝妙的隔空配对体验：
+          </p>
+          <ul class="list-disc list-inside space-y-1.5 text-slate-600 pl-1">
+            <li>在 Apple TV 上打开 Stash，屏幕会显示一个<strong>本地局域网 Web 控制台地址</strong>（如 <code>http://192.168.1.150:9090</code>）以及一个二维码；</li>
+            <li>拿起你的电脑或手机，在同一局域网内打开浏览器输入该 IP 地址或直接微信扫码；</li>
+            <li>手机网页上会直接呈现一个完整的 Web 管理面板，将你机场提供的 Clash 订阅链接粘贴进去并点击下载；</li>
+            <li>电视屏幕秒级同步刷新出所有节点与策略组，整个过程耗时不到 30 秒。</li>
+          </ul>
+        </div>
+
+        <div class="p-4 rounded-lg border border-slate-200 bg-white space-y-2">
+          <h3 class="font-bold text-brand-dark text-base">第三步：首次连接授权系统权限</h3>
+          <p>
+            在电视遥控器上点击 Stash 顶部的开关按钮。Apple TV 屏幕会弹出一个标准的系统级确认窗口：<code>"Stash" Would Like to Add VPN Configurations</code>。用遥控器点击 <strong>"Allow"（允许）</strong>，至此后台代理服务正式常驻运行。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chapter 3 -->
+    <section class="space-y-4">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        三、点亮 4K 杜比视界与杜比全景声的关键参数调优
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        很多用户完成配置后，打开 Netflix 却发现右上角依然只显示“HD”或普通“SDR”，未能点亮金色的 <strong>"Vision" 与 "Atmos"</strong> 标志。请逐一核对以下关键设置：
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-700 space-y-2">
+          <h3 class="font-bold text-slate-900 text-sm">Apple TV 系统显示设置（必须匹配内容）</h3>
+          <p>
+            进入【设置】→【视频和音频】：<br/>
+            1. 格式推荐设置为：<strong>4K SDR (50Hz 或 60Hz)</strong>，避免系统 UI 全程强行映射 HDR 导致发灰；<br/>
+            2. 进入<strong>【匹配内容】</strong>，务必将<strong>【动态范围匹配】</strong>与<strong>【帧速率匹配】</strong>两项<strong>全部开启为“开”</strong>。<br/>
+            这样当播放杜比视界电影时，电视机才会由底层触发屏幕模式瞬间切换为真实的 Dolby Vision。
+          </p>
+        </div>
+
+        <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-700 space-y-2">
+          <h3 class="font-bold text-slate-900 text-sm">代理节点的物理线路要求（低抖动与 UDP 支持）</h3>
+          <p>
+            4K 流媒体的瞬时码率高达 25Mbps 至 40Mbps。如果使用的是劣质公网中转节点，由于晚高峰公网 QoS 丢包，播放器会频繁缓冲。<br/>
+            强烈建议选用具备 <strong>BGP 入口与 IEPL 专线传输</strong>的高品质节点（如光速云的旗舰大带宽专线）；同时务必确认配置文件中 <code>udp: true</code>，确保基于 QUIC/HTTP3 协议的高清视频流能够实现低延迟起播。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chapter 4 -->
+    <section class="space-y-4">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        四、Disney+ 与 YouTube 客厅大屏分流策略推荐
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        客厅大屏除了 Netflix，Disney+（IMAX Enhanced 画质）和 YouTube 4K 60fps 也是主流场景。在 Stash 中推荐采用针对性策略组分流：
+      </p>
+      <div class="bg-slate-900 text-slate-100 p-4 rounded-lg text-xs font-mono overflow-x-auto space-y-2">
+        <p class="text-slate-400"># 推荐在 Clash 配置文件中划分独立影视策略组：</p>
+        <pre><code>proxy-groups:
+  # 奈飞推荐锁定新加坡或日本原生节点，支持华语中文字幕最全
+  - name: "Netflix"
+    type: select
+    proxies: ["新加坡 01 原生", "日本 02 专线", "香港 03 BGP"]
+
+  # Disney+ 推荐使用美国原生节点解锁最全的星战与漫威 IMAX 内容
+  - name: "DisneyPlus"
+    type: select
+    proxies: ["美国 01 原生", "新加坡 01 原生"]
+
+  # YouTube 流量极大，推荐使用香港或日本低倍率大带宽专线
+  - name: "YouTube"
+    type: select
+    proxies: ["香港 01 专线", "日本 01 专线"]</code></pre>
+      </div>
+    </section>
+
+    <!-- FAQ Accordion -->
+    <section class="space-y-4 pt-6 border-t border-brand-border">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark">
+        常见疑难解答（FAQ）
+      </h2>
+      <div class="space-y-3">
+        {faqs.map((faq) => (
+          <details class="group bg-white rounded-xl border border-slate-200 p-4 transition-all hover:border-slate-300">
+            <summary class="flex justify-between items-center font-bold text-brand-dark text-sm sm:text-base cursor-pointer list-none">
+              <span>{faq.q}</span>
+              <span class="text-brand-muted group-open:rotate-180 transition-transform text-xs">▼</span>
+            </summary>
+            <p class="text-xs sm:text-sm text-slate-600 mt-3 leading-relaxed pt-3 border-t border-slate-100">
+              {faq.a}
+            </p>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- Related Navigation -->
+    <footer class="pt-6 border-t border-brand-border flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-brand-muted">
+      <a href="/compatibility/netflix-disney-streaming/" class="text-brand-link font-medium hover:underline flex items-center gap-1">
+        ← 返回全球主流流媒体解锁专题
+      </a>
+      <a href="/clients/ios/" class="hover:text-brand-link">
+        阅读 iOS 苹果生态代理体系指引 →
+      </a>
+    </footer>
+  </div>
+</BaseLayout>

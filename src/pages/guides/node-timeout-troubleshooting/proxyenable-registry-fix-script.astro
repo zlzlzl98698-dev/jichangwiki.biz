@@ -1,0 +1,226 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const breadcrumbs = [
+  { name: '教程排障', href: '/guides/' },
+  { name: '节点超时与排障', href: '/guides/node-timeout-troubleshooting/' },
+  { name: '注册表 ProxyEnable 恢复与全电脑断网修复', href: '/guides/node-timeout-troubleshooting/proxyenable-registry-fix-script/' },
+];
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: '关闭软件后全电脑断网？一秒强制重置注册表 ProxyEnable 批处理脚本',
+  description: '退出代理或意外关机后，微信能发消息但网页全部打不开，提示 127.0.0.1:7890 拒绝连接？深度剖析 Windows 系统代理注册表残留机理，提供免管理员的一键 .bat 批处理修复脚本。',
+  datePublished: '2026-10-25',
+  dateModified: '2026-11-24',
+  inLanguage: 'zh-CN',
+  author: {
+    '@type': 'Organization',
+    name: '机场 Wiki 评测实验室',
+    url: 'https://jichangwiki.biz/',
+  },
+};
+
+const faqs = [
+  {
+    q: '为什么关闭代理客户端后，QQ 和微信能正常聊天，但所有网页都打不开？',
+    a: 'QQ 和微信桌面端默认采用直接的 UDP 或原始 TCP 套接字通信，完全不受 Windows 系统设置中的图形代理开关控制。而 Chrome、Edge、Firefox 等网页浏览器严格受制于系统的 WinINet 网络组件。当代理客户端在非正常状态下被强退（例如蓝屏、异常崩溃、任务管理器强行结束进程或直接拔掉电源关机），客户端未能来得及执行“关机还原函数”，导致 Windows 注册表中的 ProxyEnable 项依然保持为 1（开启），并且代理地址依然指向 127.0.0.1:7890。此时由于后台代理服务已经不复存在，浏览器发起的所有 HTTP 请求都会被系统强行送往这个空无一人的死端口，从而表现为“聊天软件正常，网页彻底断网”。'
+  },
+  {
+    q: '运行一键批处理修复脚本是否需要每次都右键以管理员身份运行？',
+    a: '不需要。因为控制 Windows 系统代理的核心注册表项位于 `HKEY_CURRENT_USER`（当前用户分支），其访问权限完全向当前登录的普通标准用户开放，无需动用 Windows 系统管理员（Administrator）权限。用户双击保存的 `.bat` 文件，瞬间即可在毫秒级内完成注册表重置并恢复网络。'
+  },
+  {
+    q: '除了运行脚本，在 Windows 系统界面上手动恢复的点击路径是怎样的？',
+    a: '在 Windows 11 中：点击【开始】→【设置】→【网络和 Internet】→【代理】。在“手动设置代理”一栏中，找到“使用代理服务器”，将右侧开关由“开”拨动为“关”；在 Windows 10 中：点击【设置】→【网络和 Internet】→【代理】，向下滚动找到“手动设置代理”，将“使用代理服务器”开关关闭即可。'
+  },
+  {
+    q: '如何从根本上彻底杜绝这种“每次关电脑后开机断网”的烦人现象？',
+    a: '有两个根本解决思路：第一，养成良好的退出习惯，在关闭电脑或退出代理前，先在软件托盘右键菜单中取消勾选“系统代理（System Proxy）”，然后再点击退出；第二也是最推荐的方案——改用 **TUN 虚拟网卡模式**。在 TUN 模式下，系统代理开关始终为“关”，客户端通过内核驱动在底层拦截数据包，即使电脑突然断电，系统底层的网卡驱动会自动随系统关机平稳卸载，绝不会在注册表中遗留任何死锁配置。'
+  }
+];
+---
+
+<BaseLayout
+  title="关闭软件后断网修复 (2026最新) - 一键恢复注册表 ProxyEnable 脚本"
+  description="退出代理后全电脑浏览器打不开网页？微信能发文字但网页提示 127.0.0.1 拒绝连接？深度剖析 ProxyEnable 注册表死锁，独家提供一秒恢复 .bat 脚本。"
+  breadcrumbs={breadcrumbs}
+  schema={articleSchema}
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+    <!-- Header -->
+    <header class="pb-6 border-b border-brand-border">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="px-2.5 py-0.5 text-xs font-semibold rounded bg-rose-100 text-rose-800">
+          全网最高频排障痛点
+        </span>
+        <span class="text-xs text-brand-muted">更新时间 2026-11-24 · 建议阅读 6 分钟</span>
+      </div>
+
+      <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-brand-dark tracking-tight leading-tight">
+        关闭软件后全电脑断网？一秒强制重置注册表 ProxyEnable 批处理脚本
+      </h1>
+
+      <p class="text-sm text-slate-600 mt-4 leading-relaxed">
+        “退出软件后，连百度都打不开了！”——这是 Windows 平台代理用户搜索量最高、也最容易让人抓狂的系统级故障。很多用户误以为电脑中病毒甚至重装系统。本文深入拆解 Windows 注册表 <strong>ProxyEnable 死锁残留机制</strong>，并提供双击即可恢复的<strong>一键绿色批处理脚本</strong>。
+      </p>
+    </header>
+
+    <!-- Key Takeaway Box -->
+    <div class="p-5 rounded-xl border border-rose-200 bg-rose-50/60 text-xs sm:text-sm text-slate-800 leading-relaxed space-y-2">
+      <strong class="text-brand-dark block text-base font-bold">3 秒极速脱困秘籍</strong>
+      <p class="text-slate-700">
+        如果你当前电脑正处于断网状态无法上网，请按快捷键 <code>Win + R</code>，输入 <code>inetcpl.cpl</code> 回车打开 Internet 选项，点击【连接】标签页下的【局域网设置】，将底部的<strong>【为 LAN 使用代理服务器】取消勾选</strong>并点击确定，网络瞬间恢复！
+      </p>
+    </div>
+
+    <!-- Chapter 1 -->
+    <section class="space-y-4">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        一、注册表 ProxyEnable 死锁底层原理深度解剖
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        Windows 操作系统的所有现代浏览器与网络组件，其网络代理状态统一记录在当前用户的注册表分支中：
+      </p>
+
+      <div class="bg-slate-900 text-slate-100 p-4 rounded-lg text-xs font-mono overflow-x-auto space-y-1">
+        <p class="text-slate-400"># 核心系统代理注册表路径：</p>
+        <p class="text-emerald-400">HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings</p>
+      </div>
+
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        在该路径下存在两个生死攸关的键值：
+      </p>
+      <ul class="list-disc list-inside text-xs sm:text-sm text-slate-700 space-y-1.5 pl-2">
+        <li><strong><code>ProxyEnable</code>（DWORD 32位）：</strong>值为 <code>1</code> 时表示系统强制开启代理；值为 <code>0</code> 时表示系统使用直连。</li>
+        <li><strong><code>ProxyServer</code>（字符串）：</strong>记录代理服务器地址与监听端口，如 <code>127.0.0.1:7890</code>。</li>
+      </ul>
+
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        当代理软件正常运行时，它将 <code>ProxyEnable</code> 写入 1，并在后台持续运行本地监听进程；<br/>
+        但若遭遇以下三种常见场景：<strong>电脑直接点击关机</strong>、<strong>在任务管理器强杀进程</strong>、或<strong>笔记本合盖电量耗尽自动关机</strong>，代理软件根本来不及调用清理注册表的代码就已死亡。系统开机后，注册表依然记录着 <code>ProxyEnable=1</code>，而本地 7890 端口空空如也，系统网络直接陷入瘫痪。
+      </p>
+    </section>
+
+    <!-- Chapter 2 -->
+    <section class="space-y-4">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        二、一键强制清零注册表恢复批处理脚本 (.bat)
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        为了让小白用户无需记忆复杂的菜单路径，我们将注册表修复与系统网络设置刷新封装为标准 Windows 批处理脚本。
+      </p>
+
+      <div class="space-y-3">
+        <h3 class="text-base font-semibold text-slate-800">制作属于你自己的“网络急救箱”：</h3>
+        <ol class="list-decimal list-inside text-xs sm:text-sm text-slate-700 space-y-1.5 pl-2">
+          <li>在电脑桌面上右键点击空白处，选择【新建】→【文本文档】；</li>
+          <li>将该文本文件重命名为 <code>一键修复网络断网.bat</code>（注意后缀必须是 <code>.bat</code> 而非 <code>.txt</code>）；</li>
+          <li>右键点击该文件选择【编辑】或用记事本打开，将下方代码完整复制粘贴进去并保存：</li>
+        </ol>
+
+        <div class="bg-slate-900 text-slate-100 p-4 rounded-lg text-xs font-mono overflow-x-auto space-y-2">
+          <p class="text-slate-400">@echo off</p>
+          <p class="text-slate-400">:: 机场 Wiki 官方一秒强制清零系统代理死锁脚本</p>
+          <pre><code>echo 正在检查并清除 Windows 系统残留代理设置...
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v ProxyEnable /t REG_DWORD /d 0 /f >nul 2>&1
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v ProxyServer /d "" /f >nul 2>&1
+reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v ProxyOverride /f >nul 2>&1
+
+echo 正在刷新系统 WinINet 网络缓存...
+ipconfig /flushdns >nul 2>&1
+
+echo ============================================
+echo [+] 修复成功！Windows 代理开关已彻底强制关闭！
+echo [+] 你的网页浏览器已恢复正常直连！
+echo ============================================
+pause</code></pre>
+        </div>
+        <p class="text-xs text-slate-600">
+          今后只要遇到关机后断网的情况，直接在桌面上双击运行这个 <code>.bat</code> 文件，窗口闪烁一下提示“修复成功”，网页即可秒级满血复活！
+        </p>
+      </div>
+    </section>
+
+    <!-- Chapter 3 -->
+    <section class="space-y-4">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        三、图形界面传统手动四步修复流程
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        如果你正在网吧或他人物品电脑上无法新建批处理文件，可以通过 Windows 原生控制面板进行手动修复：
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-700 space-y-1.5">
+          <h3 class="font-bold text-slate-900 text-sm">Windows 11 现代设置操作路径</h3>
+          <p>
+            1. 点击任务栏徽标打开【设置】（快捷键 <code>Win + I</code>）；<br/>
+            2. 点击左侧导航栏的【网络和 Internet】；<br/>
+            3. 在右侧列表中找到并点击【代理】选项；<br/>
+            4. 查看“手动设置代理”一栏，若“使用代理服务器”显示为【设置】，点击编辑，将开关切换为<strong>【关】</strong>并点击保存。
+          </p>
+        </div>
+        <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-700 space-y-1.5">
+          <h3 class="font-bold text-slate-900 text-sm">全版本通用的经典控制面板路径</h3>
+          <p>
+            1. 键盘按下快捷键 <code>Win + R</code> 调出运行窗口；<br/>
+            2. 键入指令 <code>inetcpl.cpl</code> 回车，直接打开 Internet 属性窗口；<br/>
+            3. 点击顶部的【连接】标签页，再点击下方的【局域网设置 (L)】按钮；<br/>
+            4. 检查底部【代理服务器】，<strong>坚决取消勾选</strong>“为 LAN 使用代理服务器”，点击确定退出。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chapter 4 -->
+    <section class="space-y-4">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark border-b border-slate-200 pb-2">
+        四、彻底告别该故障的终极方法：转向 TUN 模式
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+        治标更要治本。频繁修改系统注册表不仅繁琐，还容易在多软件切换时引发配置冲突。
+      </p>
+      <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 text-xs sm:text-sm text-blue-950 space-y-2">
+        <strong class="font-bold block text-blue-900">为什么 TUN 虚拟网卡模式永远不会发生这种断网？</strong>
+        <p>
+          在以 <strong>Clash Verge Rev</strong> 为代表的现代客户端中，开启 TUN 模式后，软件的“系统代理（System Proxy）”开关是常年处于<strong>完全关闭</strong>状态的。注册表中的 <code>ProxyEnable</code> 永远是健康的 <code>0</code>。
+        </p>
+        <p>
+          所有的流量分流完全在内核驱动层（Wintun.dll）运行。即使电脑在看视频的过程中突然被强拔电源断电关机，开机后操作系统只是像拔掉了一根网线一样，默认网络自动回退到物理千兆网卡上，<strong>从物理和逻辑上彻底杜绝了注册表死锁断网的可能</strong>。
+        </p>
+      </div>
+    </section>
+
+    <!-- FAQ Accordion -->
+    <section class="space-y-4 pt-6 border-t border-brand-border">
+      <h2 class="text-xl sm:text-2xl font-bold text-brand-dark">
+        常见疑难解答（FAQ）
+      </h2>
+      <div class="space-y-3">
+        {faqs.map((faq) => (
+          <details class="group bg-white rounded-xl border border-slate-200 p-4 transition-all hover:border-slate-300">
+            <summary class="flex justify-between items-center font-bold text-brand-dark text-sm sm:text-base cursor-pointer list-none">
+              <span>{faq.q}</span>
+              <span class="text-brand-muted group-open:rotate-180 transition-transform text-xs">▼</span>
+            </summary>
+            <p class="text-xs sm:text-sm text-slate-600 mt-3 leading-relaxed pt-3 border-t border-slate-100">
+              {faq.a}
+            </p>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- Related Navigation -->
+    <footer class="pt-6 border-t border-brand-border flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-brand-muted">
+      <a href="/guides/node-timeout-troubleshooting/" class="text-brand-link font-medium hover:underline flex items-center gap-1">
+        ← 返回节点超时排障专题
+      </a>
+      <a href="/clients/windows/" class="hover:text-brand-link">
+        阅读 Windows 电脑代理核心选型与 TUN 指引 →
+      </a>
+    </footer>
+  </div>
+</BaseLayout>

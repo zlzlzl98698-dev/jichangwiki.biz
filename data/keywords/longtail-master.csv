@@ -1,0 +1,25 @@
+keyword,primaryKeyword,searchIntent,audience,contentType,parentTopic,parentCluster,targetUrl,articleTitle,conversionIntent,contentPriority,contentStatus
+终端走代理配置,Windows终端代理,How-to,开发人员/技术极客,教程文章,clients,windows,/clients/windows/terminal-proxy-powershell-git/,Windows 终端 PowerShell 与 Git 代理配置完全指南,Low,P0,published
+Wintun与TAP驱动对比,Wintun驱动,Informational,Windows桌面用户,知识文章,clients,windows,/clients/windows/wintun-vs-tap-architecture/,Wintun 驱动与 TAP 驱动深度性能对比及防蓝屏实战,Low,P1,published
+UWP应用无法联网,微软商店代理断网,Troubleshooting,Windows日常用户,排障文章,clients,windows,/clients/windows/uwp-loopback-exemption-fix/,Windows UWP 微软商店应用回环隔离与断网修复,Medium,P0,published
+美区Apple ID注册教程,美区Apple ID,How-to,iPhone用户/苹果新手,教程文章,clients,ios,/clients/ios/us-apple-id-registration-guide/,美区 Apple ID 免信用卡安全注册 2026 最新图解教程,Medium,P0,published
+小火箭按需连接设置,小火箭On Demand,How-to,iOS日常用户,教程文章,clients,ios,/clients/ios/shadowrocket-on-demand-automation/,Shadowrocket 小火箭按需连接 On Demand 自动化网络自愈配置,Low,P1,published
+小火箭内存闪退掉线,小火箭后台断流,Troubleshooting,重度网络用户,排障文章,clients,ios,/clients/ios/networkextension-15mb-memory-fix/,解决 iOS 严格 15MB 物理内存上限导致的小火箭闪退与断流,Low,P0,published
+Claude封号怎么申诉,Claude封号申诉,Troubleshooting,AI研究人员/外贸白领,排障文章,compatibility,ai,/compatibility/chatgpt-claude-gemini/claude-ban-appeal-template/,Claude 账号误封官方英文申诉模版与 IP 纯净度拯救指南,Medium,P0,published
+ChatGPT Plus绑卡被拒,ChatGPT Plus信用卡拒付,Troubleshooting,AI重度付费用户,排障文章,compatibility,ai,/compatibility/chatgpt-claude-gemini/chatgpt-plus-stripe-anti-fraud/,ChatGPT Plus 虚拟信用卡 Stripe 反欺诈风控穿透全实操,High,P0,published
+电视盒子看奈飞只有540P,Widevine L1认证,Troubleshooting,家庭影院用户,知识文章,compatibility,streaming,/compatibility/netflix-disney-streaming/widevine-l1-drm-hardware-audit/,为什么外贸盒子看 Netflix 只有标清？Widevine L1 硬件 DRM 深度解密,Medium,P1,published
+Apple TV看奈飞4K教程,Apple TV代理观影,How-to,客厅大屏用户,教程文章,compatibility,streaming,/compatibility/netflix-disney-streaming/tvos-apple-tv-4k-setup/,Apple TV 4K 客厅流媒体配置与杜比视界直通全手册,High,P0,published
+专线带宽成本多少钱,1Gbps跨境专线成本,Informational,企业采购/网民决策,价格文章,pricing,cheap,/pricing/cheap-airports-comparison/1gbps-bandwidth-cost/,1Gbps 跨境专线物理采购成本深度解剖：为什么几元不限流量是骗局,High,P0,published
+白标机场超卖内幕,白标机场超卖,Informational,防坑消费者,风险文章,pricing,cheap,/pricing/cheap-airports-comparison/white-label-reseller-risks/,白标机场二道贩子超卖 50 倍内幕与偷跑流量深度调查,Medium,P1,published
+机场月付好还是年付好,机场月付年付对比,Commercial Investigation,所有消费者,比较文章,pricing,monthly,/pricing/monthly-plans/game-theory-monthly-vs-yearly/,机场买月付还是年付？沉淀资金博弈论与三年付跑路案卷分析,High,P0,published
+双持备用机场怎么选,双持备用机场,How-to,高可用刚需用户,教程文章,pricing,non-expiring,/pricing/non-expiring-data/dual-sim-redundancy-setup/,主力专线加不限时流量包：坚不可摧的“双持容灾”网络架构实操,High,P0,published
+机场测速图造假揭秘,假测速图识别,Informational,理性消费者,知识文章,brands,reviews,/brands/review-methodology/fake-speedtest-deconstructed/,机场测速图造假揭秘：单线程多线程并发陷阱与虚标延迟拆穿,Medium,P0,published
+免费加速器恶意根证书,免费VPN安全风险,Informational,小白用户,风险文章,vpn,free-vpn,/vpn/free-vpn-risks/root-cert-mitm-investigation/,免费 VPN 恶意根证书逆向分析：你的账号密码是如何被静默窃取的,Medium,P0,published
+个人电脑变肉鸡代理,免费VPN肉鸡,Informational,广大网民,风险文章,vpn,free-vpn,/vpn/free-vpn-risks/residential-proxy-botnet-analysis/,天下没有免费的午餐：揭秘免费加速器如何将用户设备打包卖给黑产,Low,P0,published
+Switch PS5联机报错NAT3,全锥型NAT游戏加速,Troubleshooting,主机游戏玩家,排障文章,vpn,gaming,/vpn/gaming-accelerator-vs-proxy/full-cone-nat-switch-ps5/,Switch 与 PS5 联机报错 NAT 3 转 NAT 1 全锥型优化实操,High,P0,published
+NextTrace测真假专线,NextTrace路由追踪,How-to,技术型网民,教程文章,network,iepl-iplc,/network/iepl-vs-iplc/nexttrace-visual-traceroute-manual/,NextTrace 路由可视化实战：手把手教你逐跳识破伪专线中转画皮,Medium,P0,published
+测速十几毫秒网页卡死,TTFB延迟测试,Troubleshooting,广大网民,排障文章,network,latency,/network/regional-nodes-and-latency/ttfb-first-byte-latency-audit/,为什么测速十几毫秒实际打开网页奇慢？TTFB 首字节时间深度排查,Low,P0,published
+本地搭建订阅转换,私有Subconverter,How-to,重视隐私极客,教程文章,guides,subscription,/guides/subscription-import-guide/subconverter-docker-local-setup/,Docker 本地私有化搭建 Subconverter：彻底杜绝节点密码被盗取,Medium,P0,published
+关闭代理后电脑打不开网页,注册表ProxyEnable恢复,Troubleshooting,全部电脑用户,排障文章,guides,timeout,/guides/node-timeout-troubleshooting/proxyenable-registry-fix-script/,关闭软件后全电脑断网？一秒强制重置注册表 ProxyEnable 批处理脚本,Low,P0,published
+机场跑路信用卡如何拒付,信用卡Chargeback申诉,How-to,受害消费者,维权文章,evidence,refunds,/evidence/refunds-and-risks/chargeback-credit-card-dispute/,网络服务商跑路如何追回款项？Visa 与 MasterCard 争议拒付实战,High,P0,published
+近五年知名机场跑路盘点,机场跑路历史案卷,Informational,防坑消费者,风险文章,evidence,runaway,/evidence/runaway-warning-and-alternatives/ten-historical-airport-scams/,近五年十大知名机场跑路历史案卷复盘：速鹰与喵帕斯崩盘全过程,Medium,P1,published

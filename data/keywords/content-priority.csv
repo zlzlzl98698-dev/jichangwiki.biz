@@ -1,0 +1,25 @@
+priority,targetUrl,primaryKeyword,searchIntent,monthlySearchDemand,conversionIntent,audience,assignedAuthor,reviewDueDate,contentStatus
+P0,/clients/windows/terminal-proxy-powershell-git/,Windows终端代理,How-to,High,Low,开发者与运维工程师,系统工程师,2026-12-15,published
+P0,/clients/windows/uwp-loopback-exemption-fix/,微软商店代理断网,Troubleshooting,High,Medium,Windows办公日常用户,桌面客户端编辑,2026-12-15,published
+P0,/clients/ios/us-apple-id-registration-guide/,美区Apple ID免信用卡注册,How-to,Very High,Medium,iPhone与iPad用户,iOS编辑,2026-12-20,published
+P0,/clients/ios/networkextension-15mb-memory-fix/,小火箭后台断流,Troubleshooting,High,Low,iOS重度用户,移动内核专家,2026-12-20,published
+P0,/compatibility/chatgpt-claude-gemini/claude-ban-appeal-template/,Claude封号申诉,Troubleshooting,Very High,Medium,AI工程师与创作者,AI合规编辑,2026-12-10,published
+P0,/compatibility/chatgpt-claude-gemini/chatgpt-plus-stripe-anti-fraud/,ChatGPT Plus信用卡拒付,Troubleshooting,Very High,High,AI付费企业与个人,跨境风控编辑,2026-12-10,published
+P0,/compatibility/netflix-disney-streaming/tvos-apple-tv-4k-setup/,Apple TV看奈飞4K,How-to,High,High,大屏影音发烧友,家庭影院编辑,2026-12-25,published
+P0,/pricing/cheap-airports-comparison/1gbps-bandwidth-cost/,1Gbps跨境专线成本,Informational,High,High,理性消费者与开发者,网络成本精算师,2026-12-05,published
+P0,/pricing/monthly-plans/game-theory-monthly-vs-yearly/,机场月付年付对比,Commercial Investigation,Very High,High,全体跨境网络用户,消费者权益调研员,2026-12-05,published
+P0,/pricing/non-expiring-data/dual-sim-redundancy-setup/,双持备用机场,How-to,High,High,跨国办公族与远程团队,高可用架构师,2026-12-08,published
+P0,/guides/node-timeout-troubleshooting/proxyenable-registry-fix-script/,注册表ProxyEnable恢复,Troubleshooting,Very High,Low,全体Windows用户,排障技术编辑,2026-12-01,published
+P0,/evidence/refunds-and-risks/chargeback-credit-card-dispute/,信用卡Chargeback申诉,How-to,Medium,High,跑路维权受害者,跨境法律常务,2026-12-12,published
+P1,/recommend/stable-airports/bgp-multi-entrance-anti-cut/,BGP多入口冗余解析,Informational,Medium,High,专线企业客户,网络架构师,2026-12-30,backlog
+P1,/recommend/beginners-guide/airport-vs-vpn-difference/,机场和VPN的区别,Informational,Very High,High,网络纯新手,科普编辑,2026-12-30,backlog
+P1,/network/iepl-vs-iplc/fiber-submarine-cable-latency/,海缆中断对专线延迟影响,Informational,Medium,Low,网络发烧友,海缆研究员,2027-01-10,backlog
+P1,/network/regional-nodes-and-latency/taiwan-hinet-dynamic-ip/,台湾HiNet家宽与动态IP,Informational,Medium,Medium,流媒体解锁爱好者,台区节点测评员,2027-01-10,backlog
+P1,/clients/clash/mihomo-rule-providers-syntax/,Mihomo规则集配置语法,How-to,High,Low,进阶分流玩家,内核测试工程师,2027-01-15,backlog
+P1,/clients/v2rayn/tun-virtual-nic-packet-loss/,v2rayN的TUN网卡丢包排查,Troubleshooting,Medium,Low,Windows重度开发者,桌面排障员,2027-01-15,backlog
+P1,/vpn/wireguard-vs-vless-reality/,WireGuard与VLESS对比,Comparison,High,Medium,隐私保护要求者,协议安全研究员,2027-01-20,backlog
+P1,/guides/dns-leak-prevention/edns-client-subnet-privacy/,ECS客户端子网与DNS泄漏,How-to,Medium,Low,信息安全关注者,DNS专家,2027-01-20,backlog
+P2,/pricing/cheap-airports-comparison/one-cny-airport-traffic-theft/,一元机场偷跑流量内幕,Informational,High,Medium,学生与羊毛党,风控编辑,2027-02-01,backlog
+P2,/compatibility/spotify-region-change-lock/,Spotify换区防锁区指南,How-to,Medium,Low,音乐发烧友,流媒体编辑,2027-02-01,backlog
+P2,/evidence/privacy-and-logging-policy/zero-logging-myth/,零日志审计的行业真相,Informational,Medium,Low,隐私极客,安全审计员,2027-02-05,backlog
+P2,/questions/geo-intent-faq-matrix/how-to-test-packet-loss/,怎么测量专线晚高峰真实丢包,How-to,High,Low,排障网络工程师,QA工程师,2027-02-05,backlog
